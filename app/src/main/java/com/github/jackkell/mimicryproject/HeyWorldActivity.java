@@ -1,6 +1,7 @@
 package com.github.jackkell.mimicryproject;
 
 import android.app.Activity;
+import android.provider.Settings;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -8,6 +9,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import twitter4j.*;
 
 
 public class HeyWorldActivity extends Activity {
@@ -26,6 +32,9 @@ public class HeyWorldActivity extends Activity {
                 OnClickMeButtonClick();
             }
         });
+        for(Status status : getHomeTimeline()){
+            System.out.println(status.toString());
+        }
     }
 
     protected void OnClickMeButtonClick() {
@@ -54,5 +63,23 @@ public class HeyWorldActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    protected List<Status> getHomeTimeline(){
+        List<Status> statuses = new ArrayList<Status>();
+        try {
+            // gets Twitter instance with default credentials
+            Twitter twitter = new TwitterFactory().getInstance();
+            User user = twitter.verifyCredentials();
+            statuses = twitter.getHomeTimeline();
+            System.out.println("Showing @" + user.getScreenName() + "'s home timeline.");
+            for (Status status : statuses) {
+                System.out.println("@" + status.getUser().getScreenName() + " - " + status.getText());
+            }
+        } catch (TwitterException te) {
+            te.printStackTrace();
+            System.out.println("Failed to get timeline, scrub: " + te.getMessage());
+        }
+        return statuses;
     }
 }
