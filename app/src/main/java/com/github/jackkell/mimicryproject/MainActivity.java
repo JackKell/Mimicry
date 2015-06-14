@@ -2,13 +2,12 @@ package com.github.jackkell.mimicryproject;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
+
+import com.github.jackkell.mimicryproject.TwitterTasks.SendTweetTask;
 
 import java.util.List;
 
@@ -17,7 +16,6 @@ import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.auth.AccessToken;
-import twitter4j.conf.ConfigurationBuilder;
 
 
 public class MainActivity extends Activity {
