@@ -2,7 +2,7 @@ package com.github.jackkell.mimicryproject.TwitterTasks;
 
 import android.os.AsyncTask;
 
-import com.github.jackkell.mimicryproject.Config;
+import com.github.jackkell.mimicryproject.Config.Config;
 
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -15,7 +15,7 @@ public class SendTweetTask extends AsyncTask<String, Void, Boolean> {
     @Override
     protected Boolean doInBackground(String... strings) {
         Twitter twitter = new TwitterFactory().getInstance();
-        twitter.setOAuthConsumer(Config.COSUMER_KEY, Config.CONSUMER_KEY_SECRET);
+        twitter.setOAuthConsumer(Config.CONSUMER_KEY, Config.CONSUMER_KEY_SECRET);
         twitter.setOAuthAccessToken(new AccessToken(Config.ACCESS_TOKEN, Config.ACCESS_TOKEN_SECRET));
 
         try {
