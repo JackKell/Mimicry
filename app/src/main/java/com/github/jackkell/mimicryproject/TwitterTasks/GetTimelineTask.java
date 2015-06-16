@@ -2,8 +2,10 @@ package com.github.jackkell.mimicryproject.TwitterTasks;
 
 import android.os.AsyncTask;
 
-/**
- * Created by braolson on 6/14/2015.
- */
-public class GetTimelineTask extends AsyncTask<>{
+public class GetTimelineTask extends AsyncTask<Void, Void, Void> {
+
+    @Override
+    protected Void doInBackground(Void... voids) {
+        return null;
+    }
 }

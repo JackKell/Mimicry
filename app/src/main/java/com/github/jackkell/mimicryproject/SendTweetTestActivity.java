@@ -19,7 +19,7 @@ import twitter4j.TwitterFactory;
 import twitter4j.auth.AccessToken;
 
 
-public class MainActivity extends Activity {
+public class SendTweetTestActivity extends Activity {
 
     SharedPreferences pref;
 
@@ -32,6 +32,34 @@ public class MainActivity extends Activity {
 
         new SendTweetTask().execute("Justin is a nerd :D. This Twitter is mine now. Bwa ha ha.");
     }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+
+    /*
+    TODO: Remove this when the document when this is no longer needed
+    Unused functions for reference
 
     private boolean isAuthenticated() {
         Twitter twitter = new TwitterFactory().getInstance();
@@ -60,27 +88,5 @@ public class MainActivity extends Activity {
             e.printStackTrace();
         }
     }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
+     */
 }

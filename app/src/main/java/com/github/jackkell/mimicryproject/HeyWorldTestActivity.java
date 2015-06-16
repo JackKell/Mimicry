@@ -16,7 +16,7 @@ import java.util.List;
 import twitter4j.*;
 
 
-public class HeyWorldActivity extends Activity {
+public class HeyWorldTestActivity extends Activity {
 
     int clickCount = 0;
 
@@ -34,7 +34,7 @@ public class HeyWorldActivity extends Activity {
         });
     }
 
-    protected void OnClickMeButtonClick() {
+    private void OnClickMeButtonClick() {
         TextView textView = (TextView)findViewById(R.id.heyworldText);
         clickCount++;
         textView.setText("Count: " + clickCount);
