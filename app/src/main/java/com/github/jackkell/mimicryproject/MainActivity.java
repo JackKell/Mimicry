@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.github.jackkell.mimicryproject.Config.Config;
 import com.github.jackkell.mimicryproject.TwitterTasks.SendTweetTask;
 
 import java.util.List;
@@ -34,7 +35,7 @@ public class MainActivity extends Activity {
 
     private boolean isAuthenticated() {
         Twitter twitter = new TwitterFactory().getInstance();
-        twitter.setOAuthConsumer(Config.COSUMER_KEY, Config.CONSUMER_KEY_SECRET);
+        twitter.setOAuthConsumer(Config.CONSUMER_KEY, Config.CONSUMER_KEY_SECRET);
         twitter.setOAuthAccessToken(new AccessToken(Config.ACCESS_TOKEN, Config.ACCESS_TOKEN_SECRET));
 
         try {
@@ -48,7 +49,7 @@ public class MainActivity extends Activity {
     private void printTimeline() {
         try {
             Twitter twitter = new TwitterFactory().getInstance();
-            twitter.setOAuthConsumer(Config.COSUMER_KEY, Config.CONSUMER_KEY_SECRET);
+            twitter.setOAuthConsumer(Config.CONSUMER_KEY, Config.CONSUMER_KEY_SECRET);
             twitter.setOAuthAccessToken(new AccessToken(Config.ACCESS_TOKEN, Config.ACCESS_TOKEN_SECRET));
             List<Status> statuses = twitter.getHomeTimeline();
             Log.i("MIMICRY", "Show home timeline.");
