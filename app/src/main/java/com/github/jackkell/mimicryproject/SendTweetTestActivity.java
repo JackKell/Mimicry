@@ -7,8 +7,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.github.jackkell.mimicryproject.Config.Config;
-import com.github.jackkell.mimicryproject.TwitterTasks.SendTweetTask;
+import com.github.jackkell.mimicryproject.tasks.SendTweetTask;
 
 import java.util.List;
 
