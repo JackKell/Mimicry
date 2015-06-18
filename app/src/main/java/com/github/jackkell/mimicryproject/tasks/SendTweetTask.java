@@ -1,8 +1,8 @@
-package com.github.jackkell.mimicryproject.TwitterTasks;
+package com.github.jackkell.mimicryproject.tasks;
 
 import android.os.AsyncTask;
 
-import com.github.jackkell.mimicryproject.Config.Config;
+import com.github.jackkell.mimicryproject.config.Config;
 
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
