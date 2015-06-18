@@ -7,16 +7,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.github.jackkell.mimicryproject.Config.Config;
-import com.github.jackkell.mimicryproject.TwitterTasks.SendTweetTask;
-
-import java.util.List;
-
-import twitter4j.Status;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
-import twitter4j.TwitterFactory;
-import twitter4j.auth.AccessToken;
+import com.github.jackkell.mimicryproject.tasks.SendTweetTask;
 
 
 public class SendTweetTestActivity extends Activity {
@@ -30,9 +21,8 @@ public class SendTweetTestActivity extends Activity {
 
         Log.i("MIMICRY", "Starting the twitters");
 
-        new SendTweetTask().execute("Justin is a nerd :D. This Twitter is mine now. Bwa ha ha.");
+        new SendTweetTask().execute("asdf");
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -55,38 +45,4 @@ public class SendTweetTestActivity extends Activity {
 
         return super.onOptionsItemSelected(item);
     }
-
-
-    /*
-    TODO: Remove this when the document when this is no longer needed
-    Unused functions for reference
-
-    private boolean isAuthenticated() {
-        Twitter twitter = new TwitterFactory().getInstance();
-        twitter.setOAuthConsumer(Config.CONSUMER_KEY, Config.CONSUMER_KEY_SECRET);
-        twitter.setOAuthAccessToken(new AccessToken(Config.ACCESS_TOKEN, Config.ACCESS_TOKEN_SECRET));
-
-        try {
-            twitter.getAccountSettings();
-            return true;
-        } catch (TwitterException e) {
-            return false;
-        }
-    }
-
-    private void printTimeline() {
-        try {
-            Twitter twitter = new TwitterFactory().getInstance();
-            twitter.setOAuthConsumer(Config.CONSUMER_KEY, Config.CONSUMER_KEY_SECRET);
-            twitter.setOAuthAccessToken(new AccessToken(Config.ACCESS_TOKEN, Config.ACCESS_TOKEN_SECRET));
-            List<Status> statuses = twitter.getHomeTimeline();
-            Log.i("MIMICRY", "Show home timeline.");
-            for(Status status : statuses) {
-                Log.i("MIMICRY", status.getUser().getName() + ":" + status.getText());
-            }
-        } catch (TwitterException e) {
-            e.printStackTrace();
-        }
-    }
-     */
 }

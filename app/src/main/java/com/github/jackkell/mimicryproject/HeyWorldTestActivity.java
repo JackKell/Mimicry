@@ -8,7 +8,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+
+import com.github.jackkell.mimicryproject.tasks.SendTweetTask;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +28,8 @@ public class HeyWorldTestActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_hey_world);
 
+        new SendTweetTask().execute("Hello, world.");
+
         Button clickmeButton = (Button)findViewById(R.id.clickmeButton);
         clickmeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -36,8 +41,9 @@ public class HeyWorldTestActivity extends Activity {
 
     private void OnClickMeButtonClick() {
         TextView textView = (TextView)findViewById(R.id.heyworldText);
-        clickCount++;
+        ++clickCount;
         textView.setText("Count: " + clickCount);
+        tweetAway();
     }
 
     @Override
@@ -60,5 +66,11 @@ public class HeyWorldTestActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void tweetAway() {
+        EditText tweetText = (EditText)findViewById(R.id.tweetText);
+        String toBeTweeted = tweetText.getText().toString();
+        new SendTweetTask().execute(toBeTweeted);
     }
 }
