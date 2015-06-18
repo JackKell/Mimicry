@@ -1,4 +1,4 @@
-package com.github.jackkell.mimicryproject.TwitterTasks;
+package com.github.jackkell.mimicryproject.tasks;
 
 import android.os.AsyncTask;
 
