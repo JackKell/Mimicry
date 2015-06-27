@@ -3,8 +3,22 @@ package com.github.jackkell.mimicryproject;
 import android.app.Activity;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+
+import com.github.jackkell.mimicryproject.TwitterTasks.GetTimelineTask;
+
+import org.w3c.dom.Text;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+
+import twitter4j.Status;
 
 
 public class GetTimelineActivity extends Activity {
@@ -13,6 +27,19 @@ public class GetTimelineActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_get_timeline);
+
+        Button pullTimelineButton = (Button)findViewById(R.id.pullTimelineButton);
+
+        pullTimelineButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    onPullTimelineButtonClick();
+                } catch (ExecutionException | InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     @Override
@@ -35,5 +62,14 @@ public class GetTimelineActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void onPullTimelineButtonClick() throws ExecutionException, InterruptedException {
+        List<Status> statuses  = new GetTimelineTask().execute("FerniferdGully").get();
+        TextView textViewStatusCount = (TextView)findViewById(R.id.textViewStatusCount);
+        TextView textViewFirstTweet = (TextView)findViewById(R.id.textViewFirstTweet);
+        int statusCount = statuses.size();
+        textViewStatusCount.setText(statusCount + " statuses pulled");
+        textViewFirstTweet.setText(statuses.get(1).getText());
     }
 }
