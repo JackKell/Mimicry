@@ -12,4 +12,35 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="0 status have been pulled"
+        android:id="@+id/textViewStatusCount"
+        android:layout_marginTop="43dp"
+        android:layout_below="@+id/pullTimelineButton"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pull Status"
+        android:id="@+id/pullTimelineButton"
+        android:layout_below="@+id/textboxGetTimeLine"
+        android:layout_alignRight="@+id/textboxGetTimeLine"
+        android:layout_alignEnd="@+id/textboxGetTimeLine"
+        android:layout_marginTop="44dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:id="@+id/textViewFirstTweet"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
 </RelativeLayout>
