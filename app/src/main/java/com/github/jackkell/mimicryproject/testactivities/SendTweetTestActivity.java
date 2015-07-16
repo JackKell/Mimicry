@@ -1,4 +1,4 @@
-package com.github.jackkell.mimicryproject;
+package com.github.jackkell.mimicryproject.testactivities;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
@@ -7,7 +7,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.github.jackkell.mimicryproject.TwitterTasks.SendTweetTask;
+import com.github.jackkell.mimicryproject.R;
+import com.github.jackkell.mimicryproject.tasks.SendTweetTask;
 
 import java.util.List;
 

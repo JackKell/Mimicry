@@ -1,4 +1,4 @@
-package com.github.jackkell.mimicryproject;
+package com.github.jackkell.mimicryproject.testactivities;
 
 import android.app.Activity;
 import android.provider.Settings;
@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.github.jackkell.mimicryproject.R;
 import com.github.jackkell.mimicryproject.tasks.SendTweetTask;
 
 import java.util.ArrayList;

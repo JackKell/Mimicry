@@ -1,4 +1,4 @@
-package com.github.jackkell.mimicryproject;
+package com.github.jackkell.mimicryproject.testactivities;
 
 import android.app.Activity;
 import android.support.v7.app.ActionBarActivity;
@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.github.jackkell.mimicryproject.R;
 import com.github.jackkell.mimicryproject.tasks.GetTimelineTask;
 
 import org.w3c.dom.Text;
