@@ -18,9 +18,18 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hey Click Me \n\tEscape Characters"
+        android:text="@string/hello_world"
         android:id="@+id/clickmeButton"
         android:layout_marginTop="91dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
+
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tweetText"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentStart="false" />
+
 </RelativeLayout>

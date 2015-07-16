@@ -13,7 +13,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".SendTweetTestActivity"
+            android:name=".HeyWorldTestActivity"
             android:label="@string/app_name" >
 
         </activity>
