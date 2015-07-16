@@ -2,15 +2,12 @@ package com.github.jackkell.mimicryproject.tasks;
 
 import android.os.AsyncTask;
 
-import com.github.jackkell.mimicryproject.Config.Config;
+import com.github.jackkell.mimicryproject.config.Config;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Queue;
 
 import twitter4j.Paging;
-import twitter4j.Query;
-import twitter4j.QueryResult;
 import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;

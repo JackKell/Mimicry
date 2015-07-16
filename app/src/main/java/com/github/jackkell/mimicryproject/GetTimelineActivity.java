@@ -10,7 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.github.jackkell.mimicryproject.TwitterTasks.GetTimelineTask;
+import com.github.jackkell.mimicryproject.tasks.GetTimelineTask;
 
 import org.w3c.dom.Text;
 
