@@ -1,22 +1,17 @@
-package com.github.jackkell.mimicryproject;
+package com.github.jackkell.mimicryproject.testactivities;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.github.jackkell.mimicryproject.Config.Config;
-import com.github.jackkell.mimicryproject.TwitterTasks.SendTweetTask;
-
-import java.util.List;
-
-import twitter4j.Status;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
-import twitter4j.TwitterFactory;
-import twitter4j.auth.AccessToken;
+import com.github.jackkell.mimicryproject.DatabaseOpenHelper;
+import com.github.jackkell.mimicryproject.R;
 
 
 public class SendTweetTestActivity extends Activity {
@@ -30,7 +25,28 @@ public class SendTweetTestActivity extends Activity {
 
         Log.i("MIMICRY", "Starting the twitters");
 
+        /*
         new SendTweetTask().execute("Justin is a nerd :D. This Twitter is mine now. Bwa ha ha.");
+         */
+
+        DatabaseOpenHelper oh = new DatabaseOpenHelper(this);
+        SQLiteDatabase db = oh.getWritableDatabase();
+        ContentValues row1 = new ContentValues();
+        row1.put("id", 1);
+        row1.put("user", "Jerald");
+        db.insert("tweet", null, row1);
+
+        ContentValues row2 = new ContentValues();
+        row2.put("id", 2);
+        row2.put("user", "Gippy");
+        db.insert("tweet", null, row2);
+
+        SQLiteDatabase rd = oh.getReadableDatabase();
+        Cursor cursor = rd.query(false, "tweet", null, "user = Jerald", null, null, null, null, null);
+
+        cursor.moveToFirst();
+        String user = cursor.getString(cursor.getColumnIndex("USER"));
+        Log.e("MIMICRY", "USER IS --> " + user);
     }
 
 

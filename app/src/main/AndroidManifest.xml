@@ -2,13 +2,27 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.github.jackkell.mimicryproject" >
 
+    <!-- Permission - Internet Connect -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Network State Permissions -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <!--
+     To retrieve OAuth 2.0 tokens or invalidate tokens to disconnect a user. This disconnect
+     option is required to comply with the Google+ Sign-In developer policies
+    -->
+    <uses-permission android:name="android.permission.USE_CREDENTIALS" /> <!-- To retrieve the account name (email) as part of sign-in: -->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" /> <!-- To auto-complete the email text field in the login form with the user's emails -->
+    <uses-permission android:name="android.permission.READ_PROFILE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/app_icon"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".SendTweetTestActivity"
+            android:name=".testactivities.SendTweetTestActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -16,11 +30,31 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-    </application>
+        <activity
+            android:name=".mainactivities.LoginActivity"
+            android:label="@string/title_activity_login" >
+        </activity>
+        <activity
+            android:name=".mainactivities.ImpersonatorViewActivity"
+            android:label="@string/title_activity_impersonator_view" >
+        </activity>
+        <activity
+            android:name=".mainactivities.ImpersonatorCreationActivity"
+            android:label="@string/title_activity_impersonator_creation" >
+        </activity>
+        <activity
+            android:name=".mainactivities.SettingsActivity"
+            android:label="@string/title_activity_settings" >
+        </activity>
 
-    <!-- Permission - Internet Connect -->
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <!-- Network State Permissions -->
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
+        <activity
+            android:name=".mainactivities.ImpersonatorSelectionActivity"
+            android:label="@string/title_activity_impersonator_selection" >
+        </activity>
+    </application>
 
 </manifest>

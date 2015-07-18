@@ -1,7 +1,37 @@
 <resources>
     <string name="app_name">MimicryProject</string>
 
+    <!--General Application-->
+    <string name="impersonator">Impersonator</string>
     <string name="hello_world">Hey World!</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="title_activity_impersonator_view">ImpersonatorViewActivity</string>
+    <string name="title_activity_impersonator_creation">ImpersonatorCreationActivity</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="title_activity_impersonator_selection">ImpersonatorSelectionActivity</string>
+
+    <!--Impersonator Creation Activity-->
+    <string name="impersonator_name">Impersonator Name</string>
+    <string name="impersonator_name_prompt">Add Name Here</string>
+    <string name="twitter_usernames">Twitter Usernames</string>
+    <string name="create_impersonator_prompt">Create Impersonator</string>
+
+
+    <!--Standard Header Sizes-->
+    <string name="h1">50sp</string>
+    <string name="h2">40sp</string>
+    <string name="h3">30sp</string>
+    <string name="h4">20sp</string>
+    <string name="h5">15sp</string>
+    <string name="h6">12sp</string>
+    <string name="body">12sp</string>
+
+    <!--Standard Margins-->
+    <string name="small_margin">10sp</string>
+    <string name="medium_margin">20sp</string>
+    <string name="large_margin">30sp</string>
+    <string name="no_margin">0sp</string>
+
 </resources>
