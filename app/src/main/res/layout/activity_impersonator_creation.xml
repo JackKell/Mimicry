@@ -66,7 +66,7 @@
         android:layout_width="fill_parent"
         android:layout_height="1sp"
         android:background="@android:color/darker_gray"
-        android:layout_above="@id/createButton"
+        android:layout_above="@+id/createButton"
         android:layout_marginTop="@string/small_margin"
         />
 

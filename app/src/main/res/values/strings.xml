@@ -18,6 +18,8 @@
     <string name="twitter_usernames">Twitter Usernames</string>
     <string name="create_impersonator_prompt">Create Impersonator</string>
 
+    <!--Impersonator View Activity-->
+    <string name="post_new_tweet">Post</string>
 
     <!--Standard Header Sizes-->
     <string name="h1">50sp</string>
