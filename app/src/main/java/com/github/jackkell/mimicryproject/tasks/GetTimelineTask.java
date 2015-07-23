@@ -1,8 +1,12 @@
 package com.github.jackkell.mimicryproject.tasks;
 
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 
+import android.database.sqlite.SQLiteDatabase;
+
 import com.github.jackkell.mimicryproject.Config;
+import com.github.jackkell.mimicryproject.DatabaseOpenHelper;
 
 import java.util.ArrayList;
 import java.util.List;
