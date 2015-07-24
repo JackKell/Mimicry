@@ -12,9 +12,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/username_field"
-        android:textSize="@string/h4"
-        android:layout_marginTop="@string/margin_none"
-        android:layout_marginLeft="@string/margin_medium"
+        android:textSize="@dimen/h4"
+        android:layout_marginTop="@dimen/margin_none"
+        android:layout_marginLeft="@dimen/margin_medium"
         />
 
     <EditText
@@ -25,8 +25,8 @@
         android:hint="@string/username_hint"
         android:textSize="15sp"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="@string/margin_small"
-        android:layout_marginLeft="@string/margin_none"
+        android:layout_marginTop="@dimen/margin_small"
+        android:layout_marginLeft="@dimen/margin_none"
         />
 
     <TextView
@@ -35,9 +35,9 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/usernameTextField"
         android:text="@string/password_field"
-        android:textSize="@string/h4"
-        android:layout_marginTop="@string/margin_large"
-        android:layout_marginLeft="@string/margin_medium"
+        android:textSize="@dimen/h4"
+        android:layout_marginTop="@dimen/margin_large"
+        android:layout_marginLeft="@dimen/margin_medium"
         />
 
     <EditText
@@ -48,8 +48,8 @@
         android:hint="@string/password_hint"
         android:textSize="15sp"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="@string/margin_small"
-        android:layout_marginLeft="@string/margin_medium"
+        android:layout_marginTop="@dimen/margin_small"
+        android:layout_marginLeft="@dimen/margin_medium"
         />
 
     <Button
@@ -58,8 +58,8 @@
         android:layout_width="175sp"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="@string/margin_large"
-        android:layout_marginBottom="@string/margin_none"
+        android:layout_marginTop="@dimen/margin_large"
+        android:layout_marginBottom="@dimen/margin_none"
         android:layout_below="@+id/passwordTextField"
         />
 

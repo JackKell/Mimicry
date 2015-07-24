@@ -4,9 +4,63 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
+    android:gravity="center_vertical"
     tools:context="com.github.jackkell.mimicryproject.testactivities.SendTweetTestActivity">
 
-    <TextView android:text="Hey there..." android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <TextView
+        android:id="@+id/usernameTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/username_field"
+        android:textSize="@dimen/h4"
+        android:layout_marginTop="@dimen/margin_none"
+        android:layout_marginLeft="@dimen/margin_medium"
+        />
+
+    <EditText
+        android:id="@+id/usernameTextField"
+        android:layout_width="250sp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/usernameTextView"
+        android:hint="@string/username_hint"
+        android:textSize="15sp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/margin_small"
+        android:layout_marginLeft="@dimen/margin_none"
+        />
+
+    <TextView
+        android:id="@+id/passwordTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/usernameTextField"
+        android:text="@string/password_field"
+        android:textSize="@dimen/h4"
+        android:layout_marginTop="@dimen/margin_large"
+        android:layout_marginLeft="@dimen/margin_medium"
+        />
+
+    <EditText
+        android:id="@+id/passwordTextField"
+        android:layout_width="250sp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/passwordTextView"
+        android:hint="@string/password_hint"
+        android:textSize="15sp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/margin_small"
+        android:layout_marginLeft="@dimen/margin_medium"
+        />
+
+    <Button
+        android:id="@+id/createButton"
+        android:text="@string/signIn_button"
+        android:layout_width="175sp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/margin_large"
+        android:layout_marginBottom="@dimen/margin_none"
+        android:layout_below="@+id/passwordTextField"
+        />
 
 </RelativeLayout>

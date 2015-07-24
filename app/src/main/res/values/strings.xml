@@ -28,19 +28,4 @@
     <string name="password_hint">password</string>
     <string name="signIn_button">Sign In</string>
 
-    <!--Standard Header Sizes-->
-    <string name="h1">50sp</string>
-    <string name="h2">40sp</string>
-    <string name="h3">30sp</string>
-    <string name="h4">20sp</string>
-    <string name="h5">15sp</string>
-    <string name="h6">12sp</string>
-    <string name="body">12sp</string>
-
-    <!--Standard Margins-->
-    <string name="margin_small">10sp</string>
-    <string name="margin_medium">20sp</string>
-    <string name="margin_large">30sp</string>
-    <string name="margin_none">0sp</string>
-
 </resources>
