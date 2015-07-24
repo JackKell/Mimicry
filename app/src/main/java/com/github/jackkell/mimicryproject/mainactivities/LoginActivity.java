@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.github.jackkell.mimicryproject.DatabaseOpenHelper;
 import com.github.jackkell.mimicryproject.R;
 
 public class LoginActivity extends Activity {

@@ -47,10 +47,9 @@
         android:layout_below="@+id/passwordTextView"
         android:hint="@string/password_hint"
         android:textSize="15sp"
-        android:inputType="textPassword"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@string/margin_small"
-        android:layout_marginLeft="@string/margin_none"
+        android:layout_marginLeft="@string/margin_medium"
         />
 
     <Button

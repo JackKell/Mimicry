@@ -24,29 +24,6 @@ public class SendTweetTestActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         Log.i("MIMICRY", "Starting the twitters");
-
-        /*
-        new SendTweetTask().execute("Justin is a nerd :D. This Twitter is mine now. Bwa ha ha.");
-         */
-
-        DatabaseOpenHelper oh = new DatabaseOpenHelper(this);
-        SQLiteDatabase db = oh.getWritableDatabase();
-        ContentValues row1 = new ContentValues();
-        row1.put("id", 1);
-        row1.put("user", "Jerald");
-        db.insert("tweet", null, row1);
-
-        ContentValues row2 = new ContentValues();
-        row2.put("id", 2);
-        row2.put("user", "Gippy");
-        db.insert("tweet", null, row2);
-
-        SQLiteDatabase rd = oh.getReadableDatabase();
-        Cursor cursor = rd.query(false, "tweet", null, "user = Jerald", null, null, null, null, null);
-
-        cursor.moveToFirst();
-        String user = cursor.getString(cursor.getColumnIndex("USER"));
-        Log.e("MIMICRY", "USER IS --> " + user);
     }
 
 

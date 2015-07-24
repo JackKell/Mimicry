@@ -1,6 +1,7 @@
 package com.github.jackkell.mimicryproject.tasks;
 
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.os.AsyncTask;
 
 import android.database.sqlite.SQLiteDatabase;
