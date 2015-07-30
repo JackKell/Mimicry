@@ -26,7 +26,6 @@ public class SendTweetTestActivity extends Activity {
         Log.i("MIMICRY", "Starting the twitters");
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.

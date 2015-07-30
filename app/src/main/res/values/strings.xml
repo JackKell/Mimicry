@@ -6,10 +6,6 @@
     <string name="hello_world">Hey World!</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_main">MainActivity</string>
-    <string name="title_activity_login">LoginActivity</string>
-    <string name="title_activity_impersonator_view">ImpersonatorViewActivity</string>
-    <string name="title_activity_settings">SettingsActivity</string>
-    <string name="title_activity_impersonator_selection">ImpersonatorSelectionActivity</string>
 
     <!--Impersonator Creation Activity-->
     <string name="title_activity_impersonator_creation">ImpersonatorCreationActivity</string>
@@ -19,13 +15,21 @@
     <string name="create_impersonator_prompt">Create Impersonator</string>
 
     <!--Impersonator View Activity-->
+    <string name="title_activity_impersonator_view">ImpersonatorViewActivity</string>
     <string name="post_new_tweet">Post</string>
 
     <!--Login Activity-->
+    <string name="title_activity_login">LoginActivity</string>
     <string name="username_field">Username or E-mail</string>
     <string name="username_hint">username</string>
     <string name="password_field">Password</string>
     <string name="password_hint">password</string>
     <string name="signIn_button">Sign In</string>
+
+    <!--Settings Activity-->
+    <string name="title_activity_settings">SettingsActivity</string>
+
+    <!--Impersonator Selection Activity-->
+    <string name="title_activity_impersonator_selection">ImpersonatorSelectionActivity</string>
 
 </resources>

@@ -1,6 +1,7 @@
 package com.github.jackkell.mimicryproject.testactivities;
 
 import android.app.Activity;
+import android.database.sqlite.SQLiteDatabase;
 import android.provider.Settings;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.github.jackkell.mimicryproject.DatabaseOpenHelper;
 import com.github.jackkell.mimicryproject.R;
 
 import java.util.ArrayList;
