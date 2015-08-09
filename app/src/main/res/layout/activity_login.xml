@@ -7,6 +7,12 @@
     android:gravity="center_vertical"
     tools:context="com.github.jackkell.mimicryproject.mainactivities.LoginActivity">
 
+    <com.twitter.sdk.android.core.identity.TwitterLoginButton
+        android:id="@+id/twitter_login_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"/>
+
     <TextView
         android:id="@+id/usernameTextView"
         android:layout_width="wrap_content"
@@ -50,17 +56,6 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/margin_small"
         android:layout_marginLeft="@dimen/margin_medium"
-        />
-
-    <Button
-        android:id="@+id/signInButton"
-        android:text="@string/signIn_button"
-        android:layout_width="175sp"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/margin_large"
-        android:layout_marginBottom="@dimen/margin_none"
-        android:layout_below="@+id/passwordTextField"
         />
 
 </RelativeLayout>

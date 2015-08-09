@@ -1,65 +1,58 @@
 package com.github.jackkell.mimicryproject.mainactivities;
 
 import android.app.Activity;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-
-import com.github.jackkell.mimicryproject.Config;
 import com.github.jackkell.mimicryproject.R;
-import com.github.jackkell.mimicryproject.tasks.CheckInternetConnectivityTask;
 
-import java.util.concurrent.ExecutionException;
+import com.twitter.sdk.android.Twitter;
+import com.twitter.sdk.android.core.TwitterAuthConfig;
+import io.fabric.sdk.android.Fabric;
 
-import twitter4j.TwitterException;
-import twitter4j.TwitterFactory;
-import twitter4j.auth.AccessToken;
-import twitter4j.Twitter;
-import twitter4j.auth.RequestToken;
+import android.content.Intent;
+import com.twitter.sdk.android.core.Callback;
+import com.twitter.sdk.android.core.Result;
+import com.twitter.sdk.android.core.TwitterException;
+import com.twitter.sdk.android.core.TwitterSession;
+import com.twitter.sdk.android.core.identity.TwitterLoginButton;
 
 public class LoginActivity extends Activity {
 
+    // Note: Your consumer key and secret should be obfuscated in your source code before shipping.
+    private static final String TWITTER_KEY = "";
+    private static final String TWITTER_SECRET = "";
+
+    private TwitterLoginButton loginButton;
+
     String TAG = "LoginActivity";
-
-    private EditText usernameEditText;
-    private EditText passwordEditText;
-
-    private Button signInButton;
-
-    private AccessToken userAccessToken;
-
-    static final String TWITTER_CALLBACK_URL = "oauth://mimicryProjectOAuth";
-
-    private void onSignInButtonClick() {/*
-        TwitterLoginTask twitterLoginTask = new TwitterLoginTask();
-        twitterLoginTask.execute();*/
-        TestFunction();
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
+        Fabric.with(this, new Twitter(authConfig));
         setContentView(R.layout.activity_login);
-        usernameEditText = (EditText) findViewById(R.id.usernameTextField);
-        passwordEditText = (EditText) findViewById(R.id.passwordTextField);
-        signInButton = (Button) findViewById(R.id.signInButton);
 
-        usernameEditText.setText("FerniferdGully");
-        passwordEditText.setText("247479707");
-
-        signInButton.setOnClickListener(new View.OnClickListener() {
+        loginButton = (TwitterLoginButton) findViewById(R.id.twitter_login_button);
+        loginButton.setCallback(new Callback<TwitterSession>() {
             @Override
-            public void onClick(View v) {
-                onSignInButtonClick();
+            public void success(Result<TwitterSession> result) {
+                Log.d(TAG, "Login Success!");
+            }
+
+            @Override
+            public void failure(TwitterException exception) {
+                Log.d(TAG, "Login Fail!");
             }
         });
+    }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        loginButton.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -82,48 +75,5 @@ public class LoginActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    public void TestFunction(){
-        CheckInternetConnectivityTask checkInternetConnectivityTask = new CheckInternetConnectivityTask();
-        Boolean b = null;
-        try {
-            b = checkInternetConnectivityTask.execute(this).get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
-        Log.d(TAG, "TestFunction() b value: " + b);
-
-        Uri uri = getIntent().getData();
-
-        Log.d(TAG, "TestFunction() TWITTER_CALLBACK_URL " + TWITTER_CALLBACK_URL);
-        Log.d(TAG, "TestFunction() getIntent.toString() " + getIntent().toString());
-        Log.d(TAG, "TestFunction() getIntent.getData().toString " + getIntent().getDataString());
-        Log.d(TAG, "TestFunction() uri.toString() " + uri.toString());
-
-        if (uri != null && uri.toString().startsWith(TWITTER_CALLBACK_URL)){
-            String verifier = uri.getQueryParameter("oauth_verifier");
-            TwitterFactory twitterFactory = new TwitterFactory();
-            Twitter twitter = twitterFactory.getInstance();
-            twitter.setOAuthConsumer(Config.CONSUMER_KEY, Config.CONSUMER_KEY_SECRET);
-            RequestToken requestToken = null;
-            try {
-                requestToken = twitter.getOAuthRequestToken(TWITTER_CALLBACK_URL);
-            } catch (TwitterException e) {
-                Log.d(TAG, "TestFunction(): " + e.getErrorMessage());
-                e.printStackTrace();
-            }
-
-            try {
-                AccessToken accessToken = twitter.getOAuthAccessToken(requestToken, verifier);
-                Log.d(TAG, "TestFunction() access token: " + accessToken.getToken());
-                Log.d(TAG, "TestFunction() access token: " + accessToken.getTokenSecret());
-            } catch (TwitterException e) {
-                Log.d(TAG, "TestFunction(): " + e.getErrorMessage());
-                e.printStackTrace();
-            }
-        }
     }
 }
