@@ -21,8 +21,8 @@ android {
 
     defaultConfig {
         applicationId "com.github.jackkell.mimicryproject"
-        minSdkVersion 15
-        targetSdkVersion 22
+        minSdkVersion 16
+        targetSdkVersion 21
         versionCode 1
         versionName "1.0"
     }
