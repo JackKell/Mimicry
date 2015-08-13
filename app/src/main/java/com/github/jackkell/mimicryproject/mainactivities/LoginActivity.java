@@ -38,6 +38,9 @@ public class LoginActivity extends Activity {
             @Override
             public void success(Result<TwitterSession> result) {
                 Log.d(TAG, "Login Success!");
+                Intent impersonatorSelection = new Intent(getApplicationContext(), ImpersonatorSelectionActivity.class);
+                startActivity(impersonatorSelection);
+                finish();
             }
 
             @Override
