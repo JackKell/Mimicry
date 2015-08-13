@@ -1,61 +1,41 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    android:gravity="center_vertical"
     tools:context="com.github.jackkell.mimicryproject.mainactivities.LoginActivity">
 
     <com.twitter.sdk.android.core.identity.TwitterLoginButton
         android:id="@+id/twitter_login_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"/>
-
-    <TextView
-        android:id="@+id/usernameTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/username_field"
-        android:textSize="@dimen/h4"
-        android:layout_marginTop="@dimen/margin_none"
-        android:layout_marginLeft="@dimen/margin_medium"
-        />
-
-    <EditText
-        android:id="@+id/usernameTextField"
-        android:layout_width="250sp"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/usernameTextView"
-        android:hint="@string/username_hint"
-        android:textSize="15sp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/margin_small"
-        android:layout_marginLeft="@dimen/margin_none"
-        />
-
-    <TextView
-        android:id="@+id/passwordTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/usernameTextField"
-        android:text="@string/password_field"
-        android:textSize="@dimen/h4"
+        android:layout_centerInParent="true"
         android:layout_marginTop="@dimen/margin_large"
-        android:layout_marginLeft="@dimen/margin_medium"
-        />
+        android:layout_below="@+id/tvLoginPrompt"/>
 
-    <EditText
-        android:id="@+id/passwordTextField"
-        android:layout_width="250sp"
+    <TextView
+        android:id="@+id/tvMimicryProject"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/passwordTextView"
-        android:hint="@string/password_hint"
-        android:textSize="15sp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/margin_small"
-        android:layout_marginLeft="@dimen/margin_medium"
-        />
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Mimicry Project"
+        android:textSize="@dimen/h1"
+        android:gravity="center"
+        android:layout_marginBottom="@dimen/margin_large"
+        android:layout_alignParentTop="true"/>
+
+    <TextView
+        android:id="@+id/tvLoginPrompt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Please login to \nTwitter to begin"
+        android:textSize="@dimen/h3"
+        android:gravity="center"
+        android:layout_marginTop="@dimen/margin_large"
+        android:layout_marginBottom="@dimen/margin_large"
+        android:layout_below="@+id/tvMimicryProject"/>
 
 </RelativeLayout>
