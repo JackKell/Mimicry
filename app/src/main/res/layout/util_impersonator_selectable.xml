@@ -34,7 +34,7 @@
 
         <ImageView
             android:id="@+id/ivPostImage"
-            android:src="@drawable/image_post"
+            android:src="@drawable/image_posting"
             android:layout_width="25dp"
             android:layout_height="20dp"
             android:scaleType="fitXY"
