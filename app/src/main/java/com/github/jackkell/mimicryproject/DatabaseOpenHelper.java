@@ -11,6 +11,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 public class DatabaseOpenHelper extends SQLiteOpenHelper {
 
@@ -23,6 +25,8 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
     private SQLiteDatabase myDataBase;
 
     private final Context myContext;
+
+    public static final SimpleDateFormat DATE_TIME_FORMAT = new SimpleDateFormat("MM-dd-yyyy:HH-mm-ss-SSS", Locale.ENGLISH);
 
     //TWEET TABLE
     public static final String TWEET = "TWEET";
@@ -100,7 +104,7 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
     private static final String TWITTER_USER_TABLE_CREATE =
             "CREATE TABLE " + TWITTER_USER + " ( " +
                     TWITTER_USER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    TWITTER_USER_USERNAME + " VARCHAR(255) NOT NULL);";
+                    TWITTER_USER_USERNAME + "UNIQUE VARCHAR(255) NOT NULL);";
     private static final String MIMICRY_USER_IMPERSONATOR_TABLE_CREATE =
             "CREATE TABLE " + MIMICRY_USER_IMPERSONATOR + " ( " +
                     MIMICRY_USER_IMPERSONATOR_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
