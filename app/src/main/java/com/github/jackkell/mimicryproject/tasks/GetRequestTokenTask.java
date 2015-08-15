@@ -2,12 +2,10 @@ package com.github.jackkell.mimicryproject.tasks;
 
 import android.os.AsyncTask;
 
-import twitter4j.auth.RequestToken;
-
-public class GetRequestTokenTask extends AsyncTask<Void, Void, RequestToken>{
+public class GetRequestTokenTask extends AsyncTask<Void, Void, Void>{
 
     @Override
-    protected RequestToken doInBackground(Void... params) {
+    protected Void doInBackground(Void... params) {
         return null;
     }
 }

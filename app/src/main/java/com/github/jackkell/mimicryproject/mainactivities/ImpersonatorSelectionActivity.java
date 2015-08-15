@@ -1,12 +1,20 @@
 package com.github.jackkell.mimicryproject.mainactivities;
 
 import android.app.Activity;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ListView;
 
+import com.github.jackkell.mimicryproject.Impersonator;
+import com.github.jackkell.mimicryproject.ImpersonatorPost;
+import com.github.jackkell.mimicryproject.ImpersonatorSelecableAdapter;
 import com.github.jackkell.mimicryproject.R;
+import com.github.jackkell.mimicryproject.TwitterUser;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class ImpersonatorSelectionActivity extends Activity {
 
@@ -14,6 +22,35 @@ public class ImpersonatorSelectionActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_impersonator_selection);
+
+        ListView impersonatorSelectionListView = (ListView) findViewById(R.id.impersonatorSelectionListView);
+
+        List<Impersonator> impersonators = new ArrayList<>();
+        impersonators.add(
+                new Impersonator("Steve Gates",
+                new ArrayList<TwitterUser>(),
+                new ArrayList<ImpersonatorPost>(),
+                new Date()));
+
+        impersonators.add(
+                new Impersonator("Jaydin Biber",
+                new ArrayList<TwitterUser>(),
+                new ArrayList<ImpersonatorPost>(),
+                new Date()));
+
+        impersonators.add(
+                new Impersonator("Justin Olson",
+                new ArrayList<TwitterUser>(),
+                new ArrayList<ImpersonatorPost>(),
+                new Date()));
+
+        impersonators.add(
+                new Impersonator("Kyle O'nell",
+                        new ArrayList<TwitterUser>(),
+                        new ArrayList<ImpersonatorPost>(),
+                        new Date()));
+
+        impersonatorSelectionListView.setAdapter(new ImpersonatorSelecableAdapter(this, impersonators));
     }
 
     @Override

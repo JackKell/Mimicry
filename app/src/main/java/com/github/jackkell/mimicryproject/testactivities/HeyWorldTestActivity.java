@@ -17,9 +17,6 @@ import com.github.jackkell.mimicryproject.R;
 import java.util.ArrayList;
 import java.util.List;
 
-import twitter4j.*;
-
-
 public class HeyWorldTestActivity extends Activity {
 
     int clickCount = 0;

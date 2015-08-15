@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -21,38 +22,6 @@ public class Impersonator implements DatabaseStorable {
         this.twitterUsers = twitterUsers;
         this.posts = posts;
         this.dateCreated = dateCreated;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getName(){
-        return this.name;
-    }
-
-    public List<TwitterUser> getTwitterUsers() {
-        return twitterUsers;
-    }
-
-    public List<ImpersonatorPost> getPosts() {
-        return posts;
-    }
-
-    public int GetIsFavoritedPostCount() {
-        int favoritedCount = 0;
-        for(int index = 0; index < posts.size(); index++) {
-            favoritedCount += posts.get(index).isFavorited() ? 1 : 0;
-        }
-        return favoritedCount;
-    }
-
-    public int GetIsTweetedPostCount() {
-        int tweetedCount = 0;
-        for(int index = 0; index < posts.size(); index++) {
-            tweetedCount += posts.get(index).isTweeted() ? 1 : 0;
-        }
-        return tweetedCount;
     }
 
     @Override
@@ -91,6 +60,38 @@ public class Impersonator implements DatabaseStorable {
         return ID;
     }
 
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName(){
+        return this.name;
+    }
+
+    public int getIsFavoritedPostCount() {
+        int favoritedCount = 0;
+        for(int index = 0; index < posts.size(); index++) {
+            favoritedCount += posts.get(index).isFavorited() ? 1 : 0;
+        }
+        return favoritedCount;
+    }
+
+    public int getIsTweetedPostCount() {
+        int tweetedCount = 0;
+        for(int index = 0; index < posts.size(); index++) {
+            tweetedCount += posts.get(index).isTweeted() ? 1 : 0;
+        }
+        return tweetedCount;
+    }
+
+    public int getPostCount(){
+        return posts.size();
+    }
+
+    public String getDateCreated(){
+        return DatabaseOpenHelper.DAY_FORMAT.format(dateCreated);
+    }
 
     private void addImpersonatorToDatabase(SQLiteDatabase db) throws NullPointerException{
         String tableName = DatabaseOpenHelper.IMPERSONATOR;

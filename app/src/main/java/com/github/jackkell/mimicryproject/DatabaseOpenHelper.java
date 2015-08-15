@@ -27,6 +27,7 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
     private final Context myContext;
 
     public static final SimpleDateFormat DATE_TIME_FORMAT = new SimpleDateFormat("MM-dd-yyyy:HH-mm-ss-SSS", Locale.ENGLISH);
+    public static final SimpleDateFormat DAY_FORMAT = new SimpleDateFormat("MM-dd", Locale.ENGLISH);
 
     //TWEET TABLE
     public static final String TWEET = "TWEET";
