@@ -24,6 +24,10 @@ public class Impersonator implements DatabaseStorable {
         this.dateCreated = dateCreated;
     }
 
+    public Impersonator(String name, List<TwitterUser> twitterUsers, Date dateCreated){
+        this(name, twitterUsers, new ArrayList<ImpersonatorPost>(0), dateCreated);
+    }
+
     @Override
     public void addToDatabase(SQLiteDatabase db) {
         addImpersonatorToDatabase(db);

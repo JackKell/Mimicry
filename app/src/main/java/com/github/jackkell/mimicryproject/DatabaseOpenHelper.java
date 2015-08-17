@@ -166,7 +166,7 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
         }
     }
 
-    public DatabaseOpenHelper getDatabase(Context context) {
+    public static SQLiteDatabase getDatabase(Context context) {
         DatabaseOpenHelper dbh = new DatabaseOpenHelper(context);
 
         try {
@@ -180,7 +180,7 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
         } catch (SQLException  sqle) {
             throw new Error("Unable to open database");
         }
-        return dbh;
+        return dbh.getReadableDatabase();
     }
 
     private void copyDataBase() throws IOException{

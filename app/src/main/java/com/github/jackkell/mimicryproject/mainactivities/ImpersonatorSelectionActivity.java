@@ -2,6 +2,8 @@ package com.github.jackkell.mimicryproject.mainactivities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -11,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 
+import com.github.jackkell.mimicryproject.DatabaseOpenHelper;
 import com.github.jackkell.mimicryproject.Impersonator;
 import com.github.jackkell.mimicryproject.ImpersonatorPost;
 import com.github.jackkell.mimicryproject.ImpersonatorSelecableAdapter;
@@ -38,6 +41,30 @@ public class ImpersonatorSelectionActivity extends Activity {
                 new Date()));
 
         impersonators.add(
+                new Impersonator("Jayden Bieber",
+                new ArrayList<TwitterUser>(),
+                new ArrayList<ImpersonatorPost>(),
+                new Date()));
+
+        impersonators.add(
+                new Impersonator("Justin Olson",
+                new ArrayList<TwitterUser>(),
+                new ArrayList<ImpersonatorPost>(),
+                new Date()));
+
+        impersonators.add(
+                new Impersonator("Kyle O'nell",
+                new ArrayList<TwitterUser>(),
+                new ArrayList<ImpersonatorPost>(),
+                new Date()));
+
+        impersonators.add(
+                new Impersonator("Steve Gates",
+                new ArrayList<TwitterUser>(),
+                new ArrayList<ImpersonatorPost>(),
+                new Date()));
+
+        impersonators.add(
                 new Impersonator("Jaydin Biber",
                 new ArrayList<TwitterUser>(),
                 new ArrayList<ImpersonatorPost>(),
@@ -45,39 +72,15 @@ public class ImpersonatorSelectionActivity extends Activity {
 
         impersonators.add(
                 new Impersonator("Justin Olson",
-                        new ArrayList<TwitterUser>(),
-                        new ArrayList<ImpersonatorPost>(),
-                        new Date()));
+                new ArrayList<TwitterUser>(),
+                new ArrayList<ImpersonatorPost>(),
+                new Date()));
 
         impersonators.add(
                 new Impersonator("Kyle O'nell",
-                        new ArrayList<TwitterUser>(),
-                        new ArrayList<ImpersonatorPost>(),
-                        new Date()));
-
-        impersonators.add(
-                new Impersonator("Steve Gates",
-                        new ArrayList<TwitterUser>(),
-                        new ArrayList<ImpersonatorPost>(),
-                        new Date()));
-
-        impersonators.add(
-                new Impersonator("Jaydin Biber",
-                        new ArrayList<TwitterUser>(),
-                        new ArrayList<ImpersonatorPost>(),
-                        new Date()));
-
-        impersonators.add(
-                new Impersonator("Justin Olson",
-                        new ArrayList<TwitterUser>(),
-                        new ArrayList<ImpersonatorPost>(),
-                        new Date()));
-
-        impersonators.add(
-                new Impersonator("Kyle O'nell",
-                        new ArrayList<TwitterUser>(),
-                        new ArrayList<ImpersonatorPost>(),
-                        new Date()));
+                new ArrayList<TwitterUser>(),
+                new ArrayList<ImpersonatorPost>(),
+                new Date()));
 
         impersonatorSelectionListView.setAdapter(new ImpersonatorSelecableAdapter(this, impersonators));
 
@@ -115,5 +118,71 @@ public class ImpersonatorSelectionActivity extends Activity {
         Intent impersonatorCreation = new Intent(getApplicationContext(), ImpersonatorCreationActivity.class);
         startActivity(impersonatorCreation);
         finish();
+    }
+
+
+    private List<Impersonator> getStoredImpersonators(SQLiteDatabase db){
+        List<Impersonator> impersonatorList = new ArrayList<>();
+        List<String> impersonatorIDs = new ArrayList<>();
+        String[] searchColumns = new String[1];
+        searchColumns[0] = DatabaseOpenHelper.IMPERSONATOR_ID;
+
+        Cursor impersonatorIDsCursor = db.query(DatabaseOpenHelper.IMPERSONATOR, searchColumns, null, null, null, null, null);
+        impersonatorIDsCursor.moveToFirst();
+
+        while (!impersonatorIDsCursor.isAfterLast()){
+            impersonatorIDs.add(impersonatorIDsCursor.getString(0));
+        }
+        impersonatorIDsCursor.close();
+
+        for (String impersonatorID : impersonatorIDs){
+            String name;
+            List<TwitterUser> twitterUserList = new ArrayList<>();
+            List<ImpersonatorPost> impersonatorPostList = new ArrayList<>();
+            Date dateCreated;
+
+            // Get Impersonator name
+            searchColumns[0] = DatabaseOpenHelper.IMPERSONATOR_NAME;
+            Cursor cursor = db.query(DatabaseOpenHelper.IMPERSONATOR, searchColumns, DatabaseOpenHelper.IMPERSONATOR_ID + " = " + impersonatorID, null, null, null, null);
+            cursor.moveToFirst();
+            name = cursor.getString(0);
+
+            // Get Twitter users
+            searchColumns[0] = DatabaseOpenHelper.IMPERSONATOR_TWITTER_USER_TWITTER_USER_ID;
+            cursor = db.query(DatabaseOpenHelper.IMPERSONATOR_TWITTER_USER, searchColumns, DatabaseOpenHelper.IMPERSONATOR_TWITTER_USER_IMPERSONATOR_ID + " = " + impersonatorID, null, null, null, null);
+            cursor.moveToFirst();
+            List<String> twitterUserIDs = new ArrayList<>();
+            while (!cursor.isAfterLast()){
+                twitterUserIDs.add(cursor.getString(0));
+            }
+
+            for (String twitterUserID : twitterUserIDs){
+                searchColumns[0] = DatabaseOpenHelper.TWITTER_USER_USERNAME;
+                cursor = db.query(DatabaseOpenHelper.TWITTER_USER, searchColumns, DatabaseOpenHelper.TWITTER_USER_ID + " = " + twitterUserID, null, null, null, null);
+                cursor.moveToFirst();
+                twitterUserList.add(new TwitterUser(cursor.getString(0)));
+            }
+
+            // Get Impersonator posts
+            searchColumns[0] = DatabaseOpenHelper.POST_BODY;
+            searchColumns[1] = DatabaseOpenHelper.POST_IS_TWEETED;
+            searchColumns[2] = DatabaseOpenHelper.POST_IS_FAVORITED;
+            searchColumns[3] = DatabaseOpenHelper.POST_DATE_CREATED;
+            cursor = db.query(DatabaseOpenHelper.POST, searchColumns, DatabaseOpenHelper.IMPERSONATOR_ID + " = " + impersonatorID, null, null, null, null);
+            cursor.moveToFirst();
+            /*
+            while (!cursor.isAfterLast()){
+                ImpersonatorPost post = new ImpersonatorPost(
+                        impersonatorID,
+                        cursor.getString(0),
+                        cursor.getString(1),
+                        cursor.getString(2),
+                        cursor.getString(3),
+                );
+            }
+            */
+        }
+
+        return impersonatorList;
     }
 }

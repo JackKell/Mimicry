@@ -17,7 +17,7 @@
         android:layout_marginLeft="@dimen/margin_none"/>
 
     <EditText
-        android:id="@+id/ImpersonatorNameEditText"
+        android:id="@+id/impersonatorNameEditText"
         android:layout_width="275sp"
         android:layout_height="wrap_content"
         android:hint="@string/impersonator_name_prompt"
@@ -34,32 +34,33 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="@dimen/h4"
-        android:layout_below="@+id/ImpersonatorNameEditText"
+        android:layout_below="@+id/impersonatorNameEditText"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_marginTop="@dimen/margin_medium"
         android:layout_marginLeft="@dimen/margin_none"/>
 
 
-
-    <ScrollView
-        android:id="@+id/twitterUsernameScrollView"
-        android:layout_width="wrap_content"
+    <EditText
+        android:id="@+id/EditText1"
+        android:layout_width="275sp"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/ImpersonatorNameEditText"
-        android:layout_alignStart="@+id/ImpersonatorNameEditText"
         android:layout_below="@+id/twitterUsernamesTextView"
-        android:layout_above="@+id/createButtonSeparatorBar"
+        android:hint="Enter Twitter username here"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:layout_marginTop="@dimen/margin_small"
-        android:layout_marginLeft="@dimen/margin_small">
-
-        <TableLayout
-            android:id="@+id/twitterUsernameTableLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-        </TableLayout>
-    </ScrollView>
+        android:layout_marginLeft="@dimen/margin_medium"/>
+    <EditText
+        android:id="@+id/EditText2"
+        android:layout_width="275sp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/EditText1"
+        android:hint="Enter Twitter username here"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="@dimen/margin_small"
+        android:layout_marginLeft="@dimen/margin_medium"/>
 
     <View
         android:id="@+id/createButtonSeparatorBar"
