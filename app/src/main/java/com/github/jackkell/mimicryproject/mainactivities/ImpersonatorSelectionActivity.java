@@ -1,9 +1,14 @@
 package com.github.jackkell.mimicryproject.mainactivities;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.nfc.Tag;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ListView;
 
 import com.github.jackkell.mimicryproject.Impersonator;
@@ -40,9 +45,33 @@ public class ImpersonatorSelectionActivity extends Activity {
 
         impersonators.add(
                 new Impersonator("Justin Olson",
-                new ArrayList<TwitterUser>(),
-                new ArrayList<ImpersonatorPost>(),
-                new Date()));
+                        new ArrayList<TwitterUser>(),
+                        new ArrayList<ImpersonatorPost>(),
+                        new Date()));
+
+        impersonators.add(
+                new Impersonator("Kyle O'nell",
+                        new ArrayList<TwitterUser>(),
+                        new ArrayList<ImpersonatorPost>(),
+                        new Date()));
+
+        impersonators.add(
+                new Impersonator("Steve Gates",
+                        new ArrayList<TwitterUser>(),
+                        new ArrayList<ImpersonatorPost>(),
+                        new Date()));
+
+        impersonators.add(
+                new Impersonator("Jaydin Biber",
+                        new ArrayList<TwitterUser>(),
+                        new ArrayList<ImpersonatorPost>(),
+                        new Date()));
+
+        impersonators.add(
+                new Impersonator("Justin Olson",
+                        new ArrayList<TwitterUser>(),
+                        new ArrayList<ImpersonatorPost>(),
+                        new Date()));
 
         impersonators.add(
                 new Impersonator("Kyle O'nell",
@@ -51,6 +80,14 @@ public class ImpersonatorSelectionActivity extends Activity {
                         new Date()));
 
         impersonatorSelectionListView.setAdapter(new ImpersonatorSelecableAdapter(this, impersonators));
+
+        FloatingActionButton createImpersonatorButton = (FloatingActionButton) findViewById(R.id.fabCreateImpersonator);
+        createImpersonatorButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onCreateImpersonatorButtonClick();
+            }
+        });
     }
 
     @Override
@@ -71,7 +108,12 @@ public class ImpersonatorSelectionActivity extends Activity {
         if (id == R.id.action_settings) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
+    }
+
+    private void onCreateImpersonatorButtonClick() {
+        Intent impersonatorCreation = new Intent(getApplicationContext(), ImpersonatorCreationActivity.class);
+        startActivity(impersonatorCreation);
+        finish();
     }
 }
