@@ -54,19 +54,24 @@ public class Impersonator implements DatabaseStorable {
         Cursor c = db.rawQuery("SELECT ID, NAME FROM IMPERSONATOR", null);
         c.moveToFirst();
         while (!c.isAfterLast()){
-            Log.d("Impersonator", c.getString(0) + " " + c.getString(1));
+            Log.d("TAG", c.getString(1) + " " + this.getName());
+            String testString = c.getString(1);
+            testString = testString.substring(1, testString.length() - 1);
+            if (testString.equals(this.name))
+                return c.getString(0);
             c.moveToNext();
         }
+        return "0";
 
-        //Cursor cursor = db.query(impersonatorTable, searchColumns, DatabaseOpenHelper.IMPERSONATOR_NAME + " = '" + this.name + "'", null, null, null, null, null);
-
-        Cursor IDCursor = db.rawQuery("SELECT " + DatabaseOpenHelper.IMPERSONATOR_ID + " FROM " + DatabaseOpenHelper.IMPERSONATOR + " WHERE NAME = " + this.name + "", null);
+        /*Cursor IDCursor = db.rawQuery("SELECT " + DatabaseOpenHelper.IMPERSONATOR_ID + " FROM " + DatabaseOpenHelper.IMPERSONATOR + " WHERE NAME = '" + this.name + "'", null);
+        Log.d("Impersonator", "OPEN");
 
         IDCursor.moveToFirst();
 
         String ID = IDCursor.getString(0);
+        Log.d("Impersonator", "CLOSE");
         IDCursor.close();
-        return ID;
+        return ID;*/
     }
 
 
@@ -143,5 +148,9 @@ public class Impersonator implements DatabaseStorable {
             cv.put(DatabaseOpenHelper.IMPERSONATOR_TWITTER_USER_TWITTER_USER_ID, twitterUserID);
             db.insert(impersonatorTwitterUserTable, null, cv);
         }
+    }
+
+    public List<ImpersonatorPost> getPosts(){
+        return this.posts;
     }
 }

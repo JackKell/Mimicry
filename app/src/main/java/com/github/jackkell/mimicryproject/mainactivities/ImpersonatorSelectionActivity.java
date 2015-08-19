@@ -4,19 +4,19 @@ import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.ListView;
 
 import com.github.jackkell.mimicryproject.DatabaseOpenHelper;
 import com.github.jackkell.mimicryproject.Impersonator;
 import com.github.jackkell.mimicryproject.ImpersonatorPost;
-import com.github.jackkell.mimicryproject.ImpersonatorSelecableAdapter;
+import com.github.jackkell.mimicryproject.ImpersonatorSelectableAdapter;
 import com.github.jackkell.mimicryproject.R;
 import com.github.jackkell.mimicryproject.TwitterUser;
 
@@ -32,17 +32,9 @@ public class ImpersonatorSelectionActivity extends Activity {
         setContentView(R.layout.activity_impersonator_selection);
 
         ListView impersonatorSelectionListView = (ListView) findViewById(R.id.impersonatorSelectionListView);
+        final List<Impersonator> impersonators = getStoredImpersonators();
 
-        //DatabaseOpenHelper databaseOpenHelper = new DatabaseOpenHelper(this);
-        //SQLiteDatabase db = databaseOpenHelper.getDatabase(this);
-        List<Impersonator> impersonators = getStoredImpersonators();
-        //List<Impersonator> impersonators = new ArrayList<>();
-        //db.close();
-
-        //Impersonator impersonator = new Impersonator("Jeff", new ArrayList<TwitterUser>(), new ArrayList<ImpersonatorPost>(), new Date());
-        //impersonators.add(impersonator);
-
-        impersonatorSelectionListView.setAdapter(new ImpersonatorSelecableAdapter(this, impersonators));
+        impersonatorSelectionListView.setAdapter(new ImpersonatorSelectableAdapter(this, impersonators));
 
         FloatingActionButton createImpersonatorButton = (FloatingActionButton) findViewById(R.id.fabCreateImpersonator);
         createImpersonatorButton.setOnClickListener(new View.OnClickListener() {
@@ -51,6 +43,15 @@ public class ImpersonatorSelectionActivity extends Activity {
                 onCreateImpersonatorButtonClick();
             }
         });
+
+        impersonatorSelectionListView.post(new Runnable() {
+            @Override
+            public void run() {
+                setScrollViewChildrenOnClick();
+            }
+        });
+
+        //onResume();
     }
 
     @Override
@@ -80,6 +81,29 @@ public class ImpersonatorSelectionActivity extends Activity {
         finish();
     }
 
+    private void setScrollViewChildrenOnClick(){
+        final List<Impersonator> impersonators = getStoredImpersonators();
+        ListView lv = (ListView) findViewById(R.id.impersonatorSelectionListView);
+        Log.d("ImpersonatoreSelection", lv.getChildCount() + "");
+        for (int i = 0; i < lv.getChildCount(); i++) {
+            Log.d("ImpersonatoreSelection", "TESTEST");
+            final int index = i;
+
+            lv.getChildAt(i).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    DatabaseOpenHelper databaseOpenHelper = new DatabaseOpenHelper(getBaseContext());
+                    SQLiteDatabase db = databaseOpenHelper.getDatabase(getBaseContext());
+                    String ID = impersonators.get(index).getID(db);
+
+                    Intent impersonatorCreation = new Intent(getBaseContext(), ImpersonatorViewActivity.class);
+                    impersonatorCreation.putExtra("impersonatorID", ID);
+                    impersonatorCreation.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    getBaseContext().startActivity(impersonatorCreation);
+                }
+            });
+        }
+    }
 
     private List<Impersonator> getStoredImpersonators() {
         DatabaseOpenHelper databaseOpenHelper = new DatabaseOpenHelper(this);
@@ -116,7 +140,8 @@ public class ImpersonatorSelectionActivity extends Activity {
             // Get Twitter users
             String[] impersonatorTwitterUserTwitterUserIDSearchColumns = new String[1];
             impersonatorTwitterUserTwitterUserIDSearchColumns[0] = DatabaseOpenHelper.IMPERSONATOR_TWITTER_USER_TWITTER_USER_ID;
-            Cursor twitterUserIDscursor = db.query(DatabaseOpenHelper.IMPERSONATOR_TWITTER_USER, impersonatorTwitterUserTwitterUserIDSearchColumns, DatabaseOpenHelper.IMPERSONATOR_TWITTER_USER_IMPERSONATOR_ID + " = " + impersonatorID, null, null, null, null);
+            Cursor twitterUserIDscursor = db.query(DatabaseOpenHelper.IMPERSONATOR_TWITTER_USER, impersonatorTwitterUserTwitterUserIDSearchColumns,
+                    DatabaseOpenHelper.IMPERSONATOR_TWITTER_USER_IMPERSONATOR_ID + " = " + impersonatorID, null, null, null, null);
             twitterUserIDscursor.moveToFirst();
             List<String> twitterUserIDs = new ArrayList<>();
             while (!twitterUserIDscursor.isAfterLast()){

@@ -1,23 +1,28 @@
 package com.github.jackkell.mimicryproject;
 
 import android.content.Context;
+import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.github.jackkell.mimicryproject.mainactivities.ImpersonatorCreationActivity;
+import com.github.jackkell.mimicryproject.mainactivities.ImpersonatorSelectionActivity;
+
 import org.w3c.dom.Text;
 
 import java.util.List;
 
-public class ImpersonatorSelecableAdapter extends BaseAdapter{
+public class ImpersonatorSelectableAdapter extends BaseAdapter{
 
     private Context context;
     private List<Impersonator> impersonators;
     private static LayoutInflater inflater = null;
 
-    public ImpersonatorSelecableAdapter(Context context, List<Impersonator> impersonators) {
+    public ImpersonatorSelectableAdapter(Context context, List<Impersonator> impersonators) {
         this.context = context;
         this.impersonators = impersonators;
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -50,7 +55,7 @@ public class ImpersonatorSelecableAdapter extends BaseAdapter{
         TextView tweetCount = (TextView) view.findViewById(R.id.tvTweetCount);
         TextView dateCreated = (TextView) view.findViewById(R.id.tvDateCreated);
 
-        Impersonator impersonator = impersonators.get(position);
+        final Impersonator impersonator = impersonators.get(position);
 
         impersonatorName.setText(impersonator.getName());
         postCount.setText(Integer.toString(impersonator.getPostCount()));
