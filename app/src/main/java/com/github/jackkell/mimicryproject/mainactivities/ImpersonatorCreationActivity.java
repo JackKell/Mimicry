@@ -3,7 +3,6 @@ package com.github.jackkell.mimicryproject.mainactivities;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -13,12 +12,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.github.jackkell.mimicryproject.DatabaseOpenHelper;
-import com.github.jackkell.mimicryproject.DatabaseStorable;
-import com.github.jackkell.mimicryproject.Impersonator;
-import com.github.jackkell.mimicryproject.ImpersonatorPost;
+import com.github.jackkell.mimicryproject.databaseobjects.DatabaseOpenHelper;
+import com.github.jackkell.mimicryproject.databaseobjects.Impersonator;
+import com.github.jackkell.mimicryproject.databaseobjects.ImpersonatorPost;
 import com.github.jackkell.mimicryproject.R;
-import com.github.jackkell.mimicryproject.TwitterUser;
+import com.github.jackkell.mimicryproject.databaseobjects.TwitterUser;
 
 import java.util.ArrayList;
 import java.util.Date;

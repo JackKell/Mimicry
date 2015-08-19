@@ -1,14 +1,12 @@
 package com.github.jackkell.mimicryproject.mainactivities;
 
 import android.app.Activity;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.github.jackkell.mimicryproject.Config;
-import com.github.jackkell.mimicryproject.DatabaseOpenHelper;
 import com.github.jackkell.mimicryproject.R;
 
 import com.twitter.sdk.android.Twitter;

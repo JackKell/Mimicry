@@ -1,16 +1,12 @@
 package com.github.jackkell.mimicryproject.testactivities;
 
 import android.app.Activity;
-import android.content.ContentValues;
 import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.github.jackkell.mimicryproject.DatabaseOpenHelper;
 import com.github.jackkell.mimicryproject.R;
 
 

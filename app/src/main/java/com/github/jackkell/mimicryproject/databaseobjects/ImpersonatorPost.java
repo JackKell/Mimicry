@@ -1,9 +1,8 @@
-package com.github.jackkell.mimicryproject;
+package com.github.jackkell.mimicryproject.databaseobjects;
 
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.provider.ContactsContract;
 
 import java.util.Date;
 

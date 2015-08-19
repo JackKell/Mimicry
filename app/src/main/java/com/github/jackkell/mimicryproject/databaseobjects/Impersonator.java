@@ -1,11 +1,10 @@
-package com.github.jackkell.mimicryproject;
+package com.github.jackkell.mimicryproject.databaseobjects;
 
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;

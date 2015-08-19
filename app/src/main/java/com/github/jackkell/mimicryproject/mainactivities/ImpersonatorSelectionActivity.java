@@ -10,15 +10,14 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AbsListView;
 import android.widget.ListView;
 
-import com.github.jackkell.mimicryproject.DatabaseOpenHelper;
-import com.github.jackkell.mimicryproject.Impersonator;
-import com.github.jackkell.mimicryproject.ImpersonatorPost;
-import com.github.jackkell.mimicryproject.ImpersonatorSelectableAdapter;
+import com.github.jackkell.mimicryproject.databaseobjects.DatabaseOpenHelper;
+import com.github.jackkell.mimicryproject.databaseobjects.Impersonator;
+import com.github.jackkell.mimicryproject.databaseobjects.ImpersonatorPost;
+import com.github.jackkell.mimicryproject.listadpaters.ImpersonatorSelectableAdapter;
 import com.github.jackkell.mimicryproject.R;
-import com.github.jackkell.mimicryproject.TwitterUser;
+import com.github.jackkell.mimicryproject.databaseobjects.TwitterUser;
 
 import java.util.ArrayList;
 import java.util.Date;

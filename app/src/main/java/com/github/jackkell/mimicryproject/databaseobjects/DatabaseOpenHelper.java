@@ -1,4 +1,4 @@
-package com.github.jackkell.mimicryproject;
+package com.github.jackkell.mimicryproject.databaseobjects;
 
 import android.content.Context;
 import android.database.SQLException;

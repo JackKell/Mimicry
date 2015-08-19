@@ -1,18 +1,14 @@
-package com.github.jackkell.mimicryproject;
+package com.github.jackkell.mimicryproject.listadpaters;
 
 import android.content.Context;
-import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.github.jackkell.mimicryproject.mainactivities.ImpersonatorCreationActivity;
-import com.github.jackkell.mimicryproject.mainactivities.ImpersonatorSelectionActivity;
-
-import org.w3c.dom.Text;
+import com.github.jackkell.mimicryproject.R;
+import com.github.jackkell.mimicryproject.databaseobjects.Impersonator;
 
 import java.util.List;
 
