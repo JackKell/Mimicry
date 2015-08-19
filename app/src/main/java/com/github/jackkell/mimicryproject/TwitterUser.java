@@ -33,11 +33,12 @@ public class TwitterUser implements DatabaseStorable {
         searchColumns[0] = DatabaseOpenHelper.TWITTER_USER_ID;
         String selectionColumns = DatabaseOpenHelper.TWITTER_USER_USERNAME;
 
-        Cursor cursor = db.query(twitterUserTable, searchColumns, selectionColumns + " = " + this.username, null, null, null, null, null);
+        Cursor cursor = db.query(twitterUserTable, searchColumns, selectionColumns + " = '" + this.username + "'", null, null, null, null, null);
 
         cursor.moveToFirst();
 
         String ID = cursor.getString(0);
+        cursor.close();
         return ID;
     }
 

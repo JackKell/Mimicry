@@ -24,9 +24,9 @@ public class Impersonator implements DatabaseStorable {
         this.dateCreated = dateCreated;
     }
 
-    public Impersonator(String name, List<TwitterUser> twitterUsers, Date dateCreated){
+    /*public Impersonator(String name, List<TwitterUser> twitterUsers, Date dateCreated){
         this(name, twitterUsers, new ArrayList<ImpersonatorPost>(0), dateCreated);
-    }
+    }*/
 
     @Override
     public void addToDatabase(SQLiteDatabase db) {
@@ -51,16 +51,21 @@ public class Impersonator implements DatabaseStorable {
 
     @Override
     public String getID(SQLiteDatabase db) {
-        String impersonatorTable = DatabaseOpenHelper.IMPERSONATOR;
-        String[] searchColumns = new String[1];
-        searchColumns[0] = DatabaseOpenHelper.IMPERSONATOR_ID;
-        String selectionColumns = DatabaseOpenHelper.IMPERSONATOR_NAME;
+        Cursor c = db.rawQuery("SELECT ID, NAME FROM IMPERSONATOR", null);
+        c.moveToFirst();
+        while (!c.isAfterLast()){
+            Log.d("Impersonator", c.getString(0) + " " + c.getString(1));
+            c.moveToNext();
+        }
 
-        Cursor cursor = db.query(impersonatorTable, searchColumns, selectionColumns + " = " + this.name, null, null, null, null, null);
+        //Cursor cursor = db.query(impersonatorTable, searchColumns, DatabaseOpenHelper.IMPERSONATOR_NAME + " = '" + this.name + "'", null, null, null, null, null);
 
-        cursor.moveToFirst();
+        Cursor IDCursor = db.rawQuery("SELECT " + DatabaseOpenHelper.IMPERSONATOR_ID + " FROM " + DatabaseOpenHelper.IMPERSONATOR + " WHERE NAME = " + this.name + "", null);
 
-        String ID = cursor.getString(0);
+        IDCursor.moveToFirst();
+
+        String ID = IDCursor.getString(0);
+        IDCursor.close();
         return ID;
     }
 
@@ -100,8 +105,9 @@ public class Impersonator implements DatabaseStorable {
     private void addImpersonatorToDatabase(SQLiteDatabase db) throws NullPointerException{
         String tableName = DatabaseOpenHelper.IMPERSONATOR;
         ContentValues newImpersonator = new ContentValues();
-        newImpersonator.put(DatabaseOpenHelper.IMPERSONATOR_NAME, this.name);
-        newImpersonator.put(DatabaseOpenHelper.IMPERSONATOR_DATE_CREATED, this.dateCreated.toString());
+        newImpersonator.put(DatabaseOpenHelper.IMPERSONATOR_NAME, "'" + this.name + "'");
+        Log.d("Impersonator", this.name);
+        newImpersonator.put(DatabaseOpenHelper.IMPERSONATOR_DATE_CREATED, "'" + this.dateCreated.toString() + "'");
         db.insert(tableName, null, newImpersonator);
     }
 

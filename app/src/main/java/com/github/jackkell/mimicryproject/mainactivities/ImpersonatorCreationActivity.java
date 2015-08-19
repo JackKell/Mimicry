@@ -1,9 +1,11 @@
 package com.github.jackkell.mimicryproject.mainactivities;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,6 +16,7 @@ import android.widget.Toast;
 import com.github.jackkell.mimicryproject.DatabaseOpenHelper;
 import com.github.jackkell.mimicryproject.DatabaseStorable;
 import com.github.jackkell.mimicryproject.Impersonator;
+import com.github.jackkell.mimicryproject.ImpersonatorPost;
 import com.github.jackkell.mimicryproject.R;
 import com.github.jackkell.mimicryproject.TwitterUser;
 
@@ -23,13 +26,14 @@ import java.util.List;
 
 public class ImpersonatorCreationActivity extends Activity {
 
+    String TAG = "ImpersonatorCreationActivity";
+
     EditText etImpersonatorName;
     EditText et1;
     EditText et2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_impersonator_creation);
         etImpersonatorName = (EditText) findViewById(R.id.impersonatorNameEditText);
@@ -68,11 +72,18 @@ public class ImpersonatorCreationActivity extends Activity {
     }
 
     private void onCreateImpersonatorButtonClick(){
+        Log.d(TAG, "onCreateImpersonatorButtonClick() Opening");
         if (etImpersonatorName.getText().length() != 0 && et1.getText().length() != 0 && et2.getText().length() != 0){
-            Toast.makeText(this, "YAYAY!!", Toast.LENGTH_LONG).show();
             Impersonator impersonator = createImpersonator();
-            SQLiteDatabase db = DatabaseOpenHelper.getDatabase(this);
+            DatabaseOpenHelper dboh = new DatabaseOpenHelper(this);
+            SQLiteDatabase db = dboh.getDatabase(this);
             impersonator.addToDatabase(db);
+            db.close();
+            dboh.close();
+
+            Intent impersonatorSelection = new Intent(getApplicationContext(), ImpersonatorSelectionActivity.class);
+            startActivity(impersonatorSelection);
+            finish();
         } else {
             Toast.makeText(this, "Please fill in required fields.", Toast.LENGTH_LONG).show();
         }
@@ -82,6 +93,7 @@ public class ImpersonatorCreationActivity extends Activity {
         List<TwitterUser> twitterUserList = new ArrayList<>(2);
         twitterUserList.add(new TwitterUser(et1.getText().toString()));
         twitterUserList.add(new TwitterUser(et2.getText().toString()));
-        return new Impersonator(etImpersonatorName.getText().toString(), twitterUserList, new Date());
+        List<ImpersonatorPost> impersonatorPostList = new ArrayList<>();
+        return new Impersonator(etImpersonatorName.getText().toString(), twitterUserList, impersonatorPostList, new Date());
     }
 }

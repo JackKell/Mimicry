@@ -54,12 +54,13 @@ public class ImpersonatorPost implements DatabaseStorable {
         selectionColumns[1] = DatabaseOpenHelper.POST_DATE_CREATED;
 
         Cursor cursor = db.query(twitterUserTable, searchColumns,
-                selectionColumns[0] + " = " + this.impersonatorID + " AND " + selectionColumns[1] + " = " + formattedDateCreated,
+                selectionColumns[0] + " = " + this.impersonatorID + " AND " + selectionColumns[1] + " = '" + formattedDateCreated + "'",
                 null, null, null, null, null);
 
         cursor.moveToFirst();
 
         String ID = cursor.getString(0);
+        cursor.close();
         return ID;
     }
 

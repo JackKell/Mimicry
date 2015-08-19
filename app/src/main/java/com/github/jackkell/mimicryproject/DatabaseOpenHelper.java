@@ -5,6 +5,7 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -17,9 +18,7 @@ import java.util.Locale;
 public class DatabaseOpenHelper extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 1;
-
     private static final String DATABASE_NAME = "mimicry.db";
-
     private static String DB_PATH;
 
     private SQLiteDatabase myDataBase;
@@ -105,7 +104,7 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
     private static final String TWITTER_USER_TABLE_CREATE =
             "CREATE TABLE " + TWITTER_USER + " ( " +
                     TWITTER_USER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    TWITTER_USER_USERNAME + "UNIQUE VARCHAR(255) NOT NULL);";
+                    TWITTER_USER_USERNAME + " VARCHAR(255) NOT NULL);";
     private static final String MIMICRY_USER_IMPERSONATOR_TABLE_CREATE =
             "CREATE TABLE " + MIMICRY_USER_IMPERSONATOR + " ( " +
                     MIMICRY_USER_IMPERSONATOR_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -125,6 +124,7 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        Log.d("DatabaseOpenHelper", "TEST LOG");
         db.execSQL(TWEET_TABLE_CREATE);
         db.execSQL(POST_TABLE_CREATE);
         db.execSQL(IMPERSONATOR_TWITTER_USER_TABLE_CREATE);
@@ -155,8 +155,9 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
     }
 
     private void createDatabase() throws IOException {
+        //onUpgrade(this.getWritableDatabase(), 1, 1);
         if (!checkDataBase()){
-            this.getReadableDatabase();
+            this.getWritableDatabase();
 
             try {
                 copyDataBase();
@@ -166,7 +167,8 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
         }
     }
 
-    public static SQLiteDatabase getDatabase(Context context) {
+    public SQLiteDatabase getDatabase(Context context) {
+        Log.d("DatabaseOpenHelper", "getDatabase()");
         DatabaseOpenHelper dbh = new DatabaseOpenHelper(context);
 
         try {
@@ -180,7 +182,7 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
         } catch (SQLException  sqle) {
             throw new Error("Unable to open database");
         }
-        return dbh.getReadableDatabase();
+        return dbh.getWritableDatabase();
     }
 
     private void copyDataBase() throws IOException{
