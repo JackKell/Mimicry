@@ -149,11 +149,20 @@ public class ImpersonatorSelectionActivity extends Activity {
             twitterUserIDscursor.close();
 
             String[] twitterUserNameSearchColumns = new String[1];
+            twitterUserNameSearchColumns[0] = DatabaseOpenHelper.TWEET_BODY;
             for (String twitterUserID : twitterUserIDs){
                 twitterUserNameSearchColumns[0] = DatabaseOpenHelper.TWITTER_USER_USERNAME;
                 Cursor twitterUserListCursor = db.query(DatabaseOpenHelper.TWITTER_USER, twitterUserNameSearchColumns, DatabaseOpenHelper.TWITTER_USER_ID + " = " + twitterUserID, null, null, null, null);
                 twitterUserListCursor.moveToFirst();
-                twitterUserList.add(new TwitterUser(twitterUserListCursor.getString(0)));
+
+                List<String> twitterUserTweets = new ArrayList<>();
+                Cursor tweetsCursor = db.query(DatabaseOpenHelper.TWEET, twitterUserNameSearchColumns, DatabaseOpenHelper.TWEET_TWITTER_USER_ID + " = " + twitterUserID, null, null, null, null);
+                while ((!tweetsCursor.isAfterLast())) {
+                    twitterUserTweets.add(tweetsCursor.getString(0));
+                    tweetsCursor.moveToNext();
+                }
+
+                twitterUserList.add(new TwitterUser(twitterUserListCursor.getString(0), twitterUserTweets));
                 twitterUserListCursor.close();
             }
 

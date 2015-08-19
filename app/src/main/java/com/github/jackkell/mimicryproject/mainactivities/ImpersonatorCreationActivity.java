@@ -12,15 +12,27 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.github.jackkell.mimicryproject.Config;
 import com.github.jackkell.mimicryproject.databaseobjects.DatabaseOpenHelper;
 import com.github.jackkell.mimicryproject.databaseobjects.Impersonator;
 import com.github.jackkell.mimicryproject.databaseobjects.ImpersonatorPost;
 import com.github.jackkell.mimicryproject.R;
 import com.github.jackkell.mimicryproject.databaseobjects.TwitterUser;
+import com.twitter.sdk.android.Twitter;
+import com.twitter.sdk.android.core.Callback;
+import com.twitter.sdk.android.core.Result;
+import com.twitter.sdk.android.core.TwitterAuthConfig;
+import com.twitter.sdk.android.core.TwitterCore;
+import com.twitter.sdk.android.core.TwitterException;
+import com.twitter.sdk.android.core.TwitterSession;
+import com.twitter.sdk.android.core.models.Tweet;
+import com.twitter.sdk.android.tweetui.UserTimeline;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import io.fabric.sdk.android.Fabric;
 
 public class ImpersonatorCreationActivity extends Activity {
 
@@ -72,7 +84,38 @@ public class ImpersonatorCreationActivity extends Activity {
     private void onCreateImpersonatorButtonClick(){
         Log.d(TAG, "onCreateImpersonatorButtonClick() Opening");
         if (etImpersonatorName.getText().length() != 0 && et1.getText().length() != 0 && et2.getText().length() != 0){
-            Impersonator impersonator = createImpersonator();
+            final Impersonator impersonator = createImpersonator();
+
+            TwitterAuthConfig authConfig = new TwitterAuthConfig(Config.CONSUMER_KEY, Config.CONSUMER_KEY_SECRET);
+            Fabric.with(this, new Twitter(authConfig));
+            TwitterSession session = Twitter.getSessionManager().getActiveSession();
+            for (final TwitterUser twitterUser : impersonator.getTwitterUsers()) {
+                TwitterCore.getInstance().getApiClient(session).getStatusesService()
+                        .userTimeline(null,
+                                twitterUser.getUsername(),
+                                10, //the number of tweets we want to fetch,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                        new Callback<List<Tweet>>() {
+                            @Override
+                            public void success(Result<List<Tweet>> result) {
+                                for (Tweet t : result.data) {
+                                    twitterUser.tweets.add(t.text);
+                                    android.util.Log.d("twittercommunity", "tweet is " + t.text);
+                                }
+                            }
+
+                            @Override
+                            public void failure(TwitterException exception) {
+                                android.util.Log.d("twittercommunity", "exception " + exception);
+                            }
+                        });
+            }
+
             DatabaseOpenHelper dboh = new DatabaseOpenHelper(this);
             SQLiteDatabase db = dboh.getDatabase(this);
             impersonator.addToDatabase(db);
@@ -89,8 +132,8 @@ public class ImpersonatorCreationActivity extends Activity {
 
     private Impersonator createImpersonator(){
         List<TwitterUser> twitterUserList = new ArrayList<>(2);
-        twitterUserList.add(new TwitterUser(et1.getText().toString()));
-        twitterUserList.add(new TwitterUser(et2.getText().toString()));
+        twitterUserList.add(new TwitterUser(et1.getText().toString(), new ArrayList<String>()));
+        twitterUserList.add(new TwitterUser(et2.getText().toString(), new ArrayList<String>()));
         List<ImpersonatorPost> impersonatorPostList = new ArrayList<>();
         return new Impersonator(etImpersonatorName.getText().toString(), twitterUserList, impersonatorPostList, new Date());
     }

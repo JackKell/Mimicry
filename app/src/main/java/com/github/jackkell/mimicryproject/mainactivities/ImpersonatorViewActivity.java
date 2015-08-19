@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,6 +25,7 @@ import java.util.List;
 public class ImpersonatorViewActivity extends Activity {
 
     Impersonator impersonator;
+    int count;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,11 +33,11 @@ public class ImpersonatorViewActivity extends Activity {
         setContentView(R.layout.activity_impersonator_view);
         impersonator = getImpersonator();
 
-        ListView impersonatorPostView = (ListView) findViewById(R.id.impersonatorPostView);
-        List<ImpersonatorPost> impersonatorPosts = impersonator.getPosts();
+        final ListView impersonatorPostView = (ListView) findViewById(R.id.impersonatorPostView);
 
-        impersonatorPostView.setAdapter(new ImpersonatorPostAdapter(this, impersonatorPosts));
+        impersonatorPostView.setAdapter(new ImpersonatorPostAdapter(this, impersonator.getPosts()));
         FloatingActionButton addPostButton = (FloatingActionButton) findViewById(R.id.fabAddPost);
+
         addPostButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -85,6 +87,7 @@ public class ImpersonatorViewActivity extends Activity {
 
         // Get Twitter users
         String[] impersonatorTwitterUserTwitterUserIDSearchColumns = new String[1];
+
         impersonatorTwitterUserTwitterUserIDSearchColumns[0] = DatabaseOpenHelper.IMPERSONATOR_TWITTER_USER_TWITTER_USER_ID;
         Cursor twitterUserIDscursor = db.query(DatabaseOpenHelper.IMPERSONATOR_TWITTER_USER, impersonatorTwitterUserTwitterUserIDSearchColumns,
                 DatabaseOpenHelper.IMPERSONATOR_TWITTER_USER_IMPERSONATOR_ID + " = " + impersonatorID, null, null, null, null);
@@ -92,15 +95,26 @@ public class ImpersonatorViewActivity extends Activity {
         List<String> twitterUserIDs = new ArrayList<>();
         while (!twitterUserIDscursor.isAfterLast()){
             twitterUserIDs.add(twitterUserIDscursor.getString(0));
+            twitterUserIDscursor.moveToNext();
         }
         twitterUserIDscursor.close();
 
         String[] twitterUserNameSearchColumns = new String[1];
+        twitterUserNameSearchColumns[0] = DatabaseOpenHelper.TWEET_BODY;
+        Log.d("ImpersonatorVA", twitterUserIDs.size() + "");
         for (String twitterUserID : twitterUserIDs){
             twitterUserNameSearchColumns[0] = DatabaseOpenHelper.TWITTER_USER_USERNAME;
             Cursor twitterUserListCursor = db.query(DatabaseOpenHelper.TWITTER_USER, twitterUserNameSearchColumns, DatabaseOpenHelper.TWITTER_USER_ID + " = " + twitterUserID, null, null, null, null);
             twitterUserListCursor.moveToFirst();
-            twitterUserList.add(new TwitterUser(twitterUserListCursor.getString(0)));
+
+            List<String> twitterUserTweets = new ArrayList<>();
+            Cursor tweetsCursor = db.query(DatabaseOpenHelper.TWEET, twitterUserNameSearchColumns, DatabaseOpenHelper.TWEET_TWITTER_USER_ID + " = " + twitterUserID, null, null, null, null);
+            while ((!tweetsCursor.isAfterLast())) {
+                twitterUserTweets.add(tweetsCursor.getString(0));
+                tweetsCursor.moveToNext();
+            }
+
+            twitterUserList.add(new TwitterUser(twitterUserListCursor.getString(0), twitterUserTweets));
             twitterUserListCursor.close();
         }
 
@@ -135,6 +149,30 @@ public class ImpersonatorViewActivity extends Activity {
     }
 
     private void onAddPostButtonClick(){
+        count++;
+        ListView impersonatorPostView = (ListView) findViewById(R.id.impersonatorPostView);
 
+        List<ImpersonatorPost> showPost = new ArrayList<>();
+        for (int i = 0; i < count; i++){
+            showPost.add(new ImpersonatorPost(1, "New POST", false, false, new Date()));
+        }
+        impersonatorPostView.setAdapter(new ImpersonatorPostAdapter(this, showPost));
+        impersonatorPostView.smoothScrollToPosition(impersonatorPostView.getChildCount());
+    }
+
+    private List<ImpersonatorPost> allTweetsArePosts(Impersonator impersonator){
+        List<String> newPosts = new ArrayList<>();
+        List<ImpersonatorPost> impersonatorPostList = new ArrayList<>();
+        Log.d("ImpersonatorVA", impersonator.getTwitterUsers().size() + "");
+        for (String tweet: impersonator.getTwitterUsers().get(0).tweets){
+            newPosts.add(tweet);
+        }
+        for (String tweet : impersonator.getTwitterUsers().get(1).tweets){
+            newPosts.add(tweet);
+        }
+        for (String post : newPosts){
+            impersonatorPostList.add(new ImpersonatorPost(0, post, false, false, new Date()));
+        }
+        return impersonatorPostList;
     }
 }

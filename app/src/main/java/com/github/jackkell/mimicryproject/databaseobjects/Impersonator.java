@@ -61,16 +61,6 @@ public class Impersonator implements DatabaseStorable {
             c.moveToNext();
         }
         return "0";
-
-        /*Cursor IDCursor = db.rawQuery("SELECT " + DatabaseOpenHelper.IMPERSONATOR_ID + " FROM " + DatabaseOpenHelper.IMPERSONATOR + " WHERE NAME = '" + this.name + "'", null);
-        Log.d("Impersonator", "OPEN");
-
-        IDCursor.moveToFirst();
-
-        String ID = IDCursor.getString(0);
-        Log.d("Impersonator", "CLOSE");
-        IDCursor.close();
-        return ID;*/
     }
 
 
@@ -104,6 +94,10 @@ public class Impersonator implements DatabaseStorable {
 
     public String getDateCreated(){
         return DatabaseOpenHelper.DAY_FORMAT.format(dateCreated);
+    }
+
+    public List<TwitterUser> getTwitterUsers() {
+        return this.twitterUsers;
     }
 
     private void addImpersonatorToDatabase(SQLiteDatabase db) throws NullPointerException{

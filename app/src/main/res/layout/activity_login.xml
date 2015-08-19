@@ -31,7 +31,7 @@
         android:id="@+id/tvLoginPrompt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Please login to \nTwitter to begin"
+        android:text="EARLY ALPHA\nPlease login to\nTwitter to begin"
         android:textSize="@dimen/h3"
         android:gravity="center"
         android:layout_marginTop="@dimen/margin_large"

@@ -28,6 +28,7 @@ public class LoginActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //getBaseContext().deleteDatabase("mimicry.db");
         super.onCreate(savedInstanceState);
         TwitterAuthConfig authConfig = new TwitterAuthConfig(Config.CONSUMER_KEY, Config.CONSUMER_KEY_SECRET);
         Fabric.with(this, new Twitter(authConfig));
@@ -38,7 +39,6 @@ public class LoginActivity extends Activity {
             @Override
             public void success(Result<TwitterSession> result) {
                 Log.d(TAG, "Login Success!");
-                getBaseContext().deleteDatabase("mimicry.db");
 
                 Intent impersonatorSelection = new Intent(getApplicationContext(), ImpersonatorSelectionActivity.class);
                 startActivity(impersonatorSelection);
