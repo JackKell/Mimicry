@@ -7,7 +7,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.github.jackkell.mimicryproject.R;
-
+//Used to show Settings to the user
+//It is currently not implemented
 public class SettingsActivity extends Activity {
 
     @Override

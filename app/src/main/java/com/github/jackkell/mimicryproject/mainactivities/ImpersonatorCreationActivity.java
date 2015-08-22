@@ -34,15 +34,21 @@ import java.util.List;
 
 import io.fabric.sdk.android.Fabric;
 
+//The logic that helps create an Impersonator Creation Activity
 public class ImpersonatorCreationActivity extends Activity {
 
+    //A tag used for debugging purposes
     String TAG = "ImpersonatorCreationActivity";
 
+    //The EditText field that allows the user to type in the Impersonators name.
     EditText etImpersonatorName;
+    //The EditText field that allows the user to type in the Impersonator's first associated Twitter username
     EditText et1;
+    //The EditText field that allows the user to type in the Impersonator's second associated Twitter username
     EditText et2;
 
     @Override
+    //This runs when the activity is opened
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_impersonator_creation);
@@ -60,6 +66,7 @@ public class ImpersonatorCreationActivity extends Activity {
     }
 
     @Override
+    //An automatically generated function
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_impersonator_creation, menu);
@@ -67,6 +74,7 @@ public class ImpersonatorCreationActivity extends Activity {
     }
 
     @Override
+    //An automatically generated function
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -81,6 +89,7 @@ public class ImpersonatorCreationActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+    //This is what occurs when the Create Impersonator button is tapped
     private void onCreateImpersonatorButtonClick(){
         Log.d(TAG, "onCreateImpersonatorButtonClick() Opening");
         if (etImpersonatorName.getText().length() != 0 && et1.getText().length() != 0 && et2.getText().length() != 0){
@@ -130,6 +139,7 @@ public class ImpersonatorCreationActivity extends Activity {
         }
     }
 
+    //The logic flow for the creation of the Impersonator
     private Impersonator createImpersonator(){
         List<TwitterUser> twitterUserList = new ArrayList<>(2);
         twitterUserList.add(new TwitterUser(et1.getText().toString(), new ArrayList<String>()));

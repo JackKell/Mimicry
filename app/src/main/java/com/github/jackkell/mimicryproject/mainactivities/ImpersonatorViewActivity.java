@@ -22,12 +22,17 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+//Users see this screen when they tap on an Impersonator
+//In this screen, the user can see an Impersonator's posts
 public class ImpersonatorViewActivity extends Activity {
 
+    //The currently loaded Impersonator
     Impersonator impersonator;
+    //Used for testing purposes
     int count;
 
     @Override
+    //Runs when this activity is opened
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_impersonator_view);
@@ -68,6 +73,7 @@ public class ImpersonatorViewActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+    //Grabse the Impersonator from the SQLite database
     private Impersonator getImpersonator(){
         DatabaseOpenHelper databaseOpenHelper = new DatabaseOpenHelper(this);
         SQLiteDatabase db = databaseOpenHelper.getDatabase(this);
@@ -148,6 +154,7 @@ public class ImpersonatorViewActivity extends Activity {
                 new Date());
     }
 
+    //The logic flow behind the onClick for the Floating Action Button
     private void onAddPostButtonClick(){
         count++;
         ListView impersonatorPostView = (ListView) findViewById(R.id.impersonatorPostView);
@@ -160,6 +167,7 @@ public class ImpersonatorViewActivity extends Activity {
         impersonatorPostView.smoothScrollToPosition(impersonatorPostView.getChildCount());
     }
 
+    //A function used for testing purposes
     private List<ImpersonatorPost> allTweetsArePosts(Impersonator impersonator){
         List<String> newPosts = new ArrayList<>();
         List<ImpersonatorPost> impersonatorPostList = new ArrayList<>();

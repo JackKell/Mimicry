@@ -20,13 +20,18 @@ import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.identity.TwitterLoginButton;
 
+//This is the first screen a user will see
+//It allows the user to log in to Twitter
 public class LoginActivity extends Activity {
 
+    //The TwitterLoginButton displayed on screen.  Clicking that will lead the user to a Login to Twitter screen
     private TwitterLoginButton loginButton;
 
+    //TAGs are used for debugging purposes
     String TAG = "LoginActivity";
 
     @Override
+    //This runs everytime the activity is opened
     protected void onCreate(Bundle savedInstanceState) {
         //getBaseContext().deleteDatabase("mimicry.db");
         super.onCreate(savedInstanceState);

@@ -12,18 +12,21 @@ import com.github.jackkell.mimicryproject.databaseobjects.Impersonator;
 
 import java.util.List;
 
+//Used to auto-populate the custom Impersonator Selectable List View
 public class ImpersonatorSelectableAdapter extends BaseAdapter{
 
-    private Context context;
+    //A list of all of the Impersonators in the database
     private List<Impersonator> impersonators;
+    //pumps up a list with content
     private static LayoutInflater inflater = null;
 
+    //Creates an Adapter based on the passed attributes
     public ImpersonatorSelectableAdapter(Context context, List<Impersonator> impersonators) {
-        this.context = context;
         this.impersonators = impersonators;
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
+    //GETTERS AND SETTERS
     @Override
     public int getCount() {
         return impersonators.size();

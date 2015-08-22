@@ -10,10 +10,14 @@ import com.twitter.sdk.android.core.models.Tweet;
 import java.util.ArrayList;
 import java.util.List;
 
+//A Twitter account associated with individual Impersonators
 public class TwitterUser implements DatabaseStorable {
+    //The Twitter username
     private String username;
+    //The list of tweets made by the Twitter user
     public List<String> tweets;
 
+    //Creates a Twitter user based on passed attributes
     public TwitterUser(String username, List<String> tweets) {
         this.username = username;
         this.tweets = tweets;
@@ -57,6 +61,7 @@ public class TwitterUser implements DatabaseStorable {
         return ID;
     }
 
+    //GETTER
     public String getUsername() {
         return username;
     }

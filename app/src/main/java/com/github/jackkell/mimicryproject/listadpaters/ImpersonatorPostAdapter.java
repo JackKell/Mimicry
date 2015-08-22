@@ -12,17 +12,21 @@ import com.github.jackkell.mimicryproject.databaseobjects.ImpersonatorPost;
 
 import java.util.List;
 
+//Used to auto-populate the custom Impersontor Post List View
 public class ImpersonatorPostAdapter extends BaseAdapter {
-    private Context context;
+
+    //The individual posts used to populate the listview
     private List<ImpersonatorPost> posts;
+    //pumps up a list with content
     private static LayoutInflater inflater = null;
 
+    //Creates an Adapter based on the passed attributes
     public ImpersonatorPostAdapter(Context context, List<ImpersonatorPost> posts) {
-        this.context = context;
         this.posts = posts;
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
+    //GETTERS AND SETTERS
     @Override
     public int getCount() {
         return posts.size();

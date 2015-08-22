@@ -5,6 +5,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 
+//Checks if the user is connected to the Internet
 public class CheckInternetConnectivityTask extends AsyncTask<Context, Void, Boolean>{
     @Override
     protected Boolean doInBackground(Context... contexts) {

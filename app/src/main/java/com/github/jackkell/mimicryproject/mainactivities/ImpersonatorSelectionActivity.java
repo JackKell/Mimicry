@@ -23,9 +23,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+//This screen is used to load all of the Impersonators from the database and display them on screen in a List View
+//It displays each Impersonator and gives information about their posts
 public class ImpersonatorSelectionActivity extends Activity {
 
     @Override
+    //This runs when the activity is opened
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_impersonator_selection);
@@ -54,6 +57,7 @@ public class ImpersonatorSelectionActivity extends Activity {
     }
 
     @Override
+    //An automatically generated function
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_impersonator_selection, menu);
@@ -61,6 +65,7 @@ public class ImpersonatorSelectionActivity extends Activity {
     }
 
     @Override
+    //An automatically generated function
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -74,12 +79,14 @@ public class ImpersonatorSelectionActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+    //The logic flow for when the Impersonator Creation button is clicked
     private void onCreateImpersonatorButtonClick() {
         Intent impersonatorCreation = new Intent(getApplicationContext(), ImpersonatorCreationActivity.class);
         startActivity(impersonatorCreation);
         finish();
     }
 
+    //Set the list's children's onClick handler
     private void setScrollViewChildrenOnClick(){
         final List<Impersonator> impersonators = getStoredImpersonators();
         ListView lv = (ListView) findViewById(R.id.impersonatorSelectionListView);
@@ -104,6 +111,7 @@ public class ImpersonatorSelectionActivity extends Activity {
         }
     }
 
+    //Grabs all of the Impersonators stored within the database and builds their formatted box
     private List<Impersonator> getStoredImpersonators() {
         DatabaseOpenHelper databaseOpenHelper = new DatabaseOpenHelper(this);
         SQLiteDatabase db = databaseOpenHelper.getDatabase(this);

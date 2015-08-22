@@ -6,13 +6,20 @@ import android.database.sqlite.SQLiteDatabase;
 
 import java.util.Date;
 
+//A post created by the Impersonator constisting of a body and several other attributes
 public class ImpersonatorPost implements DatabaseStorable {
+    //The body of the post.  THe main text
     private String body;
+    //Signifies whether the post is favorited or not
     private boolean isFavorited;
+    //Signifies whether the post is Tweeted or not
     private boolean isTweeted;
+    //Tells when the post was created
     private Date dateCreated;
+    //Tells which Impersonator the post belongs to.
     private int impersonatorID;
 
+    //Creates the ImpersonatorPost based on the passed attributes
     public ImpersonatorPost(int impersonatorID, String body, boolean isFavorited, boolean isTweeted, Date dateCreated) {
         this.impersonatorID = impersonatorID;
         this.body = body;
@@ -63,6 +70,7 @@ public class ImpersonatorPost implements DatabaseStorable {
         return ID;
     }
 
+    //GETTERS AND SETTERS
     public String getBody() {
         return body;
     }
