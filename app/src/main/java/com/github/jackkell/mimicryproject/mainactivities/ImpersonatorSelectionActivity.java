@@ -29,6 +29,7 @@ public class ImpersonatorSelectionActivity extends Activity {
 
     // List of impersonators in the database
     private List<Impersonator> impersonators;
+    private String TAG = "ImpersonatorSelectionActivity";
 
     @Override
     // This runs when the activity is opened
@@ -90,6 +91,7 @@ public class ImpersonatorSelectionActivity extends Activity {
                 @Override
                 public void onClick(View v) {
                     long ID = impersonators.get(index).getId();
+                    Log.d(TAG, "ID is " + ID);
                     Intent impersonatorCreation = new Intent(getBaseContext(), ImpersonatorViewActivity.class);
                     impersonatorCreation.putExtra("impersonatorID", ID);
                     impersonatorCreation.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

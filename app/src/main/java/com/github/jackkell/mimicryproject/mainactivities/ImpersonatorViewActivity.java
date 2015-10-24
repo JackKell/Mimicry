@@ -37,10 +37,11 @@ public class ImpersonatorViewActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_impersonator_view);
         impersonator = Impersonator.findById(Impersonator.class, getIntent().getLongExtra("impersonatorID", -1));
-
         final ListView impersonatorPostView = (ListView) findViewById(R.id.impersonatorPostView);
 
-        impersonatorPostView.setAdapter(new ImpersonatorPostAdapter(this, impersonator.getPosts()));
+        if (impersonator.getPosts() != null) {
+            impersonatorPostView.setAdapter(new ImpersonatorPostAdapter(this, impersonator.getPosts()));
+        }
         FloatingActionButton addPostButton = (FloatingActionButton) findViewById(R.id.fabAddPost);
 
         addPostButton.setOnClickListener(new View.OnClickListener() {
