@@ -16,7 +16,10 @@ public class TwitterUser extends SugarRecord<TwitterUser> {
     //The Twitter username
     private String username;
     //The list of tweets made by the Twitter user
+    // TODO: fix this list of tweets so that tweets is its own class and has a id to the twitter user
     public List<String> tweets;
+    // The id of the impersonator that this twitter user belongs to
+    private Impersonator impersonator;
 
     public TwitterUser(){}
 
@@ -29,5 +32,9 @@ public class TwitterUser extends SugarRecord<TwitterUser> {
     //GETTER
     public String getUsername() {
         return username;
+    }
+
+    public void setImpersonator(Impersonator impersonator){
+        this.impersonator = impersonator;
     }
 }

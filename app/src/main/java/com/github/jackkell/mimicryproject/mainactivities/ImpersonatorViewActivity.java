@@ -81,7 +81,7 @@ public class ImpersonatorViewActivity extends Activity {
 
         List<ImpersonatorPost> showPost = new ArrayList<>();
         for (int i = 0; i < count; i++){
-            showPost.add(new ImpersonatorPost("New POST", false, false, new Date()));
+            showPost.add(new ImpersonatorPost("New POST", false, false, new Date(), null));
         }
         impersonatorPostView.setAdapter(new ImpersonatorPostAdapter(this, showPost));
         impersonatorPostView.smoothScrollToPosition(impersonatorPostView.getChildCount());

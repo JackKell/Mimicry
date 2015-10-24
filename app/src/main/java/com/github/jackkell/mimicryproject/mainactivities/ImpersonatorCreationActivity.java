@@ -93,15 +93,18 @@ public class ImpersonatorCreationActivity extends Activity {
     private void onCreateImpersonatorButtonClick(){
         Log.d(TAG, "onCreateImpersonatorButtonClick() Opening");
         if (etImpersonatorName.getText().length() != 0 && et1.getText().length() != 0 && et2.getText().length() != 0){
-            final Impersonator impersonator = createImpersonator();
-
             TwitterAuthConfig authConfig = new TwitterAuthConfig(Config.CONSUMER_KEY, Config.CONSUMER_KEY_SECRET);
             Fabric.with(this, new Twitter(authConfig));
             TwitterSession session = Twitter.getSessionManager().getActiveSession();
-            for (final TwitterUser twitterUser : impersonator.getTwitterUsers()) {
+            final List<TwitterUser> twitterUsers = new ArrayList<>();
+            List<String> usernames = new ArrayList<>();
+            usernames.add(et1.getText().toString());
+            usernames.add(et2.getText().toString());
+
+            for (final String username : usernames) {
                 TwitterCore.getInstance().getApiClient(session).getStatusesService()
                         .userTimeline(null,
-                                twitterUser.getUsername(),
+                                username,
                                 10, //the number of tweets we want to fetch,
                                 null,
                                 null,
@@ -112,10 +115,12 @@ public class ImpersonatorCreationActivity extends Activity {
                         new Callback<List<Tweet>>() {
                             @Override
                             public void success(Result<List<Tweet>> result) {
+                                List<String> tweets = new ArrayList<String>();
                                 for (Tweet t : result.data) {
-                                    twitterUser.tweets.add(t.text);
-                                    android.util.Log.d("twittercommunity", "tweet is " + t.text);
+                                    tweets.add(t.text);
                                 }
+                                TwitterUser twitterUser = new TwitterUser(username, tweets);
+                                twitterUsers.add(twitterUser);
                             }
 
                             @Override
@@ -124,6 +129,7 @@ public class ImpersonatorCreationActivity extends Activity {
                             }
                         });
             }
+            Impersonator impersonator = new Impersonator(etImpersonatorName.getText().toString(), twitterUsers, new ArrayList<ImpersonatorPost>(), new Date());
             impersonator.save();
 
             Intent impersonatorSelection = new Intent(getApplicationContext(), ImpersonatorSelectionActivity.class);
@@ -132,14 +138,5 @@ public class ImpersonatorCreationActivity extends Activity {
         } else {
             Toast.makeText(this, "Please fill in required fields.", Toast.LENGTH_LONG).show();
         }
-    }
-
-    //The logic flow for the creation of the Impersonator
-    private Impersonator createImpersonator(){
-        List<TwitterUser> twitterUserList = new ArrayList<>();
-        twitterUserList.add(new TwitterUser(et1.getText().toString(), new ArrayList<String>()));
-        twitterUserList.add(new TwitterUser(et2.getText().toString(), new ArrayList<String>()));
-        List<ImpersonatorPost> impersonatorPostList = new ArrayList<>();
-        return new Impersonator(etImpersonatorName.getText().toString(), twitterUserList, impersonatorPostList, new Date());
     }
 }
