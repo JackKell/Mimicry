@@ -5,12 +5,14 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import com.orm.SugarRecord;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 //Impersonator is an object used to generate posts based on the vernacular of its Twitter users
-public class Impersonator implements DatabaseStorable {
+public class Impersonator extends SugarRecord<Impersonator> {
 
     //Every Impersonator needs a name for identification reasons
     private String name;
@@ -21,6 +23,8 @@ public class Impersonator implements DatabaseStorable {
     //This stores the date that the Impersonator was created
     private Date dateCreated;
 
+    public Impersonator(){}
+
     //Creates an Impersonator base on the attributes passed in.
     public Impersonator(String name, List<TwitterUser> twitterUsers, List<ImpersonatorPost> posts, Date dateCreated){
         this.name = name;
@@ -29,53 +33,12 @@ public class Impersonator implements DatabaseStorable {
         this.dateCreated = dateCreated;
     }
 
-    /*public Impersonator(String name, List<TwitterUser> twitterUsers, Date dateCreated){
-        this(name, twitterUsers, new ArrayList<ImpersonatorPost>(0), dateCreated);
-    }*/
-
-    @Override
-    public void addToDatabase(SQLiteDatabase db) {
-        addToImpersonatorTable(db);
-        addToTwitterUsersTable(db);
-        addToImpersonatorTwitterUserTable(db);
-    }
-
-    @Override
-    public void removeFromDatabase(SQLiteDatabase db) {
-        String impersonatorTable = DatabaseOpenHelper.IMPERSONATOR;
-        String postTable = DatabaseOpenHelper.POST;
-        String impersonatorTwitterUserTable = DatabaseOpenHelper.IMPERSONATOR_TWITTER_USER;
-        String twitterUserTable = DatabaseOpenHelper.TWITTER_USER;
-
-        String impersonatorID = getID(db);
-
-        db.delete(postTable, DatabaseOpenHelper.POST_IMPERSONATOR_ID + " = " + impersonatorID, null);
-        db.delete(impersonatorTwitterUserTable,
-                DatabaseOpenHelper.IMPERSONATOR_TWITTER_USER_IMPERSONATOR_ID + " = " + impersonatorID, null);
-    }
-
-    @Override
-    public String getID(SQLiteDatabase db) {
-        Cursor c = db.rawQuery("SELECT ID, NAME FROM IMPERSONATOR", null);
-        c.moveToFirst();
-        while (!c.isAfterLast()){
-            Log.d("TAG", c.getString(1) + " " + this.getName());
-            String testString = c.getString(1);
-            testString = testString.substring(1, testString.length() - 1);
-            if (testString.equals(this.name))
-                return c.getString(0);
-            c.moveToNext();
-        }
-        return "0";
-    }
-
-
     //Sets the name of the Impersonator.  Will occur when editing Impersonators
     public void setName(String name) {
         this.name = name;
     }
 
-    //Gets the name of the Impersonaotr.  Used when displaying Impersonators
+    //Gets the name of the Impersonator.  Used when displaying Impersonators
     public String getName(){
         return this.name;
     }
@@ -121,42 +84,6 @@ public class Impersonator implements DatabaseStorable {
         Log.d("Impersonator", this.name);
         newImpersonator.put(DatabaseOpenHelper.IMPERSONATOR_DATE_CREATED, "'" + this.dateCreated.toString() + "'");
         db.insert(tableName, null, newImpersonator);
-    }
-
-    //Helps add the Twitter Users to the Twitter Users Table
-    private void addToTwitterUsersTable(SQLiteDatabase db){
-        for (TwitterUser twitterUser : twitterUsers){
-            twitterUser.addToDatabase(db);
-        }
-    }
-
-    //Helps build the Impersonator Twitter User bridge table
-    private void addToImpersonatorTwitterUserTable(SQLiteDatabase db){
-        List<String> twitterUserIDs = new ArrayList<>();
-        String impersonatorID = getID(db);
-        String twitterUserTable = DatabaseOpenHelper.IMPERSONATOR_TWITTER_USER;
-
-        Cursor cursor = db.rawQuery("SELECT * FROM " + twitterUserTable, null);
-        cursor.moveToFirst();
-
-        while (!cursor.isAfterLast()){
-            String currentTwitterUserName = cursor.getString(cursor.getColumnIndex(DatabaseOpenHelper.TWITTER_USER_USERNAME));
-            for (TwitterUser twitterUser : this.twitterUsers){
-                if (twitterUser.getUsername().equals(currentTwitterUserName)) {
-                    String id = cursor.getString(cursor.getColumnIndex(DatabaseOpenHelper.TWITTER_USER_ID));
-                    twitterUserIDs.add(id);
-                }
-                cursor.moveToNext();
-            }
-        }
-
-        String impersonatorTwitterUserTable = DatabaseOpenHelper.IMPERSONATOR_TWITTER_USER;
-        for (String twitterUserID : twitterUserIDs) {
-            ContentValues cv = new ContentValues();
-            cv.put(DatabaseOpenHelper.IMPERSONATOR_TWITTER_USER_IMPERSONATOR_ID, impersonatorID);
-            cv.put(DatabaseOpenHelper.IMPERSONATOR_TWITTER_USER_TWITTER_USER_ID, twitterUserID);
-            db.insert(impersonatorTwitterUserTable, null, cv);
-        }
     }
 
     public List<ImpersonatorPost> getPosts(){

@@ -124,12 +124,7 @@ public class ImpersonatorCreationActivity extends Activity {
                             }
                         });
             }
-
-            DatabaseOpenHelper dboh = new DatabaseOpenHelper(this);
-            SQLiteDatabase db = dboh.getDatabase(this);
-            impersonator.addToDatabase(db);
-            db.close();
-            dboh.close();
+            impersonator.save();
 
             Intent impersonatorSelection = new Intent(getApplicationContext(), ImpersonatorSelectionActivity.class);
             startActivity(impersonatorSelection);
@@ -141,7 +136,7 @@ public class ImpersonatorCreationActivity extends Activity {
 
     //The logic flow for the creation of the Impersonator
     private Impersonator createImpersonator(){
-        List<TwitterUser> twitterUserList = new ArrayList<>(2);
+        List<TwitterUser> twitterUserList = new ArrayList<>();
         twitterUserList.add(new TwitterUser(et1.getText().toString(), new ArrayList<String>()));
         twitterUserList.add(new TwitterUser(et2.getText().toString(), new ArrayList<String>()));
         List<ImpersonatorPost> impersonatorPostList = new ArrayList<>();

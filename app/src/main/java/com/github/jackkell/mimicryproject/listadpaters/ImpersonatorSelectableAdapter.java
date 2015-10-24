@@ -57,10 +57,10 @@ public class ImpersonatorSelectableAdapter extends BaseAdapter{
         final Impersonator impersonator = impersonators.get(position);
 
         impersonatorName.setText(impersonator.getName());
-        postCount.setText(Integer.toString(impersonator.getPostCount()));
-        favoriteCount.setText(Integer.toString(impersonator.getIsFavoritedPostCount()));
-        tweetCount.setText(Integer.toString(impersonator.getIsTweetedPostCount()));
-        dateCreated.setText(impersonator.getDateCreated());
+        //postCount.setText(Integer.toString(impersonator.getPostCount()));
+        //favoriteCount.setText(Integer.toString(impersonator.getIsFavoritedPostCount()));
+        //tweetCount.setText(Integer.toString(impersonator.getIsTweetedPostCount()));
+        //dateCreated.setText(impersonator.getDateCreated());
 
         return view;
     }
