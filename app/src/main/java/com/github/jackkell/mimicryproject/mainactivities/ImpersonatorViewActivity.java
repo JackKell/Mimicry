@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.github.jackkell.mimicryproject.databaseobjects.DatabaseOpenHelper;
 import com.github.jackkell.mimicryproject.databaseobjects.Impersonator;
@@ -50,6 +51,8 @@ public class ImpersonatorViewActivity extends Activity {
                 onAddPostButtonClick();
             }
         });
+
+        Toast.makeText(this, impersonator.getName(), Toast.LENGTH_LONG).show();
     }
 
     @Override

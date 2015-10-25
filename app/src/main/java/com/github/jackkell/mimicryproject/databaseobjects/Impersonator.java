@@ -21,20 +21,13 @@ public class Impersonator extends SugarRecord<Impersonator> {
 
     public Impersonator(){}
 
-    //Creates an Impersonator base on the attributes passed in.
-    public Impersonator(String name, List<TwitterUser> twitterUsers, List<ImpersonatorPost> posts, Date dateCreated){
+    public Impersonator(String name){
+        this(name, new Date());
+    }
+
+    public Impersonator(String name, Date dateCreated){
         this.name = name;
         this.dateCreated = dateCreated;
-
-        for (TwitterUser twitterUser: twitterUsers){
-            twitterUser.setImpersonator(this);
-            twitterUser.save();
-        }
-
-        for (ImpersonatorPost impersonatorPost: posts){
-            impersonatorPost.setImpersonator(this);
-            impersonatorPost.save();
-        }
     }
 
     //Sets the name of the Impersonator.  Will occur when editing Impersonators
@@ -60,5 +53,15 @@ public class Impersonator extends SugarRecord<Impersonator> {
 
     public List<ImpersonatorPost> getPosts(){
         return ImpersonatorPost.find(ImpersonatorPost.class, "impersonator = ?", "" + this.getId());
+    }
+
+    public void addTwitterUser(String username, List<String> tweets) {
+        TwitterUser twitterUser = new TwitterUser(username, tweets, this);
+        twitterUser.save();
+    }
+
+    public void addPost(String body) {
+        ImpersonatorPost impersonatorPost = new ImpersonatorPost(body, this);
+        impersonatorPost.save();
     }
 }

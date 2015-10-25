@@ -23,7 +23,14 @@ public class ImpersonatorPost extends SugarRecord<ImpersonatorPost>{
 
     public ImpersonatorPost(){}
 
-    //Creates the ImpersonatorPost based on the passed attributes
+    public ImpersonatorPost(String body, Impersonator impersonator) {
+        this(body, false, false, new Date(), impersonator);
+    }
+
+    public ImpersonatorPost(String body, Date dateCreated, Impersonator impersonator) {
+        this(body, false, false, dateCreated, impersonator);
+    }
+
     public ImpersonatorPost(String body, boolean isFavorited, boolean isTweeted, Date dateCreated, Impersonator impersonator) {
         this.body = body;
         this.isFavorited = isFavorited;
@@ -35,10 +42,6 @@ public class ImpersonatorPost extends SugarRecord<ImpersonatorPost>{
     //GETTERS AND SETTERS
     public String getBody() {
         return body;
-    }
-
-    public void setImpersonator(Impersonator impersonator){
-        this.impersonator = impersonator;
     }
 
     public boolean isFavorited() {

@@ -91,6 +91,7 @@ public class ImpersonatorCreationActivity extends Activity {
 
     //This is what occurs when the Create Impersonator button is tapped
     private void onCreateImpersonatorButtonClick(){
+        final Impersonator impersonator = new Impersonator(etImpersonatorName.getText().toString());
         Log.d(TAG, "onCreateImpersonatorButtonClick() Opening");
         if (etImpersonatorName.getText().length() != 0 && et1.getText().length() != 0 && et2.getText().length() != 0){
             TwitterAuthConfig authConfig = new TwitterAuthConfig(Config.CONSUMER_KEY, Config.CONSUMER_KEY_SECRET);
@@ -119,8 +120,7 @@ public class ImpersonatorCreationActivity extends Activity {
                                 for (Tweet t : result.data) {
                                     tweets.add(t.text);
                                 }
-                                TwitterUser twitterUser = new TwitterUser(username, tweets);
-                                twitterUsers.add(twitterUser);
+                                impersonator.addTwitterUser(username, tweets);
                             }
 
                             @Override
@@ -129,7 +129,6 @@ public class ImpersonatorCreationActivity extends Activity {
                             }
                         });
             }
-            Impersonator impersonator = new Impersonator(etImpersonatorName.getText().toString(), twitterUsers, new ArrayList<ImpersonatorPost>(), new Date());
             impersonator.save();
 
             Intent impersonatorSelection = new Intent(getApplicationContext(), ImpersonatorSelectionActivity.class);
