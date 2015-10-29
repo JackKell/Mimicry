@@ -46,10 +46,18 @@ public class ImpersonatorPostAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         View view = convertView;
         if (view == null) {
-            view = inflater.inflate(R.layout.util_post, null);
+            view = inflater.inflate(R.layout.post_card, null);
         }
+        //ImpersonatorPost currentPost = posts.get(position);
+
         TextView postBody = (TextView) view.findViewById(R.id.postBody);
         postBody.setText(posts.get(position).getBody());
+        TextView impersonatorName = (TextView) view.findViewById(R.id.tvImpersonatorName);
+        impersonatorName.setText(posts.get(position).getImpersonatorName());
+        TextView postCreationDate = (TextView) view.findViewById(R.id.tvPostCreationDate);
+        // TODO: format date to fit card
+        postCreationDate.setText("mmDDyyyy");
+
 
         return view;
     }

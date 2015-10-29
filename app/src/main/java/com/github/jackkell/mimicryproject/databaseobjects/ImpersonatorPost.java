@@ -44,6 +44,10 @@ public class ImpersonatorPost extends SugarRecord<ImpersonatorPost>{
         return body;
     }
 
+    public String getImpersonatorName() {
+        return impersonator.getName();
+    }
+
     public boolean isFavorited() {
         return isFavorited;
     }

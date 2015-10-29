@@ -29,8 +29,6 @@ public class ImpersonatorViewActivity extends Activity {
 
     //The currently loaded Impersonator
     private Impersonator impersonator;
-    //Used for testing purposes
-    int count;
 
     @Override
     //Runs when this activity is opened
@@ -42,7 +40,10 @@ public class ImpersonatorViewActivity extends Activity {
 
         if (impersonator.getPosts() != null) {
             impersonatorPostView.setAdapter(new ImpersonatorPostAdapter(this, impersonator.getPosts()));
+        } else {
+            impersonatorPostView.setAdapter(new ImpersonatorPostAdapter(this, new ArrayList<ImpersonatorPost>()));
         }
+
         FloatingActionButton addPostButton = (FloatingActionButton) findViewById(R.id.fabAddPost);
 
         addPostButton.setOnClickListener(new View.OnClickListener() {
@@ -79,14 +80,10 @@ public class ImpersonatorViewActivity extends Activity {
 
     //The logic flow behind the onClick for the Floating Action Button
     private void onAddPostButtonClick(){
-        count++;
         ListView impersonatorPostView = (ListView) findViewById(R.id.impersonatorPostView);
 
-        List<ImpersonatorPost> showPost = new ArrayList<>();
-        for (int i = 0; i < count; i++){
-            showPost.add(new ImpersonatorPost("New POST", false, false, new Date(), null));
-        }
-        impersonatorPostView.setAdapter(new ImpersonatorPostAdapter(this, showPost));
+        impersonator.addPost("New Post");
+        impersonatorPostView.setAdapter(new ImpersonatorPostAdapter(this, impersonator.getPosts()));
         impersonatorPostView.smoothScrollToPosition(impersonatorPostView.getChildCount());
     }
 }

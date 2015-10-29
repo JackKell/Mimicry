@@ -46,7 +46,7 @@ public class ImpersonatorSelectableAdapter extends BaseAdapter{
     public View getView(int position, View convertView, ViewGroup parent) {
         View view = convertView;
         if (view == null) {
-            view = inflater.inflate(R.layout.util_impersonator_selectable, null);
+            view = inflater.inflate(R.layout.impersonator_card, null);
         }
         TextView impersonatorName = (TextView) view.findViewById(R.id.tvImpersonatorName);
         TextView postCount = (TextView) view.findViewById(R.id.tvPostCount);
