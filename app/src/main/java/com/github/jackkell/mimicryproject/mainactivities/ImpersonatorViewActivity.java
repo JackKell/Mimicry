@@ -5,10 +5,13 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -29,6 +32,8 @@ public class ImpersonatorViewActivity extends Activity {
 
     //The currently loaded Impersonator
     private Impersonator impersonator;
+    private RecyclerView impersonatorPostListView;
+    private ImpersonatorPostAdapter impersonatorPostAdapter;
 
     @Override
     //Runs when this activity is opened
@@ -36,13 +41,21 @@ public class ImpersonatorViewActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_impersonator_view);
         impersonator = Impersonator.findById(Impersonator.class, getIntent().getLongExtra("impersonatorID", -1));
-        final ListView impersonatorPostView = (ListView) findViewById(R.id.impersonatorPostView);
 
+        impersonatorPostListView = (RecyclerView) findViewById(R.id.rvImpersonatorPost);
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        impersonatorPostListView.setLayoutManager(linearLayoutManager);
+        impersonatorPostAdapter = new ImpersonatorPostAdapter(impersonator.getPosts());
+        impersonatorPostListView.setAdapter(impersonatorPostAdapter);
+
+        /*
         if (impersonator.getPosts() != null) {
             impersonatorPostView.setAdapter(new ImpersonatorPostAdapter(this, impersonator.getPosts()));
         } else {
             impersonatorPostView.setAdapter(new ImpersonatorPostAdapter(this, new ArrayList<ImpersonatorPost>()));
         }
+        */
 
         FloatingActionButton addPostButton = (FloatingActionButton) findViewById(R.id.fabAddPost);
 
@@ -80,10 +93,8 @@ public class ImpersonatorViewActivity extends Activity {
 
     //The logic flow behind the onClick for the Floating Action Button
     private void onAddPostButtonClick(){
-        ListView impersonatorPostView = (ListView) findViewById(R.id.impersonatorPostView);
-
         impersonator.addPost("New Post");
-        impersonatorPostView.setAdapter(new ImpersonatorPostAdapter(this, impersonator.getPosts()));
-        impersonatorPostView.smoothScrollToPosition(impersonatorPostView.getChildCount());
+        impersonatorPostAdapter.addPost(impersonator.getPosts().get(impersonator.getPosts().size()-1));
+        impersonatorPostListView.smoothScrollToPosition(impersonator.getPosts().size()-1);
     }
 }
