@@ -1,6 +1,8 @@
 package com.github.jackkell.mimicryproject.listadpaters;
 
 import android.content.Context;
+import android.support.v7.widget.CardView;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,55 +15,67 @@ import com.github.jackkell.mimicryproject.databaseobjects.Impersonator;
 import java.util.List;
 
 //Used to auto-populate the custom Impersonator Selectable List View
-public class ImpersonatorSelectableAdapter extends BaseAdapter{
+public class ImpersonatorSelectableAdapter extends RecyclerView.Adapter<ImpersonatorSelectableAdapter.ImpersonatorViewHolder>{
 
-    //A list of all of the Impersonators in the database
     private List<Impersonator> impersonators;
-    //pumps up a list with content
-    private static LayoutInflater inflater = null;
 
-    //Creates an Adapter based on the passed attributes
-    public ImpersonatorSelectableAdapter(Context context, List<Impersonator> impersonators) {
-        this.impersonators = impersonators;
-        inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    public static class ImpersonatorViewHolder extends RecyclerView.ViewHolder {
+        CardView cvImpersonator;
+        TextView tvImpersonatorName;
+        TextView tvDateCreated;
+        TextView tvPostLabel;
+        TextView tvPostCount;
+        TextView tvTweetLabel;
+        TextView tvTweetCount;
+        TextView tvFavoriteLabel;
+        TextView tvFavoriteCount;
+
+        public ImpersonatorViewHolder(View itemView) {
+            super(itemView);
+            this.cvImpersonator = (CardView)itemView.findViewById(R.id.cvImpersonator);
+            this.tvImpersonatorName = (TextView)itemView.findViewById(R.id.tvImpersonatorName);
+            this.tvDateCreated = (TextView)itemView.findViewById(R.id.tvDateCreated);
+            this.tvPostLabel = (TextView)itemView.findViewById(R.id.tvPostLabel);
+            this.tvPostCount = (TextView)itemView.findViewById(R.id.tvPostCount);
+            this.tvFavoriteLabel = (TextView)itemView.findViewById(R.id.tvFavoriteLabel);
+            this.tvFavoriteCount = (TextView)itemView.findViewById(R.id.tvFavoriteCount);
+            this.tvTweetLabel = (TextView)itemView.findViewById(R.id.tvTweetLabel);
+            this.tvTweetCount = (TextView)itemView.findViewById(R.id.tvTweetCount);
+        }
     }
 
-    //GETTERS AND SETTERS
+    public ImpersonatorSelectableAdapter(List<Impersonator> impersonators){
+        this.impersonators = impersonators;
+    }
+
     @Override
-    public int getCount() {
+    public ImpersonatorViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.impersonator_card, parent, false);
+        ImpersonatorViewHolder impersonatorViewHolder = new ImpersonatorViewHolder(view);
+        return impersonatorViewHolder;
+    }
+
+    @Override
+    public void onBindViewHolder(ImpersonatorViewHolder impersonatorViewHolder, int position) {
+        impersonatorViewHolder.tvImpersonatorName.setText(impersonators.get(position).getName());
+        impersonatorViewHolder.tvDateCreated.setText(impersonators.get(position).getDateCreated());
+        impersonatorViewHolder.tvPostCount.setText(Integer.toString(impersonators.get(position).getPostCount()));
+        impersonatorViewHolder.tvTweetCount.setText(Integer.toString(impersonators.get(position).getTweetCount()));
+        impersonatorViewHolder.tvFavoriteCount.setText(Integer.toString(impersonators.get(position).getTweetCount()));
+    }
+
+    @Override
+    public int getItemCount() {
         return impersonators.size();
     }
 
     @Override
-    public Object getItem(int position) {
-        return impersonators.get(position);
+    public void onAttachedToRecyclerView(RecyclerView recyclerView){
+        super.onAttachedToRecyclerView(recyclerView);
     }
 
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        View view = convertView;
-        if (view == null) {
-            view = inflater.inflate(R.layout.impersonator_card, null);
-        }
-        TextView impersonatorName = (TextView) view.findViewById(R.id.tvImpersonatorName);
-        TextView postCount = (TextView) view.findViewById(R.id.tvPostCount);
-        TextView favoriteCount = (TextView) view.findViewById(R.id.tvFavoriteCount);
-        TextView tweetCount = (TextView) view.findViewById(R.id.tvTweetCount);
-        TextView dateCreated = (TextView) view.findViewById(R.id.tvDateCreated);
-
-        final Impersonator impersonator = impersonators.get(position);
-
-        impersonatorName.setText(impersonator.getName());
-        //postCount.setText(Integer.toString(impersonator.getPostCount()));
-        //favoriteCount.setText(Integer.toString(impersonator.getIsFavoritedPostCount()));
-        //tweetCount.setText(Integer.toString(impersonator.getIsTweetedPostCount()));
-        //dateCreated.setText(impersonator.getDateCreated());
-
-        return view;
+    public void addImpersonator(Impersonator impersonator){
+        impersonators.add(impersonator);
+        this.notifyDataSetChanged();
     }
 }

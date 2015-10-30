@@ -2,25 +2,20 @@ package com.github.jackkell.mimicryproject.mainactivities;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 
-import com.github.jackkell.mimicryproject.databaseobjects.DatabaseOpenHelper;
 import com.github.jackkell.mimicryproject.databaseobjects.Impersonator;
-import com.github.jackkell.mimicryproject.databaseobjects.ImpersonatorPost;
-import com.github.jackkell.mimicryproject.listadpaters.ImpersonatorSelectableAdapter;
 import com.github.jackkell.mimicryproject.R;
-import com.github.jackkell.mimicryproject.databaseobjects.TwitterUser;
+import com.github.jackkell.mimicryproject.listadpaters.ImpersonatorSelectableAdapter;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 // This screen is used to load all of the Impersonators from the database and display them on screen in a List View
@@ -29,6 +24,8 @@ public class ImpersonatorSelectionActivity extends Activity {
 
     // List of impersonators in the database
     private List<Impersonator> impersonators;
+    private RecyclerView rvImpersonatorSelection;
+    private ImpersonatorSelectableAdapter impersonatorSelectableAdapter;
     private String TAG = "ImpersonatorSelectionActivity";
 
     @Override
@@ -36,11 +33,14 @@ public class ImpersonatorSelectionActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_impersonator_selection);
-
-        ListView impersonatorSelectionListView = (ListView) findViewById(R.id.impersonatorSelectionListView);
         impersonators = Impersonator.listAll(Impersonator.class);
 
-        impersonatorSelectionListView.setAdapter(new ImpersonatorSelectableAdapter(this, impersonators));
+        rvImpersonatorSelection = (RecyclerView) findViewById(R.id.rvImpersonatorSelection);
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        rvImpersonatorSelection.setLayoutManager(linearLayoutManager);
+        impersonatorSelectableAdapter = new ImpersonatorSelectableAdapter(impersonators);
+        rvImpersonatorSelection.setAdapter(impersonatorSelectableAdapter);
 
         FloatingActionButton createImpersonatorButton = (FloatingActionButton) findViewById(R.id.fabCreateImpersonator);
         createImpersonatorButton.setOnClickListener(new View.OnClickListener() {
@@ -52,7 +52,7 @@ public class ImpersonatorSelectionActivity extends Activity {
             }
         });
 
-        impersonatorSelectionListView.post(new Runnable() {
+        rvImpersonatorSelection.post(new Runnable() {
             @Override
             public void run() {
                 setScrollViewChildrenOnClick();
@@ -83,11 +83,9 @@ public class ImpersonatorSelectionActivity extends Activity {
 
     // Set the list's children's onClick handler
     private void setScrollViewChildrenOnClick(){
-        ListView listView = (ListView) findViewById(R.id.impersonatorSelectionListView);
-        Log.d("ImpersonatoreSelection", listView.getChildCount() + "");
-        for (int i = 0; i < listView.getChildCount(); i++) {
+        for (int i = 0; i < rvImpersonatorSelection.getChildCount(); i++) {
             final int index = i;
-            listView.getChildAt(i).setOnClickListener(new View.OnClickListener() {
+            rvImpersonatorSelection.getChildAt(i).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     long ID = impersonators.get(index).getId();

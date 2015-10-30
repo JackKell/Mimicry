@@ -64,4 +64,30 @@ public class Impersonator extends SugarRecord<Impersonator> {
         ImpersonatorPost impersonatorPost = new ImpersonatorPost(body, this);
         impersonatorPost.save();
     }
+
+    public int getPostCount(){
+        return getPosts().size();
+    }
+
+    public int getTweetCount(){
+        List<ImpersonatorPost> impersonatorPosts = getPosts();
+        int tweetCount = 0;
+        for (ImpersonatorPost impersonatorPost : impersonatorPosts){
+            if (impersonatorPost.isTweeted()){
+                tweetCount++;
+            }
+        }
+        return tweetCount;
+    }
+
+    public int getFavoriteCount(){
+        List<ImpersonatorPost> impersonatorPosts = getPosts();
+        int FavoritedCount = 0;
+        for (ImpersonatorPost impersonatorPost : impersonatorPosts){
+            if (impersonatorPost.isFavorited()){
+                FavoritedCount++;
+            }
+        }
+        return FavoritedCount;
+    }
 }
