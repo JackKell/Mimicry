@@ -4,6 +4,11 @@ import android.app.Activity;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,6 +23,7 @@ import com.github.jackkell.mimicryproject.databaseobjects.Impersonator;
 import com.github.jackkell.mimicryproject.databaseobjects.ImpersonatorPost;
 import com.github.jackkell.mimicryproject.R;
 import com.github.jackkell.mimicryproject.databaseobjects.TwitterUser;
+import com.github.jackkell.mimicryproject.listadpaters.TwitterUserNameAdapter;
 import com.twitter.sdk.android.Twitter;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
@@ -28,6 +34,7 @@ import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.models.Tweet;
 import com.twitter.sdk.android.tweetui.UserTimeline;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -37,30 +44,38 @@ import io.fabric.sdk.android.Fabric;
 //The logic that helps create an Impersonator Creation Activity
 public class ImpersonatorCreationActivity extends Activity {
 
-    //A tag used for debugging purposes
-    String TAG = "ImpersonatorCreationActivity";
-
     //The EditText field that allows the user to type in the Impersonators name.
-    EditText etImpersonatorName;
-    //The EditText field that allows the user to type in the Impersonator's first associated Twitter username
-    EditText et1;
-    //The EditText field that allows the user to type in the Impersonator's second associated Twitter username
-    EditText et2;
+    private EditText etImpersonatorName;
+    private List<String> twitterUserNames;
+    private RecyclerView rvTwitterUsernames;
+    private TwitterUserNameAdapter twitterUserNameAdapter;
 
     @Override
     //This runs when the activity is opened
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_impersonator_creation);
-        etImpersonatorName = (EditText) findViewById(R.id.impersonatorNameEditText);
-        et1 = (EditText) findViewById(R.id.EditText1);
-        et2  = (EditText) findViewById(R.id.EditText2);
-        Button createImpersonatorButton = (Button) findViewById(R.id.createButton);
 
+        twitterUserNames = new ArrayList<>();
+        twitterUserNames.add("");
+
+        etImpersonatorName = (EditText) findViewById(R.id.etImpersonatorName);
+
+        rvTwitterUsernames = (RecyclerView) findViewById(R.id.rvTwitterUsernames);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        rvTwitterUsernames.setLayoutManager(linearLayoutManager);
+        twitterUserNameAdapter = new TwitterUserNameAdapter(twitterUserNames);
+        rvTwitterUsernames.setAdapter(twitterUserNameAdapter);
+
+        FloatingActionButton createImpersonatorButton = (FloatingActionButton) findViewById(R.id.fabCreateImpersonator);
         createImpersonatorButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onCreateImpersonatorButtonClick();
+                // TODO: Loading Screen goes here
+                Intent impersonatorSelection = new Intent(getApplicationContext(), ImpersonatorSelectionActivity.class);
+                startActivity(impersonatorSelection);
+                finish();
             }
         });
     }
@@ -92,17 +107,12 @@ public class ImpersonatorCreationActivity extends Activity {
     //This is what occurs when the Create Impersonator button is tapped
     private void onCreateImpersonatorButtonClick(){
         final Impersonator impersonator = new Impersonator(etImpersonatorName.getText().toString());
-        Log.d(TAG, "onCreateImpersonatorButtonClick() Opening");
-        if (etImpersonatorName.getText().length() != 0 && et1.getText().length() != 0 && et2.getText().length() != 0){
+        if (validateImpersonator()){
             TwitterAuthConfig authConfig = new TwitterAuthConfig(Config.CONSUMER_KEY, Config.CONSUMER_KEY_SECRET);
             Fabric.with(this, new Twitter(authConfig));
             TwitterSession session = Twitter.getSessionManager().getActiveSession();
-            final List<TwitterUser> twitterUsers = new ArrayList<>();
-            List<String> usernames = new ArrayList<>();
-            usernames.add(et1.getText().toString());
-            usernames.add(et2.getText().toString());
 
-            for (final String username : usernames) {
+            for (final String username : twitterUserNames) {
                 TwitterCore.getInstance().getApiClient(session).getStatusesService()
                         .userTimeline(null,
                                 username,
@@ -137,5 +147,42 @@ public class ImpersonatorCreationActivity extends Activity {
         } else {
             Toast.makeText(this, "Please fill in required fields.", Toast.LENGTH_LONG).show();
         }
+    }
+
+    private boolean validateImpersonator(){
+        boolean isValid = true;
+
+        if (etImpersonatorName.getText().toString().isEmpty()){
+            isValid = false;
+        }
+
+        for (String twitterUserName : twitterUserNames){
+            if (twitterUserName.isEmpty()){
+                isValid = false;
+            }
+        }
+
+        return isValid;
+    }
+
+    private void addTextChangedListener(EditText editText){
+        editText.addTextChangedListener(new TextWatcher() {
+            int position;
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // if this is last edittext, add another.  if not, do nothing
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // if string is empty, check if at end of list. If so, do nothing.  If not at end of list, delete edittext
+            }
+        });
     }
 }

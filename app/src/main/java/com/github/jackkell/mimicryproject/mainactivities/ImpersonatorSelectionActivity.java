@@ -42,8 +42,8 @@ public class ImpersonatorSelectionActivity extends Activity {
         impersonatorSelectableAdapter = new ImpersonatorSelectableAdapter(impersonators);
         rvImpersonatorSelection.setAdapter(impersonatorSelectableAdapter);
 
-        FloatingActionButton createImpersonatorButton = (FloatingActionButton) findViewById(R.id.fabCreateImpersonator);
-        createImpersonatorButton.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton addImpersonatorButton = (FloatingActionButton) findViewById(R.id.fabCreateImpersonator);
+        addImpersonatorButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent impersonatorCreation = new Intent(getApplicationContext(), ImpersonatorCreationActivity.class);
@@ -83,6 +83,7 @@ public class ImpersonatorSelectionActivity extends Activity {
 
     // Set the list's children's onClick handler
     private void setScrollViewChildrenOnClick(){
+        Log.d("ImpersonatoreSelection", rvImpersonatorSelection.getChildCount() + "");
         for (int i = 0; i < rvImpersonatorSelection.getChildCount(); i++) {
             final int index = i;
             rvImpersonatorSelection.getChildAt(i).setOnClickListener(new View.OnClickListener() {
