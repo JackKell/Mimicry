@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -33,6 +34,7 @@ public class ImpersonatorPostAdapter extends RecyclerView.Adapter<ImpersonatorPo
         LinearLayout footerInformation;
         TextView tweetButton;
         TextView favoriteButton;
+        Button deleteButton;
 
         public ImpersonatorPostViewHolder(View itemView) {
             super(itemView);
@@ -44,6 +46,7 @@ public class ImpersonatorPostAdapter extends RecyclerView.Adapter<ImpersonatorPo
             this.footerInformation = (LinearLayout)itemView.findViewById(R.id.llFooterInformation);
             this.tweetButton = (TextView)itemView.findViewById(R.id.btnTweetContent);
             this.favoriteButton = (TextView)itemView.findViewById(R.id.btnFavoriteContent);
+            this.deleteButton = (Button)itemView.findViewById(R.id.btnDeleteContent);
         }
     }
 
@@ -60,12 +63,18 @@ public class ImpersonatorPostAdapter extends RecyclerView.Adapter<ImpersonatorPo
     }
 
     @Override
-    public void onBindViewHolder(ImpersonatorPostViewHolder impersonatorPostViewHolder, int position) {
+    public void onBindViewHolder(ImpersonatorPostViewHolder impersonatorPostViewHolder, final int position) {
         impersonatorPostViewHolder.impersonatorName.setText(posts.get(position).getImpersonatorName());
         impersonatorPostViewHolder.postBody.setText(posts.get(position).getBody());
         impersonatorPostViewHolder.postCreationDate.setText(posts.get(position).getDateCreated().toString());
         impersonatorPostViewHolder.tweetButton.setText(Boolean.toString(posts.get(position).isTweeted()));
         impersonatorPostViewHolder.favoriteButton.setText(Boolean.toString(posts.get(position).isFavorited()));
+        impersonatorPostViewHolder.deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deletePost(posts.get(position));
+            }
+        });
     }
 
     @Override
@@ -80,6 +89,12 @@ public class ImpersonatorPostAdapter extends RecyclerView.Adapter<ImpersonatorPo
 
     public void addPost(ImpersonatorPost post) {
         posts.add(post);
+        this.notifyDataSetChanged();
+    }
+
+    public void deletePost(ImpersonatorPost post) {
+        posts.remove(post);
+        post.delete();
         this.notifyDataSetChanged();
     }
 }

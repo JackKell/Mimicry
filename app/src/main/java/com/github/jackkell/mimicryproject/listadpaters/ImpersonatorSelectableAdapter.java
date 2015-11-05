@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.github.jackkell.mimicryproject.R;
@@ -29,6 +30,7 @@ public class ImpersonatorSelectableAdapter extends RecyclerView.Adapter<Imperson
         TextView tvTweetCount;
         TextView tvFavoriteLabel;
         TextView tvFavoriteCount;
+        Button btnDeleteImpersonator;
 
         public ImpersonatorViewHolder(View itemView) {
             super(itemView);
@@ -41,6 +43,7 @@ public class ImpersonatorSelectableAdapter extends RecyclerView.Adapter<Imperson
             this.tvFavoriteCount = (TextView)itemView.findViewById(R.id.tvFavoriteCount);
             this.tvTweetLabel = (TextView)itemView.findViewById(R.id.tvTweetLabel);
             this.tvTweetCount = (TextView)itemView.findViewById(R.id.tvTweetCount);
+            this.btnDeleteImpersonator = (Button)itemView.findViewById(R.id.btnDeleteImpersonator);
         }
     }
 
@@ -56,12 +59,18 @@ public class ImpersonatorSelectableAdapter extends RecyclerView.Adapter<Imperson
     }
 
     @Override
-    public void onBindViewHolder(ImpersonatorViewHolder impersonatorViewHolder, int position) {
+    public void onBindViewHolder(ImpersonatorViewHolder impersonatorViewHolder, final int position) {
         impersonatorViewHolder.tvImpersonatorName.setText(impersonators.get(position).getName());
         impersonatorViewHolder.tvDateCreated.setText(impersonators.get(position).getDateCreated());
         impersonatorViewHolder.tvPostCount.setText(Integer.toString(impersonators.get(position).getPostCount()));
         impersonatorViewHolder.tvTweetCount.setText(Integer.toString(impersonators.get(position).getTweetCount()));
         impersonatorViewHolder.tvFavoriteCount.setText(Integer.toString(impersonators.get(position).getTweetCount()));
+        impersonatorViewHolder.btnDeleteImpersonator.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteImpersonator(impersonators.get(position));
+            }
+        });
     }
 
     @Override
@@ -76,6 +85,12 @@ public class ImpersonatorSelectableAdapter extends RecyclerView.Adapter<Imperson
 
     public void addImpersonator(Impersonator impersonator){
         impersonators.add(impersonator);
+        this.notifyDataSetChanged();
+    }
+
+    public void deleteImpersonator(Impersonator impersonator){
+        impersonators.remove(impersonator);
+        impersonator.delete();
         this.notifyDataSetChanged();
     }
 }
