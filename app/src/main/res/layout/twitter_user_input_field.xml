@@ -27,6 +27,7 @@
             android:textColor="@color/black"
             android:textColorHint="@color/black"
             android:inputType="text"
+            android:imeOptions="actionNext"
             android:hint="Twitter User Name"
             android:paddingTop="16dp"/>
     </LinearLayout>

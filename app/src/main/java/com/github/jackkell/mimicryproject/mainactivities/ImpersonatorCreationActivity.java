@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.github.jackkell.mimicryproject.Config;
@@ -47,7 +48,7 @@ public class ImpersonatorCreationActivity extends Activity {
     //The EditText field that allows the user to type in the Impersonators name.
     private EditText etImpersonatorName;
     private List<String> twitterUserNames;
-    private RecyclerView rvTwitterUsernames;
+    private ListView lvTwitterUsernames;
     private TwitterUserNameAdapter twitterUserNameAdapter;
 
     @Override
@@ -61,11 +62,9 @@ public class ImpersonatorCreationActivity extends Activity {
 
         etImpersonatorName = (EditText) findViewById(R.id.etImpersonatorName);
 
-        rvTwitterUsernames = (RecyclerView) findViewById(R.id.rvTwitterUsernames);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        rvTwitterUsernames.setLayoutManager(linearLayoutManager);
-        twitterUserNameAdapter = new TwitterUserNameAdapter(twitterUserNames);
-        rvTwitterUsernames.setAdapter(twitterUserNameAdapter);
+        lvTwitterUsernames = (ListView) findViewById(R.id.lvTwitterUsernames);
+        twitterUserNameAdapter = new TwitterUserNameAdapter();
+        lvTwitterUsernames.setAdapter(twitterUserNameAdapter);
 
         FloatingActionButton createImpersonatorButton = (FloatingActionButton) findViewById(R.id.fabCreateImpersonator);
         createImpersonatorButton.setOnClickListener(new View.OnClickListener() {
