@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -51,7 +52,11 @@ public class TwitterUserNameAdapter extends BaseAdapter{
             convertView = inflater.inflate(R.layout.twitter_user_input_field, parent, false);
         }
 
-        TextWatcher lastEditTextWatcher = new TextWatcher() {
+        final EditText usernameEditText = (EditText) convertView.findViewById(R.id.etTwitterUserName);
+        usernameEditText.setText(twitterUserNames.get(position));
+
+
+        TextWatcher lastEditTextBehavior = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -64,50 +69,15 @@ public class TwitterUserNameAdapter extends BaseAdapter{
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (!s.toString().equals("")) {
-                    addNewItem();
+                if(s.toString().isEmpty()){
+                    twitterUserNames.set(position, s.toString());
+                    twitterUserNames.add("");
+                    notifyDataSetChanged();
                 }
             }
         };
 
-        EditText usernameEditText = (EditText) convertView.findViewById(R.id.etTwitterUserName);
-        usernameEditText.setText(twitterUserNames.get(position));
-
-        if(position == twitterUserNames.size() - 1) {
-            //usernameEditText.addTextChangedListener(lastEditTextWatcher);
-            usernameEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-                @Override
-                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                    if(actionId == EditorInfo.IME_ACTION_NEXT) {
-                        addNewItem();
-                    }
-                    return false;
-                }
-            });
-        }
-
-        if (position != 0 && position != twitterUserNames.size() - 1) {
-            usernameEditText.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-                }
-
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                }
-
-                @Override
-                public void afterTextChanged(Editable s) {
-                    if (s.toString().isEmpty()) {
-                        removeItem(position);
-                    }
-                }
-            });
-        }
-
-        usernameEditText.addTextChangedListener(new TextWatcher() {
+        TextWatcher standardEditTextBehavior = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -120,9 +90,86 @@ public class TwitterUserNameAdapter extends BaseAdapter{
 
             @Override
             public void afterTextChanged(Editable s) {
-                setItem(position, s.toString());
+                if(s.toString().isEmpty()){
+                    twitterUserNames.set(position, s.toString());
+                    removeItem(position);
+                    notifyDataSetChanged();
+                }
             }
-        });
+        };
+
+        if (position == twitterUserNames.size() - 1) {
+            usernameEditText.addTextChangedListener(lastEditTextBehavior);
+        } else {
+            usernameEditText.addTextChangedListener(standardEditTextBehavior);
+        }
+
+//        /*
+//        If the edit text is last in the list and the user edits it then another edit
+//        text will be added to the end of the list
+//         */
+//        if(position == twitterUserNames.size() - 1) {
+//            usernameEditText.addTextChangedListener(lastEditTextWatcher);
+//            usernameEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+//                @Override
+//                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+//                    if (actionId == EditorInfo.IME_ACTION_NEXT) {
+//                        addNewItem();
+//                    }
+//                    return false;
+//                }
+//            });
+//        }
+//
+//        /*
+//        If the given edit text is not the last in the list then it should be deleted if it is empty
+//         */
+//        if (position != twitterUserNames.size() - 1) {
+//            usernameEditText.addTextChangedListener(new TextWatcher() {
+//                @Override
+//                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//
+//                }
+//
+//                @Override
+//                public void onTextChanged(CharSequence s, int start, int before, int count) {
+//
+//                }
+//
+//                @Override
+//                public void afterTextChanged(Editable s) {
+//                    if (s.toString().isEmpty()) {
+//                        removeItem(position);
+//                    }
+//                }
+//            });
+//        }
+//
+//        /*
+//        Save the string of the edittext within the list of strings when the user leaves focus
+//         */
+//
+//        usernameEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//            @Override
+//            public void onFocusChange(View v, boolean hasFocus) {
+//                String debugString = "";
+//                for (String username : twitterUserNames) {
+//                    debugString += "\"" + username + "\" ";
+//                }
+//                Log.d("TAG", debugString);
+//                EditText currentEditText = (EditText) v;
+//                if (!hasFocus) {
+//                    setItem(position, currentEditText.getText().toString());
+//                }
+//            }
+//        });
+
+        String debugString = "";
+        for (String username : twitterUserNames) {
+            debugString += "\"" + username + "\" ";
+        }
+        Log.d("TAG", debugString);
+
         return convertView;
     }
 
