@@ -55,7 +55,7 @@ public class Impersonator extends SugarRecord<Impersonator> {
         return ImpersonatorPost.find(ImpersonatorPost.class, "impersonator = ?", "" + this.getId());
     }
 
-    public void addTwitterUser(String username, List<String> tweets) {
+    public void addTwitterUser(String username, List<String> tweets){
         TwitterUser twitterUser = new TwitterUser(username, tweets, this);
         twitterUser.save();
     }

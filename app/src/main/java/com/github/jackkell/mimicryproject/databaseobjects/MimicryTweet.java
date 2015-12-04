@@ -6,6 +6,8 @@ public class MimicryTweet extends SugarRecord<MimicryTweet> {
     private String body;
     private TwitterUser twitterUser;
 
+    public MimicryTweet(){}
+
     public MimicryTweet(String body, TwitterUser twitterUser) {
         this.body = body;
         this.twitterUser = twitterUser;
@@ -13,5 +15,9 @@ public class MimicryTweet extends SugarRecord<MimicryTweet> {
 
     public String getBody() {
         return body;
+    }
+
+    public TwitterUser getTwitterUser() {
+        return twitterUser;
     }
 }

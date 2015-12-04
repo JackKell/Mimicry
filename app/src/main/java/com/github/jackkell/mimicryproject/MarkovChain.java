@@ -22,7 +22,11 @@ public class MarkovChain {
     }
 
     public void addPhrase(String phrase) {
+        phrase = phrase.trim();
         String[] words = phrase.split(" ");
+        if (words.length <= 1) {
+            return;
+        }
         //Loop through all words
         for (int i = 0; i < words.length ; i++) {
             // If starting word

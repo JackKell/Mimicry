@@ -30,20 +30,62 @@
 
     </android.support.design.widget.TextInputLayout>
 
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/tilTwitterUserName1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColorHint="@color/black"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="16dp"
+            android:layout_below="@+id/tilImpersonatorName">
+
+            <android.support.v7.widget.AppCompatEditText
+                android:id="@+id/etTwitterUserName1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textColorHint="@color/black"
+                android:inputType="text"
+                android:hint="Twitter Username" />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/tilTwitterUserName2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColorHint="@color/black"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="16dp"
+            android:layout_below="@+id/tilTwitterUserName1">
+
+            <android.support.v7.widget.AppCompatEditText
+                android:id="@+id/etTwitterUserName2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textColorHint="@color/black"
+                android:inputType="text"
+                android:hint="Twitter Username" />
+
+        </android.support.design.widget.TextInputLayout>
+
     <ListView
-        android:id="@+id/lvTwitterUsernames"
-        android:layout_height="wrap_content"
+        android:id="@+id/lvTwitterUserNames"
         android:layout_width="match_parent"
-        android:layout_below="@id/tilImpersonatorName">
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/tilTwitterUserName2">
     </ListView>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fabCreateImpersonator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/lvTwitterUsernames"
-        android:layout_alignRight="@+id/lvTwitterUsernames"
-        android:layout_alignEnd="@+id/lvTwitterUsernames">
+        android:layout_alignBottom="@+id/lvTwitterUserNames"
+        android:layout_alignRight="@+id/lvTwitterUserNames"
+        android:layout_alignEnd="@+id/lvTwitterUserNames">
     </android.support.design.widget.FloatingActionButton>
 
 </RelativeLayout>

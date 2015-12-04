@@ -47,9 +47,8 @@ public class ImpersonatorCreationActivity extends Activity {
 
     //The EditText field that allows the user to type in the Impersonators name.
     private EditText etImpersonatorName;
-    private List<String> twitterUserNames;
-    private ListView lvTwitterUsernames;
-    private TwitterUserNameAdapter twitterUserNameAdapter;
+    private EditText etTwitterUserName1;
+    private EditText etTwitterUserName2;
 
     @Override
     //This runs when the activity is opened
@@ -57,14 +56,9 @@ public class ImpersonatorCreationActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_impersonator_creation);
 
-        twitterUserNames = new ArrayList<>();
-        twitterUserNames.add("");
-
         etImpersonatorName = (EditText) findViewById(R.id.etImpersonatorName);
-
-        lvTwitterUsernames = (ListView) findViewById(R.id.lvTwitterUsernames);
-        twitterUserNameAdapter = new TwitterUserNameAdapter();
-        lvTwitterUsernames.setAdapter(twitterUserNameAdapter);
+        etTwitterUserName1 = (EditText) findViewById(R.id.etTwitterUserName1);
+        etTwitterUserName2 = (EditText) findViewById(R.id.etTwitterUserName2);
 
         FloatingActionButton createImpersonatorButton = (FloatingActionButton) findViewById(R.id.fabCreateImpersonator);
         createImpersonatorButton.setOnClickListener(new View.OnClickListener() {
@@ -111,6 +105,10 @@ public class ImpersonatorCreationActivity extends Activity {
             Fabric.with(this, new Twitter(authConfig));
             TwitterSession session = Twitter.getSessionManager().getActiveSession();
 
+            List<String> twitterUserNames = new ArrayList<>();
+            twitterUserNames.add(etTwitterUserName1.getText().toString());
+            twitterUserNames.add(etTwitterUserName2.getText().toString());
+
             for (final String username : twitterUserNames) {
                 TwitterCore.getInstance().getApiClient(session).getStatusesService()
                         .userTimeline(null,
@@ -126,7 +124,7 @@ public class ImpersonatorCreationActivity extends Activity {
                             @Override
                             public void success(Result<List<Tweet>> result) {
                                 List<String> tweets = new ArrayList<String>();
-                                for (Tweet t : result.data) {
+                                for (Tweet t : result.data){
                                     tweets.add(t.text);
                                 }
                                 impersonator.addTwitterUser(username, tweets);
@@ -153,12 +151,17 @@ public class ImpersonatorCreationActivity extends Activity {
 
         if (etImpersonatorName.getText().toString().isEmpty()){
             isValid = false;
+            etImpersonatorName.setError("This field is required.");
         }
 
-        for (String twitterUserName : twitterUserNames){
-            if (twitterUserName.isEmpty()){
-                isValid = false;
-            }
+        if (etTwitterUserName1.getText().toString().isEmpty()){
+            isValid = false;
+            etTwitterUserName1.setError("This field is required.");
+        }
+
+        if (etTwitterUserName2.getText().toString().isEmpty()){
+            isValid = false;
+            etTwitterUserName2.setError("This field is required.");
         }
 
         return isValid;

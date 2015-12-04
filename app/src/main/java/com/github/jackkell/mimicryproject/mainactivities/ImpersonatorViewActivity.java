@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.github.jackkell.mimicryproject.Config;
 import com.github.jackkell.mimicryproject.MarkovChain;
 import com.github.jackkell.mimicryproject.databaseobjects.DatabaseOpenHelper;
 import com.github.jackkell.mimicryproject.databaseobjects.Impersonator;
@@ -25,6 +26,13 @@ import com.github.jackkell.mimicryproject.R;
 import com.github.jackkell.mimicryproject.databaseobjects.TwitterUser;
 import com.github.jackkell.mimicryproject.tasks.GetTimelineTask;
 import com.github.jackkell.mimicryproject.tasks.HttpRequestTask;
+import com.twitter.sdk.android.Twitter;
+import com.twitter.sdk.android.core.Callback;
+import com.twitter.sdk.android.core.Result;
+import com.twitter.sdk.android.core.TwitterAuthConfig;
+import com.twitter.sdk.android.core.TwitterCore;
+import com.twitter.sdk.android.core.TwitterException;
+import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.models.Tweet;
 import com.twitter.sdk.android.tweetui.Timeline;
 import com.twitter.sdk.android.tweetui.UserTimeline;
@@ -33,6 +41,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import io.fabric.sdk.android.Fabric;
 
 //Users see this screen when they tap on an Impersonator
 //In this screen, the user can see an Impersonator's posts
@@ -43,6 +53,7 @@ public class ImpersonatorViewActivity extends Activity {
     private RecyclerView impersonatorPostListView;
     private ImpersonatorPostAdapter impersonatorPostAdapter;
     private MarkovChain markovChain;
+    String LOG = "ImpersonatorViewActivity";
 
 
     @Override
@@ -57,17 +68,14 @@ public class ImpersonatorViewActivity extends Activity {
 
         List<MimicryTweet> tweets = new ArrayList<>();
         List<TwitterUser> twitterUsers = impersonator.getTwitterUsers();
+        tweets = MimicryTweet.listAll(MimicryTweet.class);
 
-        for (TwitterUser twitterUser: twitterUsers){
-            List<MimicryTweet> tempTweets = new ArrayList<>();
-            tempTweets = MimicryTweet.findWithQuery(MimicryTweet.class, "Select MimicryTweet where TwitterUser = " + twitterUser.getId());
 
-            for (MimicryTweet tweet: tempTweets) {
-                tweets.add(tweet);
-            }
-        }
+        TwitterAuthConfig authConfig = new TwitterAuthConfig(Config.CONSUMER_KEY, Config.CONSUMER_KEY_SECRET);
+        Fabric.with(this, new Twitter(authConfig));
+        TwitterSession session = Twitter.getSessionManager().getActiveSession();
 
-        for (MimicryTweet tweet: tweets){
+        for (MimicryTweet tweet : tweets) {
             markovChain.addPhrase(tweet.getBody());
         }
 
