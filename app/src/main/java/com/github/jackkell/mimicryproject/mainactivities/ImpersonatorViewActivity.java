@@ -15,13 +15,21 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.github.jackkell.mimicryproject.MarkovChain;
 import com.github.jackkell.mimicryproject.databaseobjects.DatabaseOpenHelper;
 import com.github.jackkell.mimicryproject.databaseobjects.Impersonator;
 import com.github.jackkell.mimicryproject.databaseobjects.ImpersonatorPost;
+import com.github.jackkell.mimicryproject.databaseobjects.MimicryTweet;
 import com.github.jackkell.mimicryproject.listadpaters.ImpersonatorPostAdapter;
 import com.github.jackkell.mimicryproject.R;
 import com.github.jackkell.mimicryproject.databaseobjects.TwitterUser;
+import com.github.jackkell.mimicryproject.tasks.GetTimelineTask;
+import com.github.jackkell.mimicryproject.tasks.HttpRequestTask;
+import com.twitter.sdk.android.core.models.Tweet;
+import com.twitter.sdk.android.tweetui.Timeline;
+import com.twitter.sdk.android.tweetui.UserTimeline;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -34,6 +42,8 @@ public class ImpersonatorViewActivity extends Activity {
     private Impersonator impersonator;
     private RecyclerView impersonatorPostListView;
     private ImpersonatorPostAdapter impersonatorPostAdapter;
+    private MarkovChain markovChain;
+
 
     @Override
     //Runs when this activity is opened
@@ -43,19 +53,28 @@ public class ImpersonatorViewActivity extends Activity {
         impersonator = Impersonator.findById(Impersonator.class, getIntent().getLongExtra("impersonatorID", -1));
 
         impersonatorPostListView = (RecyclerView) findViewById(R.id.rvImpersonatorPost);
+        markovChain = new MarkovChain();
+
+        List<MimicryTweet> tweets = new ArrayList<>();
+        List<TwitterUser> twitterUsers = impersonator.getTwitterUsers();
+
+        for (TwitterUser twitterUser: twitterUsers){
+            List<MimicryTweet> tempTweets = new ArrayList<>();
+            tempTweets = MimicryTweet.findWithQuery(MimicryTweet.class, "Select MimicryTweet where TwitterUser = " + twitterUser.getId());
+
+            for (MimicryTweet tweet: tempTweets) {
+                tweets.add(tweet);
+            }
+        }
+
+        for (MimicryTweet tweet: tweets){
+            markovChain.addPhrase(tweet.getBody());
+        }
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         impersonatorPostListView.setLayoutManager(linearLayoutManager);
         impersonatorPostAdapter = new ImpersonatorPostAdapter(impersonator.getPosts());
         impersonatorPostListView.setAdapter(impersonatorPostAdapter);
-
-        /*
-        if (impersonator.getPosts() != null) {
-            impersonatorPostView.setAdapter(new ImpersonatorPostAdapter(this, impersonator.getPosts()));
-        } else {
-            impersonatorPostView.setAdapter(new ImpersonatorPostAdapter(this, new ArrayList<ImpersonatorPost>()));
-        }
-        */
 
         FloatingActionButton addPostButton = (FloatingActionButton) findViewById(R.id.fabAddPost);
 
@@ -93,8 +112,8 @@ public class ImpersonatorViewActivity extends Activity {
 
     //The logic flow behind the onClick for the Floating Action Button
     private void onAddPostButtonClick(){
-        impersonator.addPost("New Post");
-        impersonatorPostAdapter.addPost(impersonator.getPosts().get(impersonator.getPosts().size()-1));
+        impersonator.addPost(markovChain.generatePhrase());
+        impersonatorPostAdapter.addPost(impersonator.getPosts().get(impersonator.getPosts().size() - 1));
         impersonatorPostListView.smoothScrollToPosition(impersonator.getPosts().size()-1);
     }
 }

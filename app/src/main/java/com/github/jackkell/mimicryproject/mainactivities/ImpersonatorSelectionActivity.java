@@ -52,6 +52,7 @@ public class ImpersonatorSelectionActivity extends Activity {
             }
         });
 
+
         rvImpersonatorSelection.post(new Runnable() {
             @Override
             public void run() {

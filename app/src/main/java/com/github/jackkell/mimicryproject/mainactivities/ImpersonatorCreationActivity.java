@@ -115,7 +115,7 @@ public class ImpersonatorCreationActivity extends Activity {
                 TwitterCore.getInstance().getApiClient(session).getStatusesService()
                         .userTimeline(null,
                                 username,
-                                10, //the number of tweets we want to fetch,
+                                100, //the number of tweets we want to fetch,
                                 null,
                                 null,
                                 null,
