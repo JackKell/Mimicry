@@ -1,8 +1,10 @@
 package com.github.jackkell.mimicryproject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Vector;
 
@@ -13,12 +15,18 @@ public class MarkovChain {
 
     private static final String START_KEY = "_start";
     private static final String END_KEY = "_end";
-    private Hashtable<String, Vector<Object>> chain;
+    private Map<String, Vector<Object>> chain;
 
     public MarkovChain() {
-        chain = new Hashtable<>();
+        this(new ArrayList<String>());
+    }
+
+    public MarkovChain(List<String> phrases) {
+        chain = new HashMap<>();
         chain.put(START_KEY, new Vector<>());
         chain.put(END_KEY, new Vector<>());
+
+        addPhrases(phrases);
     }
 
     public void addPhrase(String phrase) {
@@ -58,6 +66,12 @@ public class MarkovChain {
                     chain.put(words[i], suffix);
                 }
             }
+        }
+    }
+
+    public void addPhrases(List<String> phrases) {
+        for (String phrase : phrases) {
+            addPhrase(phrase);
         }
     }
 

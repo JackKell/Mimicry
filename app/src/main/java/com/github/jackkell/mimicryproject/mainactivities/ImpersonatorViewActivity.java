@@ -52,7 +52,6 @@ public class ImpersonatorViewActivity extends Activity {
     private Impersonator impersonator;
     private RecyclerView impersonatorPostListView;
     private ImpersonatorPostAdapter impersonatorPostAdapter;
-    private MarkovChain markovChain;
     String LOG = "ImpersonatorViewActivity";
 
 
@@ -62,22 +61,10 @@ public class ImpersonatorViewActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_impersonator_view);
         impersonator = Impersonator.findById(Impersonator.class, getIntent().getLongExtra("impersonatorID", -1));
-
         impersonatorPostListView = (RecyclerView) findViewById(R.id.rvImpersonatorPost);
-        markovChain = new MarkovChain();
-
-        List<MimicryTweet> tweets = new ArrayList<>();
-        List<TwitterUser> twitterUsers = impersonator.getTwitterUsers();
-        tweets = MimicryTweet.listAll(MimicryTweet.class);
-
 
         TwitterAuthConfig authConfig = new TwitterAuthConfig(Config.CONSUMER_KEY, Config.CONSUMER_KEY_SECRET);
         Fabric.with(this, new Twitter(authConfig));
-        TwitterSession session = Twitter.getSessionManager().getActiveSession();
-
-        for (MimicryTweet tweet : tweets) {
-            markovChain.addPhrase(tweet.getBody());
-        }
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         impersonatorPostListView.setLayoutManager(linearLayoutManager);
@@ -120,7 +107,7 @@ public class ImpersonatorViewActivity extends Activity {
 
     //The logic flow behind the onClick for the Floating Action Button
     private void onAddPostButtonClick(){
-        impersonator.addPost(markovChain.generatePhrase());
+        impersonator.addPost();
         impersonatorPostAdapter.addPost(impersonator.getPosts().get(impersonator.getPosts().size() - 1));
         impersonatorPostListView.smoothScrollToPosition(impersonator.getPosts().size()-1);
     }

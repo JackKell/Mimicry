@@ -18,11 +18,15 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.jackkell.mimicryproject.Config;
+import com.github.jackkell.mimicryproject.MarkovChain;
+import com.github.jackkell.mimicryproject.ValidTwitterUsernameCallback;
 import com.github.jackkell.mimicryproject.databaseobjects.DatabaseOpenHelper;
 import com.github.jackkell.mimicryproject.databaseobjects.Impersonator;
 import com.github.jackkell.mimicryproject.databaseobjects.ImpersonatorPost;
 import com.github.jackkell.mimicryproject.R;
+import com.github.jackkell.mimicryproject.databaseobjects.MimicryTweet;
 import com.github.jackkell.mimicryproject.databaseobjects.TwitterUser;
 import com.github.jackkell.mimicryproject.listadpaters.TwitterUserNameAdapter;
 import com.twitter.sdk.android.Twitter;
@@ -99,7 +103,21 @@ public class ImpersonatorCreationActivity extends Activity {
 
     //This is what occurs when the Create Impersonator button is tapped
     private void onCreateImpersonatorButtonClick(){
-        final Impersonator impersonator = new Impersonator(etImpersonatorName.getText().toString());
+        List<MimicryTweet> tweets = MimicryTweet.listAll(MimicryTweet.class);
+        List<String> tweetBodies = new ArrayList<>();
+        for (MimicryTweet tweet : tweets) {
+            tweetBodies.add(tweet.getBody());
+        }
+        MarkovChain markovChain = new MarkovChain(tweetBodies); // Creates the markov chain
+
+        Impersonator impersonator;
+        try {
+            impersonator = new Impersonator(etImpersonatorName.getText().toString(), markovChain);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return;
+        }
+
         if (validateImpersonator()){
             TwitterAuthConfig authConfig = new TwitterAuthConfig(Config.CONSUMER_KEY, Config.CONSUMER_KEY_SECRET);
             Fabric.with(this, new Twitter(authConfig));
@@ -109,7 +127,8 @@ public class ImpersonatorCreationActivity extends Activity {
             twitterUserNames.add(etTwitterUserName1.getText().toString());
             twitterUserNames.add(etTwitterUserName2.getText().toString());
 
-            for (final String username : twitterUserNames) {
+            for (String username : twitterUserNames) {
+                ValidTwitterUsernameCallback callback = new ValidTwitterUsernameCallback(impersonator, username);
                 TwitterCore.getInstance().getApiClient(session).getStatusesService()
                         .userTimeline(null,
                                 username,
@@ -120,22 +139,10 @@ public class ImpersonatorCreationActivity extends Activity {
                                 null,
                                 null,
                                 null,
-                        new Callback<List<Tweet>>() {
-                            @Override
-                            public void success(Result<List<Tweet>> result) {
-                                List<String> tweets = new ArrayList<String>();
-                                for (Tweet t : result.data){
-                                    tweets.add(t.text);
-                                }
-                                impersonator.addTwitterUser(username, tweets);
-                            }
-
-                            @Override
-                            public void failure(TwitterException exception) {
-                                android.util.Log.d("twittercommunity", "exception " + exception);
-                            }
-                        });
+                                callback
+                        );
             }
+
             impersonator.save();
 
             Intent impersonatorSelection = new Intent(getApplicationContext(), ImpersonatorSelectionActivity.class);
