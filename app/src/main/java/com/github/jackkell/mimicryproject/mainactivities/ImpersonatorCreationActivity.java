@@ -18,7 +18,6 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.jackkell.mimicryproject.Config;
 import com.github.jackkell.mimicryproject.MarkovChain;
 import com.github.jackkell.mimicryproject.ValidTwitterUsernameCallback;
@@ -111,12 +110,8 @@ public class ImpersonatorCreationActivity extends Activity {
         MarkovChain markovChain = new MarkovChain(tweetBodies); // Creates the markov chain
 
         Impersonator impersonator;
-        try {
-            impersonator = new Impersonator(etImpersonatorName.getText().toString(), markovChain);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            return;
-        }
+
+        impersonator = new Impersonator(etImpersonatorName.getText().toString(), markovChain);
 
         if (validateImpersonator()){
             TwitterAuthConfig authConfig = new TwitterAuthConfig(Config.CONSUMER_KEY, Config.CONSUMER_KEY_SECRET);

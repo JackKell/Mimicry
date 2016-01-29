@@ -1,7 +1,6 @@
 package com.github.jackkell.mimicryproject.databaseobjects;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.github.jackkell.mimicryproject.MarkovChain;
 import com.orm.SugarRecord;
 import com.orm.dsl.Ignore;
@@ -25,18 +24,14 @@ public class Impersonator extends SugarRecord<Impersonator> {
 
     public Impersonator(){}
 
-    public Impersonator(String name) throws JsonProcessingException {
+    public Impersonator(String name) {
         this(name, new MarkovChain());
     }
 
-    public Impersonator(String name, MarkovChain chain) throws JsonProcessingException {
+    public Impersonator(String name, MarkovChain chain){
         this.name = name;
         this.dateCreated = new Date();
         this.markovChain = chain;
-
-        // TODO: Make sure markov chain is initialized from json when pull from the db
-        ObjectMapper mapper = new ObjectMapper();
-        markovChainJson = mapper.writeValueAsString(chain);
     }
 
     //Sets the name of the Impersonator.  Will occur when editing Impersonators
