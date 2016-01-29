@@ -1,64 +1,30 @@
 package com.github.jackkell.mimicryproject.databaseobjects;
 
-import android.content.ContentValues;
-import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-
-import com.twitter.sdk.android.core.models.Tweet;
-
-import java.util.ArrayList;
+import com.orm.SugarRecord;
 import java.util.List;
 
 //A Twitter account associated with individual Impersonators
-public class TwitterUser implements DatabaseStorable {
+public class TwitterUser extends SugarRecord<TwitterUser> {
     //The Twitter username
     private String username;
-    //The list of tweets made by the Twitter user
-    public List<String> tweets;
+
+    // The id of the impersonator that this twitter user belongs to
+    private Impersonator impersonator;
+
+    public TwitterUser(){}
 
     //Creates a Twitter user based on passed attributes
-    public TwitterUser(String username, List<String> tweets) {
+    public TwitterUser(String username, List<String> tweets, Impersonator impersonator) {
+        TwitterUser twitterUser = this;
         this.username = username;
-        this.tweets = tweets;
-    }
+        this.impersonator = impersonator;
 
-    @Override
-    public void addToDatabase(SQLiteDatabase db) {
-        String twitterUserTable = DatabaseOpenHelper.TWITTER_USER;
-        ContentValues cv = new ContentValues();
-        cv.put(DatabaseOpenHelper.TWITTER_USER_USERNAME, username);
-        db.insert(twitterUserTable, null, cv);
-        for (String tweet : tweets) {
-            ContentValues newTweetRecord = new ContentValues();
-            newTweetRecord.put(DatabaseOpenHelper.TWEET_TWITTER_USER_ID, getID(db));
-            newTweetRecord.put(DatabaseOpenHelper.TWEET_BODY, tweet);
-            db.insert(DatabaseOpenHelper.TWEET, null, newTweetRecord);
+        // TODO: Later in the application try not to have sugar calls within classes only outside classes
+        for (String currentTweet : tweets) {
+
+            MimicryTweet tweet = new MimicryTweet(currentTweet, twitterUser);
+            tweet.save();
         }
-    }
-
-    @Override
-    public void removeFromDatabase(SQLiteDatabase db) {
-        String twitterUserTable = DatabaseOpenHelper.TWITTER_USER;
-        String twitterUserID = getID(db);
-        db.delete(DatabaseOpenHelper.TWEET, DatabaseOpenHelper.TWEET_TWITTER_USER_ID + " = " + twitterUserID, null);
-        db.delete(twitterUserTable, DatabaseOpenHelper.TWITTER_USER_ID + " = " + twitterUserID, null);
-    }
-
-    @Override
-    public String getID(SQLiteDatabase db) {
-        String twitterUserTable = DatabaseOpenHelper.TWITTER_USER;
-        String[] searchColumns = new String[1];
-        searchColumns[0] = DatabaseOpenHelper.TWITTER_USER_ID;
-        String selectionColumns = DatabaseOpenHelper.TWITTER_USER_USERNAME;
-
-        Cursor cursor = db.query(twitterUserTable, searchColumns, selectionColumns + " = '" + this.username + "'", null, null, null, null, null);
-
-        cursor.moveToFirst();
-
-        String ID = cursor.getString(0);
-        cursor.close();
-        return ID;
     }
 
     //GETTER

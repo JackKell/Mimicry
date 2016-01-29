@@ -5,42 +5,85 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import com.github.jackkell.mimicryproject.Config;
+import com.github.jackkell.mimicryproject.MarkovChain;
 import com.github.jackkell.mimicryproject.databaseobjects.DatabaseOpenHelper;
 import com.github.jackkell.mimicryproject.databaseobjects.Impersonator;
 import com.github.jackkell.mimicryproject.databaseobjects.ImpersonatorPost;
+import com.github.jackkell.mimicryproject.databaseobjects.MimicryTweet;
 import com.github.jackkell.mimicryproject.listadpaters.ImpersonatorPostAdapter;
 import com.github.jackkell.mimicryproject.R;
 import com.github.jackkell.mimicryproject.databaseobjects.TwitterUser;
+import com.github.jackkell.mimicryproject.tasks.GetTimelineTask;
+import com.github.jackkell.mimicryproject.tasks.HttpRequestTask;
+import com.twitter.sdk.android.Twitter;
+import com.twitter.sdk.android.core.Callback;
+import com.twitter.sdk.android.core.Result;
+import com.twitter.sdk.android.core.TwitterAuthConfig;
+import com.twitter.sdk.android.core.TwitterCore;
+import com.twitter.sdk.android.core.TwitterException;
+import com.twitter.sdk.android.core.TwitterSession;
+import com.twitter.sdk.android.core.models.Tweet;
+import com.twitter.sdk.android.tweetui.Timeline;
+import com.twitter.sdk.android.tweetui.UserTimeline;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import io.fabric.sdk.android.Fabric;
 
 //Users see this screen when they tap on an Impersonator
 //In this screen, the user can see an Impersonator's posts
 public class ImpersonatorViewActivity extends Activity {
 
     //The currently loaded Impersonator
-    Impersonator impersonator;
-    //Used for testing purposes
-    int count;
+    private Impersonator impersonator;
+    private RecyclerView impersonatorPostListView;
+    private ImpersonatorPostAdapter impersonatorPostAdapter;
+    private MarkovChain markovChain;
+    String LOG = "ImpersonatorViewActivity";
+
 
     @Override
     //Runs when this activity is opened
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_impersonator_view);
-        impersonator = getImpersonator();
+        impersonator = Impersonator.findById(Impersonator.class, getIntent().getLongExtra("impersonatorID", -1));
 
-        final ListView impersonatorPostView = (ListView) findViewById(R.id.impersonatorPostView);
+        impersonatorPostListView = (RecyclerView) findViewById(R.id.rvImpersonatorPost);
+        markovChain = new MarkovChain();
 
-        impersonatorPostView.setAdapter(new ImpersonatorPostAdapter(this, impersonator.getPosts()));
+        List<MimicryTweet> tweets = new ArrayList<>();
+        List<TwitterUser> twitterUsers = impersonator.getTwitterUsers();
+        tweets = MimicryTweet.listAll(MimicryTweet.class);
+
+
+        TwitterAuthConfig authConfig = new TwitterAuthConfig(Config.CONSUMER_KEY, Config.CONSUMER_KEY_SECRET);
+        Fabric.with(this, new Twitter(authConfig));
+        TwitterSession session = Twitter.getSessionManager().getActiveSession();
+
+        for (MimicryTweet tweet : tweets) {
+            markovChain.addPhrase(tweet.getBody());
+        }
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        impersonatorPostListView.setLayoutManager(linearLayoutManager);
+        impersonatorPostAdapter = new ImpersonatorPostAdapter(impersonator.getPosts());
+        impersonatorPostListView.setAdapter(impersonatorPostAdapter);
+
         FloatingActionButton addPostButton = (FloatingActionButton) findViewById(R.id.fabAddPost);
 
         addPostButton.setOnClickListener(new View.OnClickListener() {
@@ -49,6 +92,8 @@ public class ImpersonatorViewActivity extends Activity {
                 onAddPostButtonClick();
             }
         });
+
+        Toast.makeText(this, impersonator.getName(), Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -73,114 +118,10 @@ public class ImpersonatorViewActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    //Grabse the Impersonator from the SQLite database
-    private Impersonator getImpersonator(){
-        DatabaseOpenHelper databaseOpenHelper = new DatabaseOpenHelper(this);
-        SQLiteDatabase db = databaseOpenHelper.getDatabase(this);
-        String name;
-        List<TwitterUser> twitterUserList = new ArrayList<>();
-        List<ImpersonatorPost> impersonatorPostList = new ArrayList<>();
-        String impersonatorID = getIntent().getStringExtra("impersonatorID");
-
-        // Get Impersonator name
-        String[] impersonatorsearchColumns = new String[1];
-        impersonatorsearchColumns[0] = DatabaseOpenHelper.IMPERSONATOR_NAME;
-        Cursor nameCursor = db.query(DatabaseOpenHelper.IMPERSONATOR, impersonatorsearchColumns, DatabaseOpenHelper.IMPERSONATOR_ID + " = '" + impersonatorID + "'", null, null, null, null);
-        nameCursor.moveToFirst();
-        name = nameCursor.getString(0);
-        name = name.substring(1, name.length() - 1);
-        nameCursor.close();
-
-        // Get Twitter users
-        String[] impersonatorTwitterUserTwitterUserIDSearchColumns = new String[1];
-
-        impersonatorTwitterUserTwitterUserIDSearchColumns[0] = DatabaseOpenHelper.IMPERSONATOR_TWITTER_USER_TWITTER_USER_ID;
-        Cursor twitterUserIDscursor = db.query(DatabaseOpenHelper.IMPERSONATOR_TWITTER_USER, impersonatorTwitterUserTwitterUserIDSearchColumns,
-                DatabaseOpenHelper.IMPERSONATOR_TWITTER_USER_IMPERSONATOR_ID + " = " + impersonatorID, null, null, null, null);
-        twitterUserIDscursor.moveToFirst();
-        List<String> twitterUserIDs = new ArrayList<>();
-        while (!twitterUserIDscursor.isAfterLast()){
-            twitterUserIDs.add(twitterUserIDscursor.getString(0));
-            twitterUserIDscursor.moveToNext();
-        }
-        twitterUserIDscursor.close();
-
-        String[] twitterUserNameSearchColumns = new String[1];
-        twitterUserNameSearchColumns[0] = DatabaseOpenHelper.TWEET_BODY;
-        Log.d("ImpersonatorVA", twitterUserIDs.size() + "");
-        for (String twitterUserID : twitterUserIDs){
-            twitterUserNameSearchColumns[0] = DatabaseOpenHelper.TWITTER_USER_USERNAME;
-            Cursor twitterUserListCursor = db.query(DatabaseOpenHelper.TWITTER_USER, twitterUserNameSearchColumns, DatabaseOpenHelper.TWITTER_USER_ID + " = " + twitterUserID, null, null, null, null);
-            twitterUserListCursor.moveToFirst();
-
-            List<String> twitterUserTweets = new ArrayList<>();
-            Cursor tweetsCursor = db.query(DatabaseOpenHelper.TWEET, twitterUserNameSearchColumns, DatabaseOpenHelper.TWEET_TWITTER_USER_ID + " = " + twitterUserID, null, null, null, null);
-            while ((!tweetsCursor.isAfterLast())) {
-                twitterUserTweets.add(tweetsCursor.getString(0));
-                tweetsCursor.moveToNext();
-            }
-
-            twitterUserList.add(new TwitterUser(twitterUserListCursor.getString(0), twitterUserTweets));
-            twitterUserListCursor.close();
-        }
-
-        // Get Impersonator posts
-        String[] impersonatorPostSearchColumns = new String[3];
-        impersonatorPostSearchColumns[0] = DatabaseOpenHelper.POST_BODY;
-        impersonatorPostSearchColumns[1] = DatabaseOpenHelper.POST_IS_TWEETED;
-        impersonatorPostSearchColumns[2] = DatabaseOpenHelper.POST_IS_FAVORITED;
-        //impersonatorPostSearchColumns[3] = DatabaseOpenHelper.POST_DATE_CREATED;
-        Cursor impersonatorPostCursor = db.query(DatabaseOpenHelper.POST, impersonatorPostSearchColumns, DatabaseOpenHelper.POST_IMPERSONATOR_ID + " = " + impersonatorID, null, null, null, null);
-        impersonatorPostCursor.moveToFirst();
-
-        while (!impersonatorPostCursor.isAfterLast()){
-            ImpersonatorPost post = new ImpersonatorPost(
-                    Integer.parseInt(impersonatorID),
-                    impersonatorPostCursor.getString(0),
-                    impersonatorPostCursor.getString(1) == "True" ? true : false,
-                    impersonatorPostCursor.getString(2)== "True" ? true : false,
-                    new Date()
-            );
-
-            impersonatorPostList.add(post);
-        }
-        impersonatorPostCursor.close();
-        db.close();
-        databaseOpenHelper.close();
-
-        return new Impersonator(name,
-                twitterUserList,
-                impersonatorPostList,
-                new Date());
-    }
-
     //The logic flow behind the onClick for the Floating Action Button
     private void onAddPostButtonClick(){
-        count++;
-        ListView impersonatorPostView = (ListView) findViewById(R.id.impersonatorPostView);
-
-        List<ImpersonatorPost> showPost = new ArrayList<>();
-        for (int i = 0; i < count; i++){
-            showPost.add(new ImpersonatorPost(1, "New POST", false, false, new Date()));
-        }
-        impersonatorPostView.setAdapter(new ImpersonatorPostAdapter(this, showPost));
-        impersonatorPostView.smoothScrollToPosition(impersonatorPostView.getChildCount());
-    }
-
-    //A function used for testing purposes
-    private List<ImpersonatorPost> allTweetsArePosts(Impersonator impersonator){
-        List<String> newPosts = new ArrayList<>();
-        List<ImpersonatorPost> impersonatorPostList = new ArrayList<>();
-        Log.d("ImpersonatorVA", impersonator.getTwitterUsers().size() + "");
-        for (String tweet: impersonator.getTwitterUsers().get(0).tweets){
-            newPosts.add(tweet);
-        }
-        for (String tweet : impersonator.getTwitterUsers().get(1).tweets){
-            newPosts.add(tweet);
-        }
-        for (String post : newPosts){
-            impersonatorPostList.add(new ImpersonatorPost(0, post, false, false, new Date()));
-        }
-        return impersonatorPostList;
+        impersonator.addPost(markovChain.generatePhrase());
+        impersonatorPostAdapter.addPost(impersonator.getPosts().get(impersonator.getPosts().size() - 1));
+        impersonatorPostListView.smoothScrollToPosition(impersonator.getPosts().size()-1);
     }
 }

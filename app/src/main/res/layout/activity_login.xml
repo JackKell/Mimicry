@@ -4,8 +4,8 @@
     android:layout_height="match_parent"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingTop="16dp"
+    android:paddingBottom="16dp"
     tools:context="com.github.jackkell.mimicryproject.mainactivities.LoginActivity">
 
     <com.twitter.sdk.android.core.identity.TwitterLoginButton
@@ -13,7 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:layout_marginTop="@dimen/margin_large"
+        android:layout_marginTop="30sp"
         android:layout_below="@+id/tvLoginPrompt"/>
 
     <TextView
@@ -22,9 +22,9 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Mimicry Project"
-        android:textSize="@dimen/h1"
+        android:textSize="50sp"
         android:gravity="center"
-        android:layout_marginBottom="@dimen/margin_large"
+        android:layout_marginBottom="30sp"
         android:layout_alignParentTop="true"/>
 
     <TextView
@@ -32,10 +32,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="EARLY ALPHA\nPlease login to\nTwitter to begin"
-        android:textSize="@dimen/h3"
+        android:textSize="30sp"
         android:gravity="center"
-        android:layout_marginTop="@dimen/margin_large"
-        android:layout_marginBottom="@dimen/margin_large"
+        android:layout_marginTop="30sp"
+        android:layout_marginBottom="30sp"
         android:layout_below="@+id/tvMimicryProject"/>
 
 </RelativeLayout>

@@ -3,25 +3,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="com.github.jackkell.mimicryproject.mainactivities.ImpersonatorViewActivity">
+    tools:context=".mainactivities.ImpersonatorViewActivity">
 
-    <ListView
-        android:id="@+id/impersonatorPostView"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvImpersonatorPost"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-    </ListView>
+    </android.support.v7.widget.RecyclerView>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fabAddPost"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/impersonatorPostView"
-        android:layout_alignRight="@+id/impersonatorPostView"
-        android:layout_alignEnd="@+id/impersonatorPostView">
+        android:layout_alignBottom="@+id/rvImpersonatorPost"
+        android:layout_alignRight="@+id/rvImpersonatorPost"
+        android:layout_alignEnd="@+id/rvImpersonatorPost">
     </android.support.design.widget.FloatingActionButton>
 
 </RelativeLayout>

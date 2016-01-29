@@ -4,12 +4,18 @@ import android.app.Activity;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.github.jackkell.mimicryproject.Config;
@@ -18,6 +24,7 @@ import com.github.jackkell.mimicryproject.databaseobjects.Impersonator;
 import com.github.jackkell.mimicryproject.databaseobjects.ImpersonatorPost;
 import com.github.jackkell.mimicryproject.R;
 import com.github.jackkell.mimicryproject.databaseobjects.TwitterUser;
+import com.github.jackkell.mimicryproject.listadpaters.TwitterUserNameAdapter;
 import com.twitter.sdk.android.Twitter;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
@@ -28,6 +35,7 @@ import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.models.Tweet;
 import com.twitter.sdk.android.tweetui.UserTimeline;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -37,30 +45,30 @@ import io.fabric.sdk.android.Fabric;
 //The logic that helps create an Impersonator Creation Activity
 public class ImpersonatorCreationActivity extends Activity {
 
-    //A tag used for debugging purposes
-    String TAG = "ImpersonatorCreationActivity";
-
     //The EditText field that allows the user to type in the Impersonators name.
-    EditText etImpersonatorName;
-    //The EditText field that allows the user to type in the Impersonator's first associated Twitter username
-    EditText et1;
-    //The EditText field that allows the user to type in the Impersonator's second associated Twitter username
-    EditText et2;
+    private EditText etImpersonatorName;
+    private EditText etTwitterUserName1;
+    private EditText etTwitterUserName2;
 
     @Override
     //This runs when the activity is opened
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_impersonator_creation);
-        etImpersonatorName = (EditText) findViewById(R.id.impersonatorNameEditText);
-        et1 = (EditText) findViewById(R.id.EditText1);
-        et2  = (EditText) findViewById(R.id.EditText2);
-        Button createImpersonatorButton = (Button) findViewById(R.id.createButton);
 
+        etImpersonatorName = (EditText) findViewById(R.id.etImpersonatorName);
+        etTwitterUserName1 = (EditText) findViewById(R.id.etTwitterUserName1);
+        etTwitterUserName2 = (EditText) findViewById(R.id.etTwitterUserName2);
+
+        FloatingActionButton createImpersonatorButton = (FloatingActionButton) findViewById(R.id.fabCreateImpersonator);
         createImpersonatorButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onCreateImpersonatorButtonClick();
+                // TODO: Loading Screen goes here
+                Intent impersonatorSelection = new Intent(getApplicationContext(), ImpersonatorSelectionActivity.class);
+                startActivity(impersonatorSelection);
+                finish();
             }
         });
     }
@@ -91,45 +99,44 @@ public class ImpersonatorCreationActivity extends Activity {
 
     //This is what occurs when the Create Impersonator button is tapped
     private void onCreateImpersonatorButtonClick(){
-        Log.d(TAG, "onCreateImpersonatorButtonClick() Opening");
-        if (etImpersonatorName.getText().length() != 0 && et1.getText().length() != 0 && et2.getText().length() != 0){
-            final Impersonator impersonator = createImpersonator();
-
+        final Impersonator impersonator = new Impersonator(etImpersonatorName.getText().toString());
+        if (validateImpersonator()){
             TwitterAuthConfig authConfig = new TwitterAuthConfig(Config.CONSUMER_KEY, Config.CONSUMER_KEY_SECRET);
             Fabric.with(this, new Twitter(authConfig));
             TwitterSession session = Twitter.getSessionManager().getActiveSession();
-            for (final TwitterUser twitterUser : impersonator.getTwitterUsers()) {
+
+            List<String> twitterUserNames = new ArrayList<>();
+            twitterUserNames.add(etTwitterUserName1.getText().toString());
+            twitterUserNames.add(etTwitterUserName2.getText().toString());
+
+            for (final String username : twitterUserNames) {
                 TwitterCore.getInstance().getApiClient(session).getStatusesService()
                         .userTimeline(null,
-                                twitterUser.getUsername(),
-                                10, //the number of tweets we want to fetch,
+                                username,
+                                100, //the number of tweets we want to fetch,
                                 null,
                                 null,
                                 null,
                                 null,
                                 null,
                                 null,
-                        new Callback<List<Tweet>>() {
-                            @Override
-                            public void success(Result<List<Tweet>> result) {
-                                for (Tweet t : result.data) {
-                                    twitterUser.tweets.add(t.text);
-                                    android.util.Log.d("twittercommunity", "tweet is " + t.text);
-                                }
-                            }
+                                new Callback<List<Tweet>>() {
+                                    @Override
+                                    public void success(Result<List<Tweet>> result) {
+                                        List<String> tweets = new ArrayList<String>();
+                                        for (Tweet t : result.data){
+                                            tweets.add(t.text);
+                                        }
+                                        impersonator.addTwitterUser(username, tweets);
+                                    }
 
-                            @Override
-                            public void failure(TwitterException exception) {
-                                android.util.Log.d("twittercommunity", "exception " + exception);
-                            }
-                        });
+                                    @Override
+                                    public void failure(TwitterException exception) {
+                                        android.util.Log.d("twittercommunity", "exception " + exception);
+                                    }
+                                });
             }
-
-            DatabaseOpenHelper dboh = new DatabaseOpenHelper(this);
-            SQLiteDatabase db = dboh.getDatabase(this);
-            impersonator.addToDatabase(db);
-            db.close();
-            dboh.close();
+            impersonator.save();
 
             Intent impersonatorSelection = new Intent(getApplicationContext(), ImpersonatorSelectionActivity.class);
             startActivity(impersonatorSelection);
@@ -139,12 +146,45 @@ public class ImpersonatorCreationActivity extends Activity {
         }
     }
 
-    //The logic flow for the creation of the Impersonator
-    private Impersonator createImpersonator(){
-        List<TwitterUser> twitterUserList = new ArrayList<>(2);
-        twitterUserList.add(new TwitterUser(et1.getText().toString(), new ArrayList<String>()));
-        twitterUserList.add(new TwitterUser(et2.getText().toString(), new ArrayList<String>()));
-        List<ImpersonatorPost> impersonatorPostList = new ArrayList<>();
-        return new Impersonator(etImpersonatorName.getText().toString(), twitterUserList, impersonatorPostList, new Date());
+    private boolean validateImpersonator(){
+        boolean isValid = true;
+
+        if (etImpersonatorName.getText().toString().isEmpty()){
+            isValid = false;
+            etImpersonatorName.setError("This field is required.");
+        }
+
+        if (etTwitterUserName1.getText().toString().isEmpty()){
+            isValid = false;
+            etTwitterUserName1.setError("This field is required.");
+        }
+
+        if (etTwitterUserName2.getText().toString().isEmpty()){
+            isValid = false;
+            etTwitterUserName2.setError("This field is required.");
+        }
+
+        return isValid;
+    }
+
+    private void addTextChangedListener(EditText editText){
+        editText.addTextChangedListener(new TextWatcher() {
+            int position;
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // if this is last edittext, add another.  if not, do nothing
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // if string is empty, check if at end of list. If so, do nothing.  If not at end of list, delete edittext
+            }
+        });
     }
 }

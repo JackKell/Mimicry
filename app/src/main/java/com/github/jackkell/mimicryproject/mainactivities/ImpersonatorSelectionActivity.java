@@ -2,62 +2,72 @@ package com.github.jackkell.mimicryproject.mainactivities;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 
-import com.github.jackkell.mimicryproject.databaseobjects.DatabaseOpenHelper;
 import com.github.jackkell.mimicryproject.databaseobjects.Impersonator;
-import com.github.jackkell.mimicryproject.databaseobjects.ImpersonatorPost;
-import com.github.jackkell.mimicryproject.listadpaters.ImpersonatorSelectableAdapter;
 import com.github.jackkell.mimicryproject.R;
-import com.github.jackkell.mimicryproject.databaseobjects.TwitterUser;
+import com.github.jackkell.mimicryproject.listadpaters.ImpersonatorSelectableAdapter;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-//This screen is used to load all of the Impersonators from the database and display them on screen in a List View
-//It displays each Impersonator and gives information about their posts
+// This screen is used to load all of the Impersonators from the database and display them on screen in a List View
+// It displays each Impersonator and gives information about their posts
 public class ImpersonatorSelectionActivity extends Activity {
 
+    // List of impersonators in the database
+    private List<Impersonator> impersonators;
+    private RecyclerView rvImpersonatorSelection;
+    private ImpersonatorSelectableAdapter impersonatorSelectableAdapter;
+    private String TAG = "ImpersonatorSelectionActivity";
+
     @Override
-    //This runs when the activity is opened
+    // This runs when the activity is opened
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_impersonator_selection);
+        impersonators = Impersonator.listAll(Impersonator.class);
 
-        ListView impersonatorSelectionListView = (ListView) findViewById(R.id.impersonatorSelectionListView);
-        final List<Impersonator> impersonators = getStoredImpersonators();
+        rvImpersonatorSelection = (RecyclerView) findViewById(R.id.rvImpersonatorSelection);
 
-        impersonatorSelectionListView.setAdapter(new ImpersonatorSelectableAdapter(this, impersonators));
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        rvImpersonatorSelection.setLayoutManager(linearLayoutManager);
+        impersonatorSelectableAdapter = new ImpersonatorSelectableAdapter(impersonators);
+        rvImpersonatorSelection.setAdapter(impersonatorSelectableAdapter);
 
-        FloatingActionButton createImpersonatorButton = (FloatingActionButton) findViewById(R.id.fabCreateImpersonator);
-        createImpersonatorButton.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton addImpersonatorButton = (FloatingActionButton) findViewById(R.id.fabCreateImpersonator);
+        addImpersonatorButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onCreateImpersonatorButtonClick();
+                Intent impersonatorCreation = new Intent(getApplicationContext(), ImpersonatorCreationActivity.class);
+                startActivity(impersonatorCreation);
+                finish();
             }
         });
 
-        impersonatorSelectionListView.post(new Runnable() {
+
+        rvImpersonatorSelection.post(new Runnable() {
             @Override
             public void run() {
                 setScrollViewChildrenOnClick();
             }
         });
-
-        //onResume();
     }
 
     @Override
-    //An automatically generated function
+    protected void onResume(){
+        super.onResume();
+        impersonatorSelectableAdapter.notifyDataSetChanged();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_impersonator_selection, menu);
@@ -65,7 +75,6 @@ public class ImpersonatorSelectionActivity extends Activity {
     }
 
     @Override
-    //An automatically generated function
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -79,29 +88,16 @@ public class ImpersonatorSelectionActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    //The logic flow for when the Impersonator Creation button is clicked
-    private void onCreateImpersonatorButtonClick() {
-        Intent impersonatorCreation = new Intent(getApplicationContext(), ImpersonatorCreationActivity.class);
-        startActivity(impersonatorCreation);
-        finish();
-    }
-
-    //Set the list's children's onClick handler
+    // Set the list's children's onClick handler
     private void setScrollViewChildrenOnClick(){
-        final List<Impersonator> impersonators = getStoredImpersonators();
-        ListView lv = (ListView) findViewById(R.id.impersonatorSelectionListView);
-        Log.d("ImpersonatoreSelection", lv.getChildCount() + "");
-        for (int i = 0; i < lv.getChildCount(); i++) {
-            Log.d("ImpersonatoreSelection", "TESTEST");
+        Log.d("ImpersonatoreSelection", rvImpersonatorSelection.getChildCount() + "");
+        for (int i = 0; i < rvImpersonatorSelection.getChildCount(); i++) {
             final int index = i;
-
-            lv.getChildAt(i).setOnClickListener(new View.OnClickListener() {
+            rvImpersonatorSelection.getChildAt(i).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    DatabaseOpenHelper databaseOpenHelper = new DatabaseOpenHelper(getBaseContext());
-                    SQLiteDatabase db = databaseOpenHelper.getDatabase(getBaseContext());
-                    String ID = impersonators.get(index).getID(db);
-
+                    long ID = impersonators.get(index).getId();
+                    Log.d(TAG, "ID is " + ID);
                     Intent impersonatorCreation = new Intent(getBaseContext(), ImpersonatorViewActivity.class);
                     impersonatorCreation.putExtra("impersonatorID", ID);
                     impersonatorCreation.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -109,104 +105,5 @@ public class ImpersonatorSelectionActivity extends Activity {
                 }
             });
         }
-    }
-
-    //Grabs all of the Impersonators stored within the database and builds their formatted box
-    private List<Impersonator> getStoredImpersonators() {
-        DatabaseOpenHelper databaseOpenHelper = new DatabaseOpenHelper(this);
-        SQLiteDatabase db = databaseOpenHelper.getDatabase(this);
-        List<Impersonator> impersonatorList = new ArrayList<>();
-        List<String> impersonatorIDs = new ArrayList<>();
-        String[] impersonatorIDssearchColumns = new String[1];
-        impersonatorIDssearchColumns[0] = DatabaseOpenHelper.IMPERSONATOR_ID;
-
-        Cursor impersonatorIDsCursor = db.query(DatabaseOpenHelper.IMPERSONATOR, impersonatorIDssearchColumns, null, null, null, null, null);
-        impersonatorIDsCursor.moveToFirst();
-
-        while (!impersonatorIDsCursor.isAfterLast()){
-            impersonatorIDs.add(impersonatorIDsCursor.getString(0));
-            impersonatorIDsCursor.moveToNext();
-        }
-        impersonatorIDsCursor.close();
-
-        for (String impersonatorID : impersonatorIDs){
-            String name;
-            List<TwitterUser> twitterUserList = new ArrayList<>();
-            List<ImpersonatorPost> impersonatorPostList = new ArrayList<>();
-            Date dateCreated;
-
-            // Get Impersonator name
-            String[] impersonatorsearchColumns = new String[1];
-            impersonatorsearchColumns[0] = DatabaseOpenHelper.IMPERSONATOR_NAME;
-            Cursor nameCursor = db.query(DatabaseOpenHelper.IMPERSONATOR, impersonatorsearchColumns, DatabaseOpenHelper.IMPERSONATOR_ID + " = " + impersonatorID, null, null, null, null);
-            nameCursor.moveToFirst();
-            name = nameCursor.getString(0);
-            name = name.substring(1, name.length() - 1);
-            nameCursor.close();
-
-            // Get Twitter users
-            String[] impersonatorTwitterUserTwitterUserIDSearchColumns = new String[1];
-            impersonatorTwitterUserTwitterUserIDSearchColumns[0] = DatabaseOpenHelper.IMPERSONATOR_TWITTER_USER_TWITTER_USER_ID;
-            Cursor twitterUserIDscursor = db.query(DatabaseOpenHelper.IMPERSONATOR_TWITTER_USER, impersonatorTwitterUserTwitterUserIDSearchColumns,
-                    DatabaseOpenHelper.IMPERSONATOR_TWITTER_USER_IMPERSONATOR_ID + " = " + impersonatorID, null, null, null, null);
-            twitterUserIDscursor.moveToFirst();
-            List<String> twitterUserIDs = new ArrayList<>();
-            while (!twitterUserIDscursor.isAfterLast()){
-                twitterUserIDs.add(twitterUserIDscursor.getString(0));
-            }
-            twitterUserIDscursor.close();
-
-            String[] twitterUserNameSearchColumns = new String[1];
-            twitterUserNameSearchColumns[0] = DatabaseOpenHelper.TWEET_BODY;
-            for (String twitterUserID : twitterUserIDs){
-                twitterUserNameSearchColumns[0] = DatabaseOpenHelper.TWITTER_USER_USERNAME;
-                Cursor twitterUserListCursor = db.query(DatabaseOpenHelper.TWITTER_USER, twitterUserNameSearchColumns, DatabaseOpenHelper.TWITTER_USER_ID + " = " + twitterUserID, null, null, null, null);
-                twitterUserListCursor.moveToFirst();
-
-                List<String> twitterUserTweets = new ArrayList<>();
-                Cursor tweetsCursor = db.query(DatabaseOpenHelper.TWEET, twitterUserNameSearchColumns, DatabaseOpenHelper.TWEET_TWITTER_USER_ID + " = " + twitterUserID, null, null, null, null);
-                while ((!tweetsCursor.isAfterLast())) {
-                    twitterUserTweets.add(tweetsCursor.getString(0));
-                    tweetsCursor.moveToNext();
-                }
-
-                twitterUserList.add(new TwitterUser(twitterUserListCursor.getString(0), twitterUserTweets));
-                twitterUserListCursor.close();
-            }
-
-            // Get Impersonator posts
-            String[] impersonatorPostSearchColumns = new String[3];
-            impersonatorPostSearchColumns[0] = DatabaseOpenHelper.POST_BODY;
-            impersonatorPostSearchColumns[1] = DatabaseOpenHelper.POST_IS_TWEETED;
-            impersonatorPostSearchColumns[2] = DatabaseOpenHelper.POST_IS_FAVORITED;
-            //impersonatorPostSearchColumns[3] = DatabaseOpenHelper.POST_DATE_CREATED;
-            Cursor impersonatorPostCursor = db.query(DatabaseOpenHelper.POST, impersonatorPostSearchColumns, DatabaseOpenHelper.POST_IMPERSONATOR_ID + " = " + impersonatorID, null, null, null, null);
-            impersonatorPostCursor.moveToFirst();
-
-            while (!impersonatorPostCursor.isAfterLast()){
-                ImpersonatorPost post = new ImpersonatorPost(
-                        Integer.parseInt(impersonatorID),
-                        impersonatorPostCursor.getString(0),
-                        impersonatorPostCursor.getString(1) == "True" ? true : false,
-                        impersonatorPostCursor.getString(2)== "True" ? true : false,
-                        new Date()
-                );
-
-                impersonatorPostList.add(post);
-            }
-            impersonatorPostCursor.close();
-
-            Impersonator impersonator = new Impersonator(name,
-                    twitterUserList,
-                    impersonatorPostList,
-                    new Date());
-
-            impersonatorList.add(impersonator);
-
-        }
-        databaseOpenHelper.close();
-        db.close();
-
-        return impersonatorList;
     }
 }

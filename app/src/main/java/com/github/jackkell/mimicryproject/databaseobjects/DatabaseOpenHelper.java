@@ -34,7 +34,7 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
     //The current context that the database is operating within
     private final Context myContext;
 
-    //A date formater that is used to change date-times to show only the month-day-year:hours-seconds-milliseconds
+    //A date formatter that is used to change date-times to show only the month-day-year:hours-seconds-milliseconds
     public static final SimpleDateFormat DATE_TIME_FORMAT = new SimpleDateFormat("MM-dd-yyyy:HH-mm-ss-SSS", Locale.ENGLISH);
     public static final SimpleDateFormat DAY_FORMAT = new SimpleDateFormat("MM-dd", Locale.ENGLISH);
 
