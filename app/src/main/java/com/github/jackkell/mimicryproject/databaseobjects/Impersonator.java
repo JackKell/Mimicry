@@ -1,12 +1,13 @@
 package com.github.jackkell.mimicryproject.databaseobjects;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.jackkell.mimicryproject.MarkovChain;
-import com.orm.SugarRecord;
-import com.orm.dsl.Ignore;
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
-import java.io.IOException;
+import com.orm.SugarRecord;
+
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -18,25 +19,15 @@ public class Impersonator extends SugarRecord<Impersonator> {
     //This stores the date that the Impersonator was created
     private Date dateCreated;
 
-    @Ignore
-    private MarkovChain markovChain;
-
-    private String markovChainJson;
-
     public Impersonator(){}
 
-    public Impersonator(String name) throws JsonProcessingException {
-        this(name, new MarkovChain());
+    public Impersonator(String name){
+        this(name, new Date());
     }
 
-    public Impersonator(String name, MarkovChain chain) throws JsonProcessingException {
+    public Impersonator(String name, Date dateCreated){
         this.name = name;
-        this.dateCreated = new Date();
-        this.markovChain = chain;
-
-        // TODO: Make sure markov chain is initialized from json when pull from the db
-        ObjectMapper mapper = new ObjectMapper();
-        markovChainJson = mapper.writeValueAsString(chain);
+        this.dateCreated = dateCreated;
     }
 
     //Sets the name of the Impersonator.  Will occur when editing Impersonators
@@ -69,9 +60,8 @@ public class Impersonator extends SugarRecord<Impersonator> {
         twitterUser.save();
     }
 
-    public void addPost() {
-        String phrase = markovChain.generatePhrase();
-        ImpersonatorPost impersonatorPost = new ImpersonatorPost(phrase, this);
+    public void addPost(String body) {
+        ImpersonatorPost impersonatorPost = new ImpersonatorPost(body, this);
         impersonatorPost.save();
     }
 
@@ -99,9 +89,5 @@ public class Impersonator extends SugarRecord<Impersonator> {
             }
         }
         return FavoritedCount;
-    }
-
-    public MarkovChain getMarkovChain() throws IOException {
-        return markovChain;
     }
 }
