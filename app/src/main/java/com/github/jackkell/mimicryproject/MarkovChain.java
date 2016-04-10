@@ -8,9 +8,8 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Vector;
 
-/**
- * Created by Jackkell on 12/2/2015.
- */
+
+
 public class MarkovChain {
 
     private static final String START_KEY = "_start";
