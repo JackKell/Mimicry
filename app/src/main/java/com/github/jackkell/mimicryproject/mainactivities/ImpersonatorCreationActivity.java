@@ -17,7 +17,6 @@ import com.github.jackkell.mimicryproject.MarkovChain;
 import com.github.jackkell.mimicryproject.R;
 import com.github.jackkell.mimicryproject.ValidTwitterUsernameCallback;
 import com.github.jackkell.mimicryproject.entity.Impersonator;
-import com.github.jackkell.mimicryproject.databaseobjects.MimicryTweet;
 import com.twitter.sdk.android.Twitter;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
 import com.twitter.sdk.android.core.TwitterCore;
@@ -85,11 +84,7 @@ public class ImpersonatorCreationActivity extends Activity {
 
     //This is what occurs when the Create Impersonator button is tapped
     private void onCreateImpersonatorButtonClick(){
-        List<MimicryTweet> tweets = new ArrayList<>();
         List<String> tweetBodies = new ArrayList<>();
-        for (MimicryTweet tweet : tweets) {
-            tweetBodies.add(tweet.getBody());
-        }
         MarkovChain markovChain = new MarkovChain(tweetBodies); // Creates the markov chain
 
         Impersonator impersonator;

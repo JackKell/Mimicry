@@ -1,21 +1,17 @@
 package com.github.jackkell.mimicryproject.listadpaters;
 
-import android.content.Context;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.github.jackkell.mimicryproject.R;
-import com.github.jackkell.mimicryproject.databaseobjects.ImpersonatorPost;
-
-import org.w3c.dom.Text;
+import com.github.jackkell.mimicryproject.entity.ImpersonatorPost;
 
 import java.util.List;
 
@@ -64,11 +60,13 @@ public class ImpersonatorPostAdapter extends RecyclerView.Adapter<ImpersonatorPo
 
     @Override
     public void onBindViewHolder(ImpersonatorPostViewHolder impersonatorPostViewHolder, final int position) {
-        impersonatorPostViewHolder.impersonatorName.setText(posts.get(position).getImpersonatorName());
-        impersonatorPostViewHolder.postBody.setText(posts.get(position).getBody());
-        impersonatorPostViewHolder.postCreationDate.setText(posts.get(position).getDateCreated().toString());
-        impersonatorPostViewHolder.tweetButton.setText(Boolean.toString(posts.get(position).isTweeted()));
-        impersonatorPostViewHolder.favoriteButton.setText(Boolean.toString(posts.get(position).isFavorited()));
+        ImpersonatorPost currentPost = posts.get(position);
+        // TODO: Make a way to get the impersonator name from a given post
+        //impersonatorPostViewHolder.impersonatorName.setText(currentPost.getImpersonatorName());
+        impersonatorPostViewHolder.postBody.setText(currentPost.getBody());
+        impersonatorPostViewHolder.postCreationDate.setText(currentPost.getDateCreated().toString());
+        impersonatorPostViewHolder.tweetButton.setText(Boolean.toString(currentPost.isTweeted()));
+        impersonatorPostViewHolder.favoriteButton.setText(Boolean.toString(currentPost.isFavorited()));
         impersonatorPostViewHolder.deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

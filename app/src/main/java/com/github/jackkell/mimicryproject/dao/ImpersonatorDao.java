@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.github.jackkell.mimicryproject.MarkovChain;
-import com.github.jackkell.mimicryproject.databaseobjects.DatabaseOpenHelper;
+import com.github.jackkell.mimicryproject.entity.DatabaseOpenHelper;
 import com.github.jackkell.mimicryproject.entity.Impersonator;
 
 import org.json.JSONArray;
@@ -41,7 +41,7 @@ public class ImpersonatorDao implements Dao<Impersonator> {
         // The values to insert
         ContentValues values = new ContentValues();
         values.put(Impersonator.NAME, object.getName());
-        values.put(Impersonator.DATE_CREATED, object.getDateCreated());
+        values.put(Impersonator.DATE_CREATED, object.getDateCreated().getTime());
         values.put(Impersonator.MARKOV_CHAIN, object.getMarkovChain().toString());
 
         // Insert into the database, returning the new record id
@@ -59,7 +59,8 @@ public class ImpersonatorDao implements Dao<Impersonator> {
             SQLiteDatabase db = dbHelper.getReadableDatabase();
 
             // Select the impersonator data
-            Cursor impersonatorCursor = db.rawQuery("SELECT * FROM "+ Impersonator.TABLE_NAME + " where id = ?", new String[]{String.valueOf(id)});
+            Cursor impersonatorCursor = db.rawQuery("SELECT * FROM "+ Impersonator.TABLE_NAME + " where id = ? ", new String[]{String.valueOf(id)});
+
             impersonatorCursor.moveToFirst();
             String name = impersonatorCursor.getString(
                     impersonatorCursor.getColumnIndexOrThrow(Impersonator.NAME)

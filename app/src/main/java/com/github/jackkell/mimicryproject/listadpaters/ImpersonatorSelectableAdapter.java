@@ -59,7 +59,8 @@ public class ImpersonatorSelectableAdapter extends RecyclerView.Adapter<Imperson
     @Override
     public void onBindViewHolder(ImpersonatorViewHolder impersonatorViewHolder, final int position) {
         impersonatorViewHolder.tvImpersonatorName.setText(impersonators.get(position).getName());
-        impersonatorViewHolder.tvDateCreated.setText(impersonators.get(position).getDateCreated());
+        // TODO:
+        //impersonatorViewHolder.tvDateCreated.setText(impersonators.get(position).getDateCreated());
         //impersonatorViewHolder.tvPostCount.setText(Integer.toString(impersonators.get(position).getPostCount()));
         //impersonatorViewHolder.tvTweetCount.setText(Integer.toString(impersonators.get(position).getTweetCount()));
         //impersonatorViewHolder.tvFavoriteCount.setText(Integer.toString(impersonators.get(position).getTweetCount()));

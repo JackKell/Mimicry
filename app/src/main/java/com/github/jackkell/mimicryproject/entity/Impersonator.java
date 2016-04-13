@@ -2,10 +2,6 @@ package com.github.jackkell.mimicryproject.entity;
 
 
 import com.github.jackkell.mimicryproject.MarkovChain;
-import com.github.jackkell.mimicryproject.databaseobjects.DatabaseOpenHelper;
-import com.github.jackkell.mimicryproject.databaseobjects.ImpersonatorPost;
-import com.github.jackkell.mimicryproject.databaseobjects.TwitterUser;
-import com.github.jackkell.mimicryproject.entity.Entity;
 
 import org.json.JSONObject;
 
@@ -27,7 +23,7 @@ public class Impersonator extends Entity {
             "CREATE TABLE " + TABLE_NAME + " ( " +
                     ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     NAME + " VARCHAR(140) NOT NULL, " +
-                    DATE_CREATED + " DATE NOT NULL, " +
+                    DATE_CREATED + " LONG NOT NULL, " +
                     MARKOV_CHAIN + " TEXT NOT NULL);";
 
     //Every Impersonator needs a name for identification reasons
@@ -75,19 +71,18 @@ public class Impersonator extends Entity {
     }
 
     //Helps display the date the Impersonator was created
-    public String getDateCreated(){
-        dateCreated.getTime();
-        return DatabaseOpenHelper.DAY_FORMAT.format(dateCreated);
+    public Date getDateCreated(){
+        return dateCreated;
     }
 
     public void addTwitterUser(String username, List<String> tweets){
-        TwitterUser twitterUser = new TwitterUser(username, tweets, this);
+        //TwitterUser twitterUser = new TwitterUser(username, tweets, this);
         //twitterUser.save();
     }
 
     public void addPost() {
         String phrase = markovChain.generatePhrase();
-        ImpersonatorPost impersonatorPost = new ImpersonatorPost(phrase, this);
+        ImpersonatorPost impersonatorPost = new ImpersonatorPost(id, phrase);
         //impersonatorPost.save();
     }
 
