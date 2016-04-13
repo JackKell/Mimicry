@@ -1,10 +1,11 @@
 package com.github.jackkell.mimicryproject.databaseobjects;
 
-import com.orm.SugarRecord;
+import com.github.jackkell.mimicryproject.entity.Impersonator;
+
 import java.util.List;
 
 //A Twitter account associated with individual Impersonators
-public class TwitterUser extends SugarRecord<TwitterUser> {
+public class TwitterUser{
     //The Twitter username
     private String username;
 
@@ -23,7 +24,7 @@ public class TwitterUser extends SugarRecord<TwitterUser> {
         for (String currentTweet : tweets) {
 
             MimicryTweet tweet = new MimicryTweet(currentTweet, twitterUser);
-            tweet.save();
+            //tweet.save();
         }
     }
 

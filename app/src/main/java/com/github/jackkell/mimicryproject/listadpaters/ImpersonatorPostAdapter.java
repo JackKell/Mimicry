@@ -94,7 +94,7 @@ public class ImpersonatorPostAdapter extends RecyclerView.Adapter<ImpersonatorPo
 
     public void deletePost(ImpersonatorPost post) {
         posts.remove(post);
-        post.delete();
+        //post.delete();
         this.notifyDataSetChanged();
     }
 }

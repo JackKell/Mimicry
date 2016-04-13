@@ -1,5 +1,7 @@
 package com.github.jackkell.mimicryproject;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -15,6 +17,7 @@ public class MarkovChain {
     private static final String START_KEY = "_start";
     private static final String END_KEY = "_end";
     private Map<String, Vector<Object>> chain;
+    private JSONObject json;
 
     public MarkovChain() {
         this(new ArrayList<String>());
@@ -26,6 +29,10 @@ public class MarkovChain {
         chain.put(END_KEY, new Vector<>());
 
         addPhrases(phrases);
+    }
+
+    public MarkovChain(JSONObject json) {
+        // TODO: Parse and do something with it...
     }
 
     public void addPhrase(String phrase) {
@@ -98,5 +105,9 @@ public class MarkovChain {
             newPhrase += word + " ";
         }
         return newPhrase.trim();
+    }
+
+    public JSONObject toJson() {
+        return json;
     }
 }

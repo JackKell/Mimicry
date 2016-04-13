@@ -1,6 +1,6 @@
 package com.github.jackkell.mimicryproject;
 
-import com.github.jackkell.mimicryproject.databaseobjects.Impersonator;
+import com.github.jackkell.mimicryproject.entity.Impersonator;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterException;

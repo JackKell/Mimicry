@@ -7,6 +7,8 @@ import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.github.jackkell.mimicryproject.entity.Impersonator;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -59,12 +61,6 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
     public static final String IMPERSONATOR_TWITTER_USER_IMPERSONATOR_ID = "IMPERSONATOR_ID";
     public static final String IMPERSONATOR_TWITTER_USER_TWITTER_USER_ID = "TWITTER_USER_ID";
 
-    //IMPERSONATOR TABLE
-    public static final String IMPERSONATOR = "IMPERSONATOR";
-    public static final String IMPERSONATOR_ID = "ID";
-    public static final String IMPERSONATOR_NAME = "NAME";
-    public static final String IMPERSONATOR_DATE_CREATED = "DATE_CREATED";
-
     //MIMICRY_USER TABLE
     public static final String MIMICRY_USER = "MIMICRY_USER";
     public static final String MIMICRY_USER_ID = "ID";
@@ -98,21 +94,16 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
                     POST_IS_FAVORITED + " INTEGER NOT NULL, " +
                     POST_IS_TWEETED + " INTEGER NOT NULL, " +
                     POST_DATE_CREATED + "DATE NOT NULL, " +
-                    "FOREIGN KEY(" + POST_IMPERSONATOR_ID + ") REFERENCES " + IMPERSONATOR + "(" + IMPERSONATOR_ID + "));";
+                    "FOREIGN KEY(" + POST_IMPERSONATOR_ID + ") REFERENCES " + Impersonator.TABLE_NAME + "(" + Impersonator.ID + "));";
     //The SQL Statement used to create the IMPERSONATOR_TWITTER_USER table
     private static final String IMPERSONATOR_TWITTER_USER_TABLE_CREATE =
             "CREATE TABLE " + IMPERSONATOR_TWITTER_USER + " ( " +
                     IMPERSONATOR_TWITTER_USER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     IMPERSONATOR_TWITTER_USER_IMPERSONATOR_ID + " INTEGER NOT NULL, " +
                     IMPERSONATOR_TWITTER_USER_TWITTER_USER_ID + " INTEGER NOT NULL, " +
-                    "FOREIGN KEY(" + IMPERSONATOR_TWITTER_USER_IMPERSONATOR_ID + ") REFERENCES " + IMPERSONATOR + "(" + IMPERSONATOR_ID + "), " +
+                    "FOREIGN KEY(" + IMPERSONATOR_TWITTER_USER_IMPERSONATOR_ID + ") REFERENCES " + Impersonator.TABLE_NAME + "(" + Impersonator.ID + "), " +
                     "FOREIGN KEY(" + IMPERSONATOR_TWITTER_USER_TWITTER_USER_ID + ") REFERENCES " + TWITTER_USER + "(" + TWITTER_USER_ID + "));";
-    //The SQL Statement used to create the IMPERSONATOR table
-    private static final String IMPERSONATOR_TABLE_CREATE =
-            "CREATE TABLE " + IMPERSONATOR + " ( " +
-                    IMPERSONATOR_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    IMPERSONATOR_NAME + " VARCHAR(140) NOT NULL, " +
-                    IMPERSONATOR_DATE_CREATED + " DATE NOT NULL);";
+
     //The SQL Statement used to create the MIMICRY_USER table
     private static final String MIMICRY_USER_TABLE_CREATE =
             "CREATE TABLE " + MIMICRY_USER + " ( " +
@@ -123,6 +114,7 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
             "CREATE TABLE " + TWITTER_USER + " ( " +
                     TWITTER_USER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     TWITTER_USER_USERNAME + " VARCHAR(255) NOT NULL);";
+
     //The SQL Statement used to create the MIMICRY_USER_IMPERSONATOR table
     private static final String MIMICRY_USER_IMPERSONATOR_TABLE_CREATE =
             "CREATE TABLE " + MIMICRY_USER_IMPERSONATOR + " ( " +
@@ -130,7 +122,7 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
                     MIMICRY_USER_IMPERSONATOR_MIMICRY_USER_ID + " INTEGER NOT NULL, " +
                     MIMICRY_USER_IMPERSONATOR_IMPERSONATOR_ID + " INTEGER NOT NULL, " +
                     "FOREIGN KEY(" + MIMICRY_USER_IMPERSONATOR_MIMICRY_USER_ID + ") REFERENCES " + MIMICRY_USER + "(" + MIMICRY_USER_ID + "), " +
-                    "FOREIGN KEY(" + MIMICRY_USER_IMPERSONATOR_IMPERSONATOR_ID + ") REFERENCES " + IMPERSONATOR + "(" + IMPERSONATOR_ID + "));";
+                    "FOREIGN KEY(" + MIMICRY_USER_IMPERSONATOR_IMPERSONATOR_ID + ") REFERENCES " + Impersonator.TABLE_NAME + "(" + Impersonator.ID + "));";
 
 
     // Constructor
@@ -147,13 +139,13 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
     //This runs every time a DatabaseOpenHelper object is created
     public void onCreate(SQLiteDatabase db) {
         Log.d("DatabaseOpenHelper", "TEST LOG");
-        db.execSQL(TWEET_TABLE_CREATE);
-        db.execSQL(POST_TABLE_CREATE);
-        db.execSQL(IMPERSONATOR_TWITTER_USER_TABLE_CREATE);
-        db.execSQL(IMPERSONATOR_TABLE_CREATE);
-        db.execSQL(MIMICRY_USER_TABLE_CREATE);
-        db.execSQL(TWITTER_USER_TABLE_CREATE);
-        db.execSQL(MIMICRY_USER_IMPERSONATOR_TABLE_CREATE);
+        //db.execSQL(TWEET_TABLE_CREATE);
+        //db.execSQL(POST_TABLE_CREATE);
+        //db.execSQL(IMPERSONATOR_TWITTER_USER_TABLE_CREATE);
+        db.execSQL(Impersonator.CREATE_TABLE);
+        //db.execSQL(MIMICRY_USER_TABLE_CREATE);
+        //db.execSQL(TWITTER_USER_TABLE_CREATE);
+        //db.execSQL(MIMICRY_USER_IMPERSONATOR_TABLE_CREATE);
     }
 
     @Override
@@ -162,7 +154,7 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TWEET);
         db.execSQL("DROP TABLE IF EXISTS " + POST);
         db.execSQL("DROP TABLE IF EXISTS " + IMPERSONATOR_TWITTER_USER);
-        db.execSQL("DROP TABLE IF EXISTS " + IMPERSONATOR);
+        db.execSQL("DROP TABLE IF EXISTS " + Impersonator.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + MIMICRY_USER);
         db.execSQL("DROP TABLE IF EXISTS " + TWITTER_USER);
         db.execSQL("DROP TABLE IF EXISTS " + MIMICRY_USER_IMPERSONATOR);

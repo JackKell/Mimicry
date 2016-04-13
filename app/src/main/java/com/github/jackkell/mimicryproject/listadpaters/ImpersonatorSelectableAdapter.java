@@ -1,17 +1,15 @@
 package com.github.jackkell.mimicryproject.listadpaters;
 
-import android.content.Context;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.github.jackkell.mimicryproject.R;
-import com.github.jackkell.mimicryproject.databaseobjects.Impersonator;
+import com.github.jackkell.mimicryproject.entity.Impersonator;
 
 import java.util.List;
 
@@ -62,9 +60,9 @@ public class ImpersonatorSelectableAdapter extends RecyclerView.Adapter<Imperson
     public void onBindViewHolder(ImpersonatorViewHolder impersonatorViewHolder, final int position) {
         impersonatorViewHolder.tvImpersonatorName.setText(impersonators.get(position).getName());
         impersonatorViewHolder.tvDateCreated.setText(impersonators.get(position).getDateCreated());
-        impersonatorViewHolder.tvPostCount.setText(Integer.toString(impersonators.get(position).getPostCount()));
-        impersonatorViewHolder.tvTweetCount.setText(Integer.toString(impersonators.get(position).getTweetCount()));
-        impersonatorViewHolder.tvFavoriteCount.setText(Integer.toString(impersonators.get(position).getTweetCount()));
+        //impersonatorViewHolder.tvPostCount.setText(Integer.toString(impersonators.get(position).getPostCount()));
+        //impersonatorViewHolder.tvTweetCount.setText(Integer.toString(impersonators.get(position).getTweetCount()));
+        //impersonatorViewHolder.tvFavoriteCount.setText(Integer.toString(impersonators.get(position).getTweetCount()));
         impersonatorViewHolder.btnDeleteImpersonator.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -90,7 +88,7 @@ public class ImpersonatorSelectableAdapter extends RecyclerView.Adapter<Imperson
 
     public void deleteImpersonator(Impersonator impersonator){
         impersonators.remove(impersonator);
-        impersonator.delete();
+        //impersonator.delete();
         this.notifyDataSetChanged();
     }
 }

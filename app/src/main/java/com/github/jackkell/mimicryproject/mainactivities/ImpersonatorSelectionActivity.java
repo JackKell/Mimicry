@@ -10,10 +10,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ListView;
 
-import com.github.jackkell.mimicryproject.databaseobjects.Impersonator;
+import com.github.jackkell.mimicryproject.entity.Impersonator;
 import com.github.jackkell.mimicryproject.R;
+import com.github.jackkell.mimicryproject.dao.ImpersonatorDao;
 import com.github.jackkell.mimicryproject.listadpaters.ImpersonatorSelectableAdapter;
 
 import java.util.List;
@@ -27,13 +27,15 @@ public class ImpersonatorSelectionActivity extends Activity {
     private RecyclerView rvImpersonatorSelection;
     private ImpersonatorSelectableAdapter impersonatorSelectableAdapter;
     private String TAG = "ImpersonatorSelectionActivity";
+    private ImpersonatorDao dao;
 
     @Override
     // This runs when the activity is opened
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_impersonator_selection);
-        impersonators = Impersonator.listAll(Impersonator.class);
+        dao = new ImpersonatorDao(getApplicationContext());
+        impersonators = dao.list();
 
         rvImpersonatorSelection = (RecyclerView) findViewById(R.id.rvImpersonatorSelection);
 

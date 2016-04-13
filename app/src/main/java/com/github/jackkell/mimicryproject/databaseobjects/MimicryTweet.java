@@ -1,8 +1,6 @@
 package com.github.jackkell.mimicryproject.databaseobjects;
 
-import com.orm.SugarRecord;
-
-public class MimicryTweet extends SugarRecord<MimicryTweet> {
+public class MimicryTweet{
     private String body;
     private TwitterUser twitterUser;
 

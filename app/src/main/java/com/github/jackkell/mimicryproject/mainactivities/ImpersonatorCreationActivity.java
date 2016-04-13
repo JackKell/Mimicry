@@ -2,45 +2,28 @@ package com.github.jackkell.mimicryproject.mainactivities;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import com.github.jackkell.mimicryproject.Config;
 import com.github.jackkell.mimicryproject.MarkovChain;
-import com.github.jackkell.mimicryproject.ValidTwitterUsernameCallback;
-import com.github.jackkell.mimicryproject.databaseobjects.DatabaseOpenHelper;
-import com.github.jackkell.mimicryproject.databaseobjects.Impersonator;
-import com.github.jackkell.mimicryproject.databaseobjects.ImpersonatorPost;
 import com.github.jackkell.mimicryproject.R;
+import com.github.jackkell.mimicryproject.ValidTwitterUsernameCallback;
+import com.github.jackkell.mimicryproject.entity.Impersonator;
 import com.github.jackkell.mimicryproject.databaseobjects.MimicryTweet;
-import com.github.jackkell.mimicryproject.databaseobjects.TwitterUser;
-import com.github.jackkell.mimicryproject.listadpaters.TwitterUserNameAdapter;
 import com.twitter.sdk.android.Twitter;
-import com.twitter.sdk.android.core.Callback;
-import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
 import com.twitter.sdk.android.core.TwitterCore;
-import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.TwitterSession;
-import com.twitter.sdk.android.core.models.Tweet;
-import com.twitter.sdk.android.tweetui.UserTimeline;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import io.fabric.sdk.android.Fabric;
@@ -102,7 +85,7 @@ public class ImpersonatorCreationActivity extends Activity {
 
     //This is what occurs when the Create Impersonator button is tapped
     private void onCreateImpersonatorButtonClick(){
-        List<MimicryTweet> tweets = MimicryTweet.listAll(MimicryTweet.class);
+        List<MimicryTweet> tweets = new ArrayList<>();
         List<String> tweetBodies = new ArrayList<>();
         for (MimicryTweet tweet : tweets) {
             tweetBodies.add(tweet.getBody());
@@ -138,7 +121,7 @@ public class ImpersonatorCreationActivity extends Activity {
                         );
             }
 
-            impersonator.save();
+            //impersonator.save();
 
             Intent impersonatorSelection = new Intent(getApplicationContext(), ImpersonatorSelectionActivity.class);
             startActivity(impersonatorSelection);

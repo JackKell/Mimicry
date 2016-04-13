@@ -1,15 +1,11 @@
 package com.github.jackkell.mimicryproject.databaseobjects;
 
-import android.content.ContentValues;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-
-import com.orm.SugarRecord;
+import com.github.jackkell.mimicryproject.entity.Impersonator;
 
 import java.util.Date;
 
 //A post created by the Impersonator consisting of a body and several other attributes
-public class ImpersonatorPost extends SugarRecord<ImpersonatorPost>{
+public class ImpersonatorPost {
     //The body of the post.  THe main text
     private String body;
     //Signifies whether the post is favorited or not
