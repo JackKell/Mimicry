@@ -1,6 +1,7 @@
 package com.github.jackkell.mimicryproject.dao;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -10,6 +11,10 @@ import com.github.jackkell.mimicryproject.entity.TwitterUser;
 public class TwitterUserDao implements Dao<TwitterUser> {
 
     private DatabaseOpenHelper dbHelper;
+
+    public TwitterUserDao(Context context) {
+        dbHelper = new DatabaseOpenHelper(context);
+    }
 
     @Override
     public Long create(TwitterUser object) {
@@ -32,7 +37,7 @@ public class TwitterUserDao implements Dao<TwitterUser> {
 
         Cursor twitterUserCursor = db.rawQuery("SELECT * FROM " + TwitterUser.TABLE_NAME + " where id = ? ", new String[]{String.valueOf(id)});
 
-        Integer impersonatorId = twitterUserCursor.getInt(
+        Long impersonatorId = twitterUserCursor.getLong(
                 twitterUserCursor.getColumnIndexOrThrow(TwitterUser.IMPERSONATOR_ID)
         );
         String username = twitterUserCursor.getString(
@@ -41,6 +46,8 @@ public class TwitterUserDao implements Dao<TwitterUser> {
         Long lastTweetId = twitterUserCursor.getLong(
                 twitterUserCursor.getColumnIndexOrThrow(TwitterUser.LAST_TWEET_ID)
         );
+
+        twitterUserCursor.close();
 
         return new TwitterUser(impersonatorId, username, lastTweetId);
     }

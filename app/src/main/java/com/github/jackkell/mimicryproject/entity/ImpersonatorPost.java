@@ -69,4 +69,14 @@ public class ImpersonatorPost extends Entity {
     public Date getDateCreated() {
         return dateCreated;
     }
+
+    public void setImpersonatorId(Long id) {this.impersonatorId = id;}
+
+    public void setIsFavorited(Boolean isFavorited) {
+        this.isFavorited = isFavorited;
+    }
+
+    public void setIsTweeted(Boolean isTweeted) {
+        this.isTweeted = isTweeted;
+    }
 }

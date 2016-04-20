@@ -1,10 +1,12 @@
 package com.github.jackkell.mimicryproject.dao;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.github.jackkell.mimicryproject.entity.DatabaseOpenHelper;
+import com.github.jackkell.mimicryproject.entity.Impersonator;
 import com.github.jackkell.mimicryproject.entity.ImpersonatorPost;
 
 import java.util.Date;
@@ -12,6 +14,10 @@ import java.util.Date;
 public class ImpersonatorPostDao implements Dao<ImpersonatorPost> {
 
     private DatabaseOpenHelper dbHelper;
+
+    public ImpersonatorPostDao(Context context) {
+        dbHelper = new DatabaseOpenHelper(context);
+    }
 
     @Override
     public Long create(ImpersonatorPost object) {
@@ -34,7 +40,7 @@ public class ImpersonatorPostDao implements Dao<ImpersonatorPost> {
     public ImpersonatorPost get(Long id) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
-        Cursor postCursor = db.rawQuery("SELECT * FROM " + ImpersonatorPost.TABLE_NAME + " where id = ? ", new String[]{String.valueOf(id)});
+        Cursor postCursor = db.rawQuery("SELECT * FROM " + ImpersonatorPost.TABLE_NAME + " WHERE " + Impersonator.ID + " = ? ", new String[]{String.valueOf(id)});
 
         postCursor.moveToFirst();
 
@@ -53,6 +59,8 @@ public class ImpersonatorPostDao implements Dao<ImpersonatorPost> {
         Date dateCreated = new Date(postCursor.getLong(
                 postCursor.getColumnIndexOrThrow(ImpersonatorPost.DATE_CREATED)
         ));
+
+        postCursor.close();
 
         return new ImpersonatorPost(impersonatorID, body, isFavorited, isTweeted, dateCreated);
     }

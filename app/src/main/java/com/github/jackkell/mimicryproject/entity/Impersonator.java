@@ -12,7 +12,7 @@ import java.util.List;
 public class Impersonator extends Entity {
 
     //TABLE_NAME TABLE
-    public static final String TABLE_NAME = "TABLE_NAME";
+    public static final String TABLE_NAME = "IMPERSONATOR";
     public static final String ID = "ID";
     public static final String NAME = "NAME";
     public static final String DATE_CREATED = "DATE_CREATED";
@@ -34,6 +34,10 @@ public class Impersonator extends Entity {
 
     private MarkovChain markovChain;
 
+    private List<ImpersonatorPost> posts;
+
+    private List<TwitterUser> twitterUsers;
+
     public Impersonator(){
         name = "Name";
         dateCreated = new Date();
@@ -54,10 +58,12 @@ public class Impersonator extends Entity {
         this.markovChain = chain;
     }
 
-    public Impersonator(String name, Date dateCreated, JSONObject twitterUsers, MarkovChain chain) {
+    public Impersonator(String name, Date dateCreated, MarkovChain chain, List<TwitterUser> twitterUsers, List<ImpersonatorPost> posts) {
         this.name = name;
         this.dateCreated = dateCreated;
         this.markovChain = chain;
+        this.twitterUsers = twitterUsers;
+        this.posts = posts;
     }
 
     //Sets the name of the Impersonator.  Will occur when editing Impersonators
@@ -75,18 +81,25 @@ public class Impersonator extends Entity {
         return dateCreated;
     }
 
-    public void addTwitterUser(String username, List<String> tweets){
-        //TwitterUser twitterUser = new TwitterUser(username, tweets, this);
-        //twitterUser.save();
+    public MarkovChain getMarkovChain() {
+        return markovChain;
+    }
+
+    public List<ImpersonatorPost> getImpersonatorPosts() {
+        return posts;
+    }
+
+    public List<TwitterUser> getTwitterUsers() {
+        return twitterUsers;
+    }
+
+    public void addTwitterUser(TwitterUser twitterUser){
+        twitterUsers.add(twitterUser);
     }
 
     public void addPost() {
-        String phrase = markovChain.generatePhrase();
-        ImpersonatorPost impersonatorPost = new ImpersonatorPost(id, phrase);
-        //impersonatorPost.save();
-    }
-
-    public MarkovChain getMarkovChain() {
-        return markovChain;
+        String body = markovChain.generatePhrase();
+        ImpersonatorPost impersonatorPost = new ImpersonatorPost(id, body);
+        posts.add(impersonatorPost);
     }
 }

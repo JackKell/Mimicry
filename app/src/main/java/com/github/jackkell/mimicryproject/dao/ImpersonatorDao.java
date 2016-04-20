@@ -9,6 +9,8 @@ import android.util.Log;
 import com.github.jackkell.mimicryproject.MarkovChain;
 import com.github.jackkell.mimicryproject.entity.DatabaseOpenHelper;
 import com.github.jackkell.mimicryproject.entity.Impersonator;
+import com.github.jackkell.mimicryproject.entity.ImpersonatorPost;
+import com.github.jackkell.mimicryproject.entity.TwitterUser;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,17 +22,11 @@ import java.util.List;
 
 public class ImpersonatorDao implements Dao<Impersonator> {
 
-    private static final String[] GET_COLUMNS = {
-            Impersonator.ID,
-            Impersonator.NAME,
-            Impersonator.DATE_CREATED,
-            Impersonator.MARKOV_CHAIN
-    };
-    private static final String SORT_ORDER = Impersonator.NAME + " DESC";
-
     private DatabaseOpenHelper dbHelper;
+    private Context context;
 
     public ImpersonatorDao(Context context) {
+        this.context = context;
         dbHelper = new DatabaseOpenHelper(context);
     }
 
@@ -45,7 +41,20 @@ public class ImpersonatorDao implements Dao<Impersonator> {
         values.put(Impersonator.MARKOV_CHAIN, object.getMarkovChain().toString());
 
         // Insert into the database, returning the new record id
-        long id = db.insert(Impersonator.TABLE_NAME, "null", values);
+        Long id = db.insert(Impersonator.TABLE_NAME, "null", values);
+
+        ImpersonatorPostDao postDao = new ImpersonatorPostDao(context);
+        for (ImpersonatorPost post : object.getImpersonatorPosts()) {
+            post.setImpersonatorId(id);
+            postDao.create(post);
+        }
+
+        TwitterUserDao twitterUserDao = new TwitterUserDao(context);
+        for (TwitterUser twitterUser : object.getTwitterUsers()) {
+            twitterUser.setImpersonatorId(id);
+            twitterUserDao.create(twitterUser);
+        }
+        
         object.setId(id);
 
         return id;
@@ -59,7 +68,9 @@ public class ImpersonatorDao implements Dao<Impersonator> {
             SQLiteDatabase db = dbHelper.getReadableDatabase();
 
             // Select the impersonator data
-            Cursor impersonatorCursor = db.rawQuery("SELECT * FROM "+ Impersonator.TABLE_NAME + " where id = ? ", new String[]{String.valueOf(id)});
+            String impersonatorQuery = "SELECT * FROM "+ Impersonator.TABLE_NAME + " WHERE " + Impersonator.ID + " = ? ";
+            String[] impersontorQueryArgs = new String[]{String.valueOf(id)};
+            Cursor impersonatorCursor = db.rawQuery(impersonatorQuery, impersontorQueryArgs);
 
             impersonatorCursor.moveToFirst();
             String name = impersonatorCursor.getString(
@@ -72,21 +83,46 @@ public class ImpersonatorDao implements Dao<Impersonator> {
                     impersonatorCursor.getColumnIndexOrThrow(Impersonator.MARKOV_CHAIN)
             ));
             MarkovChain chain = new MarkovChain(json);
+            impersonatorCursor.close();
 
-            // Select the twitter users
-            JSONArray twitterUsers = new JSONArray();
-            Cursor twitterUserCursor = db.rawQuery("SELECT * FROM TWITTER_USER WHERE IMPERSONATOR_ID = ?", new String[]{String.valueOf(id)});
-            twitterUserCursor.moveToFirst();
-            while(!twitterUserCursor.isAfterLast()){
-                Long twitterTweetId = twitterUserCursor.getLong(twitterUserCursor.getColumnIndexOrThrow("TWEET_ID"));
-                String twitterUsername = twitterUserCursor.getString(twitterUserCursor.getColumnIndexOrThrow("USERNAME"));
-                JSONObject obj = new JSONObject();
-                obj.put("tweetId", twitterTweetId);
-                obj.put("username", twitterUsername);
-                twitterUsers.put(obj);
+            List<TwitterUser> twitterUsers = new ArrayList<>();
+            TwitterUserDao twitterUserDao = new TwitterUserDao(context);
+
+            String twitterUserQuery = "SELECT " + TwitterUser.ID + " FROM " + TwitterUser.TABLE_NAME + " WHERE " + TwitterUser.IMPERSONATOR_ID + " = ? ";
+            String[] twitterUserQueryArgs = new String[] {String.valueOf(id)};
+            Cursor twitterUserCursor = db.rawQuery(twitterUserQuery, twitterUserQueryArgs);
+
+            if (twitterUserCursor.moveToFirst()) {
+                do {
+                    Long twitterUserId = twitterUserCursor.getLong(
+                            twitterUserCursor.getColumnIndexOrThrow(TwitterUser.IMPERSONATOR_ID)
+                    );
+                    twitterUsers.add(twitterUserDao.get(twitterUserId));
+                } while (twitterUserCursor.moveToNext());
             }
 
-            return new Impersonator(name, dateCreated, new JSONObject().put("twitterUsers", twitterUsers),chain);
+            twitterUserCursor.close();
+
+            List<ImpersonatorPost> posts = new ArrayList<>();
+            ImpersonatorPostDao impersonatorPostDao = new ImpersonatorPostDao(context);
+
+            String postQuery = "SELECT " + ImpersonatorPost.ID + " FROM " + ImpersonatorPost.TABLE_NAME + " WHERE " + ImpersonatorPost.IMPERSONATOR_ID + " = ? ";
+
+            String[] postQueryArgs = new String[] {String.valueOf(id)};
+            Cursor postQueryCursor = db.rawQuery(postQuery, postQueryArgs);
+
+            if (postQueryCursor.moveToFirst()) {
+                do {
+                    Long postId = postQueryCursor.getLong(
+                            postQueryCursor.getColumnIndexOrThrow(TwitterUser.IMPERSONATOR_ID)
+                    );
+                    posts.add(impersonatorPostDao.get(postId));
+                } while (postQueryCursor.moveToNext());
+            }
+
+            postQueryCursor.close();
+
+            return new Impersonator(name, dateCreated, chain, twitterUsers, posts);
 
         } catch(JSONException e) {
             Log.e("ImpersonatorDao", "There's a problem retrieving the markov chain json data.", e);
@@ -123,39 +159,19 @@ public class ImpersonatorDao implements Dao<Impersonator> {
 
     public List<Impersonator> list() {
         List<Impersonator> impersonators = new ArrayList<>();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
 
-        try {
-            SQLiteDatabase db = dbHelper.getReadableDatabase();
-            String query = "SELECT * FROM " + Impersonator.TABLE_NAME + " ASC";
-            Cursor cursor = db.rawQuery(query, null);
-            cursor.moveToFirst();
-
-            while(!cursor.isAfterLast()) {
-                Long id = cursor.getLong(
-                        cursor.getColumnIndexOrThrow(Impersonator.ID)
-                );
-
-                String name = cursor.getString(
-                        cursor.getColumnIndexOrThrow(Impersonator.NAME)
-                );
-                Date dateCreated = new Date(cursor.getLong(
-                        cursor.getColumnIndexOrThrow(Impersonator.DATE_CREATED)
-                ));
-                JSONObject json = new JSONObject(cursor.getString(
-                        cursor.getColumnIndexOrThrow(Impersonator.MARKOV_CHAIN)
-                ));
-                MarkovChain chain = new MarkovChain(json);
-
-                Impersonator impersonator = new Impersonator(name, dateCreated, chain);
-                impersonator.setId(id);
-
-                impersonators.add(impersonator);
-            }
-
-        } catch(JSONException e) {
-            Log.e("ImpersonatorDao", "There's a problem retrieving the markov chain json data.", e);
+        String query = "SELECT " + Impersonator.ID + " FROM " + Impersonator.TABLE_NAME;
+        Cursor cursor = db.rawQuery(query, null);
+        if (cursor.moveToFirst()) {
+            do {
+                 Long impersonatorId = cursor.getLong(
+                         cursor.getColumnIndexOrThrow(Impersonator.ID)
+                 );
+                impersonators.add(get(impersonatorId));
+            } while (cursor.moveToNext());
         }
-
+        cursor.close();
         return impersonators;
     }
 }

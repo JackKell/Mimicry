@@ -20,7 +20,7 @@ public class TwitterUser extends Entity {
                     "FOREIGN KEY(" + IMPERSONATOR_ID + ") REFERENCES " + Impersonator.TABLE_NAME + "(" + Impersonator.ID + "));";
 
     // The id of the impersonator that this twitter user belongs to
-    private Integer impersonatorId;
+    private Long impersonatorId;
 
     //The Twitter username
     private String username;
@@ -30,13 +30,13 @@ public class TwitterUser extends Entity {
     public TwitterUser(){}
 
     //Creates a Twitter user based on passed attributes
-    public TwitterUser(Integer impersonatorId, String username, Long lastTweetId) {
+    public TwitterUser(Long impersonatorId, String username, Long lastTweetId) {
         this.impersonatorId = impersonatorId;
         this.username = username;
         this.lastTweetId = lastTweetId;
     }
 
-    public Integer getImpersonatorId() {
+    public Long getImpersonatorId() {
         return impersonatorId;
     }
 
@@ -47,4 +47,6 @@ public class TwitterUser extends Entity {
     public Long getLastTweetId() {
         return lastTweetId;
     }
+
+    public void setImpersonatorId(Long id) {this.impersonatorId = id;}
 }

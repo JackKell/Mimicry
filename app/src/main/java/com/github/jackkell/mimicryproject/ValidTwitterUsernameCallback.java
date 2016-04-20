@@ -9,9 +9,6 @@ import com.twitter.sdk.android.core.models.Tweet;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Jackkell on 1/24/2016.
- */
 public class ValidTwitterUsernameCallback extends Callback<List<Tweet>> {
 
     private Impersonator impersonator;
@@ -28,7 +25,8 @@ public class ValidTwitterUsernameCallback extends Callback<List<Tweet>> {
         for (Tweet t : result.data){
             tweets.add(t.text);
         }
-        impersonator.addTwitterUser(username, tweets);
+        // TODO: Fix this function
+        //impersonator.addTwitterUser(username, tweets);
     }
 
     @Override
