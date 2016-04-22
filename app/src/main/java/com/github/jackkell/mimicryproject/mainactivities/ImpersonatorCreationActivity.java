@@ -16,7 +16,9 @@ import com.github.jackkell.mimicryproject.Config;
 import com.github.jackkell.mimicryproject.MarkovChain;
 import com.github.jackkell.mimicryproject.R;
 import com.github.jackkell.mimicryproject.ValidTwitterUsernameCallback;
+import com.github.jackkell.mimicryproject.dao.ImpersonatorDao;
 import com.github.jackkell.mimicryproject.entity.Impersonator;
+import com.github.jackkell.mimicryproject.entity.TwitterUser;
 import com.twitter.sdk.android.Twitter;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
 import com.twitter.sdk.android.core.TwitterCore;
@@ -34,6 +36,7 @@ public class ImpersonatorCreationActivity extends Activity {
     private EditText etImpersonatorName;
     private EditText etTwitterUserName1;
     private EditText etTwitterUserName2;
+    private ImpersonatorDao impersonatorDao;
 
     @Override
     //This runs when the activity is opened
@@ -44,6 +47,7 @@ public class ImpersonatorCreationActivity extends Activity {
         etImpersonatorName = (EditText) findViewById(R.id.etImpersonatorName);
         etTwitterUserName1 = (EditText) findViewById(R.id.etTwitterUserName1);
         etTwitterUserName2 = (EditText) findViewById(R.id.etTwitterUserName2);
+        impersonatorDao = new ImpersonatorDao(getApplicationContext());
 
         FloatingActionButton createImpersonatorButton = (FloatingActionButton) findViewById(R.id.fabCreateImpersonator);
         createImpersonatorButton.setOnClickListener(new View.OnClickListener() {
@@ -114,9 +118,10 @@ public class ImpersonatorCreationActivity extends Activity {
                                 null,
                                 callback
                         );
+                impersonator.addTwitterUser(new TwitterUser(username));
             }
 
-            //impersonator.save();
+            impersonatorDao.create(impersonator);
 
             Intent impersonatorSelection = new Intent(getApplicationContext(), ImpersonatorSelectionActivity.class);
             startActivity(impersonatorSelection);

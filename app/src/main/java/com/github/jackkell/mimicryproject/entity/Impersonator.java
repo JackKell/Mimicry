@@ -1,15 +1,19 @@
 package com.github.jackkell.mimicryproject.entity;
 
 
+import android.util.Log;
+
 import com.github.jackkell.mimicryproject.MarkovChain;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 //Impersonator is an object used to generate posts based on the vernacular of its Twitter users
 public class Impersonator extends Entity {
+    private String TAG = "Impersonator";
 
     //TABLE_NAME TABLE
     public static final String TABLE_NAME = "IMPERSONATOR";
@@ -39,9 +43,7 @@ public class Impersonator extends Entity {
     private List<TwitterUser> twitterUsers;
 
     public Impersonator(){
-        name = "Name";
-        dateCreated = new Date();
-        markovChain = new MarkovChain();
+        this("", new Date(), new MarkovChain());
     }
 
     public Impersonator(String name) {
@@ -53,9 +55,7 @@ public class Impersonator extends Entity {
     }
 
     public Impersonator(String name, Date dateCreated, MarkovChain chain) {
-        this.name = name;
-        this.dateCreated = dateCreated;
-        this.markovChain = chain;
+        this(name, dateCreated, chain, new ArrayList<TwitterUser>(), new ArrayList<ImpersonatorPost>());
     }
 
     public Impersonator(String name, Date dateCreated, MarkovChain chain, List<TwitterUser> twitterUsers, List<ImpersonatorPost> posts) {
@@ -64,6 +64,7 @@ public class Impersonator extends Entity {
         this.markovChain = chain;
         this.twitterUsers = twitterUsers;
         this.posts = posts;
+
     }
 
     //Sets the name of the Impersonator.  Will occur when editing Impersonators

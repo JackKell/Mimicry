@@ -27,12 +27,14 @@ public class TwitterUser extends Entity {
 
     private Long lastTweetId;
 
-    public TwitterUser(){}
+    public TwitterUser(String username){
+        this(null, username, null);
+    }
 
     //Creates a Twitter user based on passed attributes
     public TwitterUser(Long impersonatorId, String username, Long lastTweetId) {
-        this.impersonatorId = impersonatorId;
         this.username = username;
+        this.impersonatorId = impersonatorId;
         this.lastTweetId = lastTweetId;
     }
 

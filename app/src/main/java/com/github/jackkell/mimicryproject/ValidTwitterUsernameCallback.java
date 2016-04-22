@@ -21,9 +21,8 @@ public class ValidTwitterUsernameCallback extends Callback<List<Tweet>> {
 
     @Override
     public void success(Result<List<Tweet>> result) {
-        List<String> tweets = new ArrayList<String>();
         for (Tweet t : result.data){
-            tweets.add(t.text);
+            impersonator.getMarkovChain().addPhrase(t.text);
         }
         // TODO: Fix this function
         //impersonator.addTwitterUser(username, tweets);

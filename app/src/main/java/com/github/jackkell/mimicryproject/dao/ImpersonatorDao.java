@@ -38,7 +38,7 @@ public class ImpersonatorDao implements Dao<Impersonator> {
         ContentValues values = new ContentValues();
         values.put(Impersonator.NAME, object.getName());
         values.put(Impersonator.DATE_CREATED, object.getDateCreated().getTime());
-        values.put(Impersonator.MARKOV_CHAIN, object.getMarkovChain().toString());
+        values.put(Impersonator.MARKOV_CHAIN, String.valueOf(object.getMarkovChain().toJson()));
 
         // Insert into the database, returning the new record id
         Long id = db.insert(Impersonator.TABLE_NAME, "null", values);
@@ -62,73 +62,69 @@ public class ImpersonatorDao implements Dao<Impersonator> {
 
     @Override
     public Impersonator get(Long id) {
-        Impersonator emptyImpersonator = new Impersonator();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
 
+        // Select the impersonator data
+        String impersonatorQuery = "SELECT * FROM "+ Impersonator.TABLE_NAME + " WHERE " + Impersonator.ID + " = ? ";
+        String[] impersontorQueryArgs = new String[]{String.valueOf(id)};
+        Cursor impersonatorCursor = db.rawQuery(impersonatorQuery, impersontorQueryArgs);
+
+        impersonatorCursor.moveToFirst();
+        String name = impersonatorCursor.getString(
+                impersonatorCursor.getColumnIndexOrThrow(Impersonator.NAME)
+        );
+        Date dateCreated = new Date(impersonatorCursor.getLong(
+                impersonatorCursor.getColumnIndexOrThrow(Impersonator.DATE_CREATED)
+        ));
+        JSONObject json = null;
         try {
-            SQLiteDatabase db = dbHelper.getReadableDatabase();
+            String variable = impersonatorCursor.getString(
+                    impersonatorCursor.getColumnIndexOrThrow(Impersonator.MARKOV_CHAIN));
+            json = new JSONObject(variable);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        MarkovChain chain = new MarkovChain(json);
+        impersonatorCursor.close();
 
-            // Select the impersonator data
-            String impersonatorQuery = "SELECT * FROM "+ Impersonator.TABLE_NAME + " WHERE " + Impersonator.ID + " = ? ";
-            String[] impersontorQueryArgs = new String[]{String.valueOf(id)};
-            Cursor impersonatorCursor = db.rawQuery(impersonatorQuery, impersontorQueryArgs);
+        List<TwitterUser> twitterUsers = new ArrayList<>();
+        TwitterUserDao twitterUserDao = new TwitterUserDao(context);
 
-            impersonatorCursor.moveToFirst();
-            String name = impersonatorCursor.getString(
-                    impersonatorCursor.getColumnIndexOrThrow(Impersonator.NAME)
-            );
-            Date dateCreated = new Date(impersonatorCursor.getLong(
-                    impersonatorCursor.getColumnIndexOrThrow(Impersonator.DATE_CREATED)
-            ));
-            JSONObject json = new JSONObject(impersonatorCursor.getString(
-                    impersonatorCursor.getColumnIndexOrThrow(Impersonator.MARKOV_CHAIN)
-            ));
-            MarkovChain chain = new MarkovChain(json);
-            impersonatorCursor.close();
+        String twitterUserQuery = "SELECT " + TwitterUser.ID + " FROM " + TwitterUser.TABLE_NAME + " WHERE " + TwitterUser.IMPERSONATOR_ID + " = ? ";
+        String[] twitterUserQueryArgs = new String[] {String.valueOf(id)};
+        Cursor twitterUserCursor = db.rawQuery(twitterUserQuery, twitterUserQueryArgs);
 
-            List<TwitterUser> twitterUsers = new ArrayList<>();
-            TwitterUserDao twitterUserDao = new TwitterUserDao(context);
-
-            String twitterUserQuery = "SELECT " + TwitterUser.ID + " FROM " + TwitterUser.TABLE_NAME + " WHERE " + TwitterUser.IMPERSONATOR_ID + " = ? ";
-            String[] twitterUserQueryArgs = new String[] {String.valueOf(id)};
-            Cursor twitterUserCursor = db.rawQuery(twitterUserQuery, twitterUserQueryArgs);
-
-            if (twitterUserCursor.moveToFirst()) {
-                do {
-                    Long twitterUserId = twitterUserCursor.getLong(
-                            twitterUserCursor.getColumnIndexOrThrow(TwitterUser.IMPERSONATOR_ID)
-                    );
-                    twitterUsers.add(twitterUserDao.get(twitterUserId));
-                } while (twitterUserCursor.moveToNext());
-            }
-
-            twitterUserCursor.close();
-
-            List<ImpersonatorPost> posts = new ArrayList<>();
-            ImpersonatorPostDao impersonatorPostDao = new ImpersonatorPostDao(context);
-
-            String postQuery = "SELECT " + ImpersonatorPost.ID + " FROM " + ImpersonatorPost.TABLE_NAME + " WHERE " + ImpersonatorPost.IMPERSONATOR_ID + " = ? ";
-
-            String[] postQueryArgs = new String[] {String.valueOf(id)};
-            Cursor postQueryCursor = db.rawQuery(postQuery, postQueryArgs);
-
-            if (postQueryCursor.moveToFirst()) {
-                do {
-                    Long postId = postQueryCursor.getLong(
-                            postQueryCursor.getColumnIndexOrThrow(TwitterUser.IMPERSONATOR_ID)
-                    );
-                    posts.add(impersonatorPostDao.get(postId));
-                } while (postQueryCursor.moveToNext());
-            }
-
-            postQueryCursor.close();
-
-            return new Impersonator(name, dateCreated, chain, twitterUsers, posts);
-
-        } catch(JSONException e) {
-            Log.e("ImpersonatorDao", "There's a problem retrieving the markov chain json data.", e);
+        if (twitterUserCursor.moveToFirst()) {
+            do {
+                Long twitterUserId = twitterUserCursor.getLong(
+                        twitterUserCursor.getColumnIndexOrThrow(TwitterUser.IMPERSONATOR_ID)
+                );
+                twitterUsers.add(twitterUserDao.get(twitterUserId));
+            } while (twitterUserCursor.moveToNext());
         }
 
-        return emptyImpersonator;
+        twitterUserCursor.close();
+
+        List<ImpersonatorPost> posts = new ArrayList<>();
+        ImpersonatorPostDao impersonatorPostDao = new ImpersonatorPostDao(context);
+
+        String postQuery = "SELECT " + ImpersonatorPost.ID + " FROM " + ImpersonatorPost.TABLE_NAME + " WHERE " + ImpersonatorPost.IMPERSONATOR_ID + " = ? ";
+
+        String[] postQueryArgs = new String[] {String.valueOf(id)};
+        Cursor postQueryCursor = db.rawQuery(postQuery, postQueryArgs);
+
+        if (postQueryCursor.moveToFirst()) {
+            do {
+                Long postId = postQueryCursor.getLong(
+                        postQueryCursor.getColumnIndexOrThrow(TwitterUser.IMPERSONATOR_ID)
+                );
+                posts.add(impersonatorPostDao.get(postId));
+            } while (postQueryCursor.moveToNext());
+        }
+
+        postQueryCursor.close();
+
+        return new Impersonator(name, dateCreated, chain, twitterUsers, posts);
     }
 
     @Override

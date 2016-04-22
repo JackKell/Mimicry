@@ -32,7 +32,10 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="oauth" android:host="mimicryProjectOAuth"/>
             </intent-filter>
-
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".mainactivities.ImpersonatorViewActivity"
@@ -49,10 +52,6 @@
         <activity
             android:name=".mainactivities.ImpersonatorSelectionActivity"
             android:label="@string/title_activity_impersonator_selection" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
         <meta-data
