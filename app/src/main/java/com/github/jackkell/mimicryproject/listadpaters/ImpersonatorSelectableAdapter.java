@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.github.jackkell.mimicryproject.R;
+import com.github.jackkell.mimicryproject.dao.ImpersonatorDao;
 import com.github.jackkell.mimicryproject.dao.ImpersonatorPostDao;
 import com.github.jackkell.mimicryproject.entity.Impersonator;
 
@@ -22,7 +23,7 @@ import java.util.Locale;
 public class ImpersonatorSelectableAdapter extends RecyclerView.Adapter<ImpersonatorSelectableAdapter.ImpersonatorViewHolder>{
 
     private List<Impersonator> impersonators;
-    private ImpersonatorPostDao impersonatorPostDao;
+    private ImpersonatorDao impersonatorDao;
 
     public static class ImpersonatorViewHolder extends RecyclerView.ViewHolder {
         CardView cvImpersonator;
@@ -52,9 +53,9 @@ public class ImpersonatorSelectableAdapter extends RecyclerView.Adapter<Imperson
         }
     }
 
-    public ImpersonatorSelectableAdapter(List<Impersonator> impersonators, ImpersonatorPostDao impersonatorPostDao){
+    public ImpersonatorSelectableAdapter(List<Impersonator> impersonators, ImpersonatorDao impersonatorDao){
         this.impersonators = impersonators;
-        this.impersonatorPostDao = impersonatorPostDao;
+        this.impersonatorDao = impersonatorDao;
     }
 
     @Override
@@ -112,7 +113,7 @@ public class ImpersonatorSelectableAdapter extends RecyclerView.Adapter<Imperson
 
     public void deleteImpersonator(Impersonator impersonator){
         impersonators.remove(impersonator);
-        impersonatorPostDao.delete(impersonator.getId());
+        impersonatorDao.delete(impersonator.getId());
         this.notifyDataSetChanged();
     }
 }

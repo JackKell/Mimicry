@@ -48,7 +48,7 @@ public class ImpersonatorSelectionActivity extends Activity {
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         rvImpersonatorSelection.setLayoutManager(linearLayoutManager);
-        impersonatorSelectableAdapter = new ImpersonatorSelectableAdapter(impersonators, new ImpersonatorPostDao(getApplicationContext()));
+        impersonatorSelectableAdapter = new ImpersonatorSelectableAdapter(impersonators, new ImpersonatorDao(getApplicationContext()));
         rvImpersonatorSelection.setAdapter(impersonatorSelectableAdapter);
 
         FloatingActionButton addImpersonatorButton = (FloatingActionButton) findViewById(R.id.fabCreateImpersonator);
