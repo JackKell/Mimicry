@@ -77,14 +77,15 @@ public class ImpersonatorDao implements Dao<Impersonator> {
                 impersonatorCursor.getColumnIndexOrThrow(Impersonator.DATE_CREATED)
         ));
         JSONObject json = null;
+        MarkovChain chain = new MarkovChain();
         try {
             String variable = impersonatorCursor.getString(
                     impersonatorCursor.getColumnIndexOrThrow(Impersonator.MARKOV_CHAIN));
             json = new JSONObject(variable);
+            chain = new MarkovChain(json);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        MarkovChain chain = new MarkovChain(json);
         impersonatorCursor.close();
 
         List<TwitterUser> twitterUsers = new ArrayList<>();

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,10 +14,14 @@ import android.widget.Toast;
 import com.github.jackkell.mimicryproject.Config;
 import com.github.jackkell.mimicryproject.R;
 import com.github.jackkell.mimicryproject.dao.ImpersonatorDao;
+import com.github.jackkell.mimicryproject.dao.ImpersonatorPostDao;
 import com.github.jackkell.mimicryproject.entity.Impersonator;
+import com.github.jackkell.mimicryproject.entity.ImpersonatorPost;
 import com.github.jackkell.mimicryproject.listadpaters.ImpersonatorPostAdapter;
 import com.twitter.sdk.android.Twitter;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
+
+import java.util.List;
 
 import io.fabric.sdk.android.Fabric;
 
@@ -26,6 +31,10 @@ public class ImpersonatorViewActivity extends Activity {
 
     //The currently loaded Impersonator
     private Impersonator impersonator;
+    private ImpersonatorDao impersonatorDao;
+    private Toolbar toolbar;
+    private ImpersonatorPostAdapter impersonatorPostAdapter;
+    RecyclerView impersonatorPostListView;
     String LOG = "ImpersonatorViewActivity";
 
 
@@ -34,17 +43,22 @@ public class ImpersonatorViewActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_impersonator_view);
+        toolbar = (Toolbar) findViewById(R.id.tbImpersonatorView);
 
-        ImpersonatorDao impersonatorDao = new ImpersonatorDao(getApplicationContext());
+
+        impersonatorDao = new ImpersonatorDao(getApplicationContext());
         impersonator = impersonatorDao.get(getIntent().getLongExtra("impersonatorID", -1));
-        RecyclerView impersonatorPostListView = (RecyclerView) findViewById(R.id.rvImpersonatorPost);
+
+        toolbar.setTitle(impersonator.getName());
+
+        impersonatorPostListView = (RecyclerView) findViewById(R.id.rvImpersonatorPost);
 
         //TwitterAuthConfig authConfig = new TwitterAuthConfig(Config.CONSUMER_KEY, Config.CONSUMER_KEY_SECRET);
         //Fabric.with(this, new Twitter(authConfig));
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         impersonatorPostListView.setLayoutManager(linearLayoutManager);
-        ImpersonatorPostAdapter impersonatorPostAdapter = new ImpersonatorPostAdapter(impersonator.getImpersonatorPosts());
+        impersonatorPostAdapter = new ImpersonatorPostAdapter(impersonator);
         impersonatorPostListView.setAdapter(impersonatorPostAdapter);
 
         FloatingActionButton addPostButton = (FloatingActionButton) findViewById(R.id.fabAddPost);
@@ -84,7 +98,10 @@ public class ImpersonatorViewActivity extends Activity {
     //The logic flow behind the onClick for the Floating Action Button
     private void onAddPostButtonClick(){
         impersonator.addPost();
-        //impersonatorPostAdapter.addPost(impersonator.getPosts().get(impersonator.getPosts().size() - 1));
-        //impersonatorPostListView.smoothScrollToPosition(impersonator.getPosts().size()-1);
+        List<ImpersonatorPost> posts = impersonator.getImpersonatorPosts();
+        impersonatorPostAdapter.addPost(posts.get(posts.size() - 1));
+        impersonatorPostListView.smoothScrollToPosition(posts.size()-1);
+        impersonatorDao.update(impersonator);
+
     }
 }

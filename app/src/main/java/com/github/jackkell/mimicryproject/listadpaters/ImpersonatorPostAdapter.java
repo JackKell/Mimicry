@@ -11,6 +11,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.github.jackkell.mimicryproject.R;
+import com.github.jackkell.mimicryproject.entity.Impersonator;
 import com.github.jackkell.mimicryproject.entity.ImpersonatorPost;
 
 import java.util.List;
@@ -18,7 +19,7 @@ import java.util.List;
 //Used to auto-populate the custom Impersontor Post List View
 public class ImpersonatorPostAdapter extends RecyclerView.Adapter<ImpersonatorPostAdapter.ImpersonatorPostViewHolder> {
 
-    // The individual posts used to populate the listview
+    private Impersonator impersonator;
     private List<ImpersonatorPost> posts;
 
     public static class ImpersonatorPostViewHolder extends RecyclerView.ViewHolder {
@@ -47,8 +48,9 @@ public class ImpersonatorPostAdapter extends RecyclerView.Adapter<ImpersonatorPo
     }
 
     //Creates an Adapter based on the passed attributes
-    public ImpersonatorPostAdapter(List<ImpersonatorPost> posts) {
-        this.posts = posts;
+    public ImpersonatorPostAdapter(Impersonator impersonator) {
+        this.impersonator = impersonator;
+        this.posts = impersonator.getImpersonatorPosts();
     }
 
     @Override
@@ -61,10 +63,12 @@ public class ImpersonatorPostAdapter extends RecyclerView.Adapter<ImpersonatorPo
     @Override
     public void onBindViewHolder(ImpersonatorPostViewHolder impersonatorPostViewHolder, final int position) {
         ImpersonatorPost currentPost = posts.get(position);
-        // TODO: Make a way to get the impersonator name from a given post
-        //impersonatorPostViewHolder.impersonatorName.setText(currentPost.getImpersonatorName());
+        impersonatorPostViewHolder.impersonatorName.setText(impersonator.getName());
         impersonatorPostViewHolder.postBody.setText(currentPost.getBody());
+
+
         impersonatorPostViewHolder.postCreationDate.setText(currentPost.getDateCreated().toString());
+
         impersonatorPostViewHolder.tweetButton.setText(Boolean.toString(currentPost.isTweeted()));
         impersonatorPostViewHolder.favoriteButton.setText(Boolean.toString(currentPost.isFavorited()));
         impersonatorPostViewHolder.deleteButton.setOnClickListener(new View.OnClickListener() {
@@ -92,7 +96,6 @@ public class ImpersonatorPostAdapter extends RecyclerView.Adapter<ImpersonatorPo
 
     public void deletePost(ImpersonatorPost post) {
         posts.remove(post);
-        //post.delete();
         this.notifyDataSetChanged();
     }
 }

@@ -126,6 +126,10 @@ public class MarkovChain {
         for (Pair<String, Long> pair : pairs) {
             totalWeight += pair.second;
         }
+        if (totalWeight == 0) {
+            return END_KEY;
+        }
+
         Random random = new Random();
         // Generate a long number between 0 - totalOccurrences exclusive
         Long randomValue = (random.nextLong() % totalWeight);

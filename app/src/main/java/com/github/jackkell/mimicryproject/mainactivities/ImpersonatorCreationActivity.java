@@ -21,9 +21,16 @@ import com.github.jackkell.mimicryproject.dao.ImpersonatorDao;
 import com.github.jackkell.mimicryproject.entity.Impersonator;
 import com.github.jackkell.mimicryproject.entity.TwitterUser;
 import com.twitter.sdk.android.Twitter;
+import com.twitter.sdk.android.core.Callback;
+import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
 import com.twitter.sdk.android.core.TwitterCore;
+import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.TwitterSession;
+import com.twitter.sdk.android.core.models.Tweet;
+import com.twitter.sdk.android.tweetui.SearchTimeline;
+import com.twitter.sdk.android.tweetui.TweetUi;
+import com.twitter.sdk.android.tweetui.UserTimeline;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -93,10 +100,9 @@ public class ImpersonatorCreationActivity extends Activity {
 
     //This is what occurs when the Create Impersonator button is tapped
     private void onCreateImpersonatorButtonClick(){
-        List<String> tweetBodies = new ArrayList<>();
-        MarkovChain markovChain = new MarkovChain(tweetBodies); // Creates the markov chain
+        MarkovChain markovChain = new MarkovChain(); // Creates the markov chain
 
-        Impersonator impersonator;
+        final Impersonator impersonator;
 
         impersonator = new Impersonator(etImpersonatorName.getText().toString(), markovChain);
 
@@ -105,14 +111,56 @@ public class ImpersonatorCreationActivity extends Activity {
             Fabric.with(this, new Twitter(authConfig));
             TwitterSession session = Twitter.getSessionManager().getActiveSession();
 
-            List<String> twitterUserNames = new ArrayList< >();
+            List<String> twitterUserNames = new ArrayList<>();
             twitterUserNames.add(etTwitterUserName1.getText().toString());
             twitterUserNames.add(etTwitterUserName2.getText().toString());
 
+            /*
+            final List<String> tweets = new ArrayList<>();
+            for (final String twitterUser :twitterUserNames) {
+
+                TwitterCore.getInstance().getApiClient(session).getStatusesService()
+                        .userTimeline(null,
+                                twitterUser,
+                                10, //the number of tweets we want to fetch,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                new Callback<List<Tweet>>() {
+                                    @Override
+                                    public void success(Result<List<Tweet>> result) {
+                                        for (Tweet t : result.data) {
+                                            tweets.add(t.text);
+                                            android.util.Log.d("twittercommunity", "tweet is " + t.text);
+                                        }
+                                    }
+
+                                    @Override
+                                    public void failure(TwitterException exception) {
+                                        android.util.Log.d("twittercommunity", "exception " + exception);
+                                    }
+                                });
+            }
+            */
+            //impersonator.getMarkovChain().addPhrases(tweets);
+            impersonator.addTwitterUser(new TwitterUser(twitterUserNames.get(0)));
+            impersonator.addTwitterUser(new TwitterUser(twitterUserNames.get(1)));
+
+            List<String> phrases = new ArrayList<>();
+            phrases.add("I went to the store to get a cup of coffee.");
+            phrases.add("Do you like to drink coffee.");
+            phrases.add("I have a good time when I go to buy games at the store.");
+            impersonator.getMarkovChain().addPhrases(phrases);
+
+            /*
             for (String username : twitterUserNames) {
                 ValidTwitterUsernameCallback callback = new ValidTwitterUsernameCallback();
                 TwitterCore.getInstance().getApiClient(session).getStatusesService()
-                        .userTimeline(null,
+                        .userTimeline(
+                                null,
                                 username,
                                 100, //the number of tweets we want to fetch,
                                 null,
@@ -125,7 +173,7 @@ public class ImpersonatorCreationActivity extends Activity {
                         );
                 impersonator.getMarkovChain().addPhrases(callback.tweets);
                 impersonator.addTwitterUser(new TwitterUser(username));
-            }
+            }*/
 
             impersonatorDao.create(impersonator);
 
