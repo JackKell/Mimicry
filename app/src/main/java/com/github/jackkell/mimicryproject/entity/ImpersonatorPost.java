@@ -38,10 +38,11 @@ public class ImpersonatorPost extends Entity {
     public ImpersonatorPost(){}
 
     public ImpersonatorPost(Long impersonatorId, String body) {
-        this(impersonatorId, body, false, false, new Date());
+        this(null, impersonatorId, body, false, false, new Date());
     }
 
-    public ImpersonatorPost(Long impersonatorId, String body, boolean isFavorited, boolean isTweeted, Date dateCreated) {
+    public ImpersonatorPost(Long id, Long impersonatorId, String body, boolean isFavorited, boolean isTweeted, Date dateCreated) {
+        this.id = id;
         this.impersonatorId = impersonatorId;
         this.body = body;
         this.isFavorited = isFavorited;

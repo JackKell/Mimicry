@@ -1,17 +1,22 @@
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="16dp"
-    android:paddingBottom="16dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.github.jackkell.mimicryproject.mainactivities.ImpersonatorCreationActivity"
-    android:id="@+id/ImpersonatorCreation" >
+    android:id="@+id/ImpersonatorCreation">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/tbImpersonatorCreation"
+        android:layout_height="?android:actionBarSize"
+        android:layout_width="match_parent"
+        android:background="@color/primary"
+        android:elevation="4dp"
+        app:titleTextColor="@color/icons"/>
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/tilImpersonatorName"
+        android:layout_marginTop="?android:actionBarSize"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColorHint="@color/black"
@@ -81,8 +86,10 @@
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fabCreateImpersonator"
+        android:src="@drawable/ic_add_white_24dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_margin="16dp"
         android:layout_alignBottom="@+id/lvTwitterUserNames"
         android:layout_alignRight="@+id/lvTwitterUserNames"
         android:layout_alignEnd="@+id/lvTwitterUserNames">

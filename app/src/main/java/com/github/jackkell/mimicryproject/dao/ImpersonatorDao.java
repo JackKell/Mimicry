@@ -90,7 +90,7 @@ public class ImpersonatorDao implements Dao<Impersonator> {
         List<TwitterUser> twitterUsers = new ArrayList<>();
         TwitterUserDao twitterUserDao = new TwitterUserDao(context);
 
-        String twitterUserQuery = "SELECT " + TwitterUser.ID + " FROM " + TwitterUser.TABLE_NAME + " WHERE " + TwitterUser.IMPERSONATOR_ID + " = ? ";
+        String twitterUserQuery = "SELECT * FROM " + TwitterUser.TABLE_NAME + " WHERE " + TwitterUser.IMPERSONATOR_ID + " = ? ";
         String[] twitterUserQueryArgs = new String[] {String.valueOf(id)};
         Cursor twitterUserCursor = db.rawQuery(twitterUserQuery, twitterUserQueryArgs);
 
@@ -124,7 +124,7 @@ public class ImpersonatorDao implements Dao<Impersonator> {
 
         postQueryCursor.close();
 
-        return new Impersonator(name, dateCreated, chain, twitterUsers, posts);
+        return new Impersonator(id, name, dateCreated, chain, twitterUsers, posts);
     }
 
     @Override
@@ -136,28 +136,73 @@ public class ImpersonatorDao implements Dao<Impersonator> {
         values.put(Impersonator.NAME, object.getName());
         values.put(Impersonator.MARKOV_CHAIN, object.getMarkovChain().toString());
 
-        // Which row to update, based on the ID
-        String where = Impersonator.ID + " = ?";
-        String[] whereArgs = { String.valueOf(object.getId()) };
+        ImpersonatorPostDao impersonatorPostDao = new ImpersonatorPostDao(context);
 
-        db.update(Impersonator.TABLE_NAME, values, where, whereArgs);
+        for (ImpersonatorPost post: object.getImpersonatorPosts()) {
+            impersonatorPostDao.update(post);
+        }
+
+        TwitterUserDao twitterUserDao = new TwitterUserDao(context);
+
+        for (TwitterUser twitterUser: object.getTwitterUsers()) {
+            twitterUserDao.update(twitterUser);
+        }
+
+        // Which row to update, based on the ID
+        String impersonatorQuery = Impersonator.ID + " LIKE ?";
+        String[] impersonatorQueryArgs = { String.valueOf(object.getId()) };
+
+        db.update(Impersonator.TABLE_NAME, values, impersonatorQuery, impersonatorQueryArgs);
     }
 
     @Override
     public void delete(Long id) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-        String where = Impersonator.ID + " = ?";
-        String[] whereArgs = { String.valueOf(id) };
+        String postQuery = "SELECT " + ImpersonatorPost.ID + " FROM " + ImpersonatorPost.TABLE_NAME + " WHERE " + ImpersonatorPost.IMPERSONATOR_ID + " = ?";
+        String[] postQueryArgs = { String.valueOf(id) };
 
-        db.delete(Impersonator.TABLE_NAME, where, whereArgs);
+        Cursor postQueryCursor = db.rawQuery(postQuery, postQueryArgs);
+
+        ImpersonatorPostDao impersonatorPostDao = new ImpersonatorPostDao(context);
+        if (postQueryCursor.moveToFirst()) {
+            do {
+                Long postId = postQueryCursor.getLong(
+                        postQueryCursor.getColumnIndexOrThrow(ImpersonatorPost.ID)
+                );
+                impersonatorPostDao.delete(postId);
+            } while (postQueryCursor.moveToNext());
+        }
+        postQueryCursor.close();
+
+        String twitterUserQuery = "SELECT " + TwitterUser.ID + " FROM " + TwitterUser.TABLE_NAME + " WHERE " + TwitterUser.IMPERSONATOR_ID + " = ?";
+        String[] twitterUserQueryArgs = { String.valueOf(id) };
+
+        Cursor twitterUserCursor = db.rawQuery(twitterUserQuery, twitterUserQueryArgs);
+
+        TwitterUserDao twitterUserDao = new TwitterUserDao(context);
+        if (twitterUserCursor.moveToFirst()) {
+            do {
+                Long twitterId = twitterUserCursor.getLong(
+                        twitterUserCursor.getColumnIndexOrThrow(TwitterUser.ID)
+                );
+                twitterUserDao.delete(twitterId);
+            } while (twitterUserCursor.moveToNext());
+        }
+
+        twitterUserCursor.close();
+
+
+        String impersonatorQuery = Impersonator.ID + " LIKE ?";
+        String[] impersonatorQueryArgs = { String.valueOf(id) };
+        db.delete(Impersonator.TABLE_NAME, impersonatorQuery, impersonatorQueryArgs);
     }
 
     public List<Impersonator> list() {
         List<Impersonator> impersonators = new ArrayList<>();
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
-        String query = "SELECT " + Impersonator.ID + " FROM " + Impersonator.TABLE_NAME;
+        String query = "SELECT " + Impersonator.ID + " FROM " + Impersonator.TABLE_NAME + " ORDER BY " + Impersonator.DATE_CREATED + " DESC ";
         Cursor cursor = db.rawQuery(query, null);
         if (cursor.moveToFirst()) {
             do {

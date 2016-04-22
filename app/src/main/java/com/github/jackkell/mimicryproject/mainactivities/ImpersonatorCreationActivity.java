@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
@@ -37,12 +38,16 @@ public class ImpersonatorCreationActivity extends Activity {
     private EditText etTwitterUserName1;
     private EditText etTwitterUserName2;
     private ImpersonatorDao impersonatorDao;
+    private Toolbar toolbar;
 
     @Override
     //This runs when the activity is opened
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_impersonator_creation);
+
+        toolbar = (Toolbar) findViewById(R.id.tbImpersonatorCreation);
+        toolbar.setTitle("Impersonator Creation");
 
         etImpersonatorName = (EditText) findViewById(R.id.etImpersonatorName);
         etTwitterUserName1 = (EditText) findViewById(R.id.etTwitterUserName1);
@@ -95,17 +100,17 @@ public class ImpersonatorCreationActivity extends Activity {
 
         impersonator = new Impersonator(etImpersonatorName.getText().toString(), markovChain);
 
-        if (validateImpersonator()){
+        if (validateImpersonator()) {
             TwitterAuthConfig authConfig = new TwitterAuthConfig(Config.CONSUMER_KEY, Config.CONSUMER_KEY_SECRET);
             Fabric.with(this, new Twitter(authConfig));
             TwitterSession session = Twitter.getSessionManager().getActiveSession();
 
-            List<String> twitterUserNames = new ArrayList<>();
+            List<String> twitterUserNames = new ArrayList< >();
             twitterUserNames.add(etTwitterUserName1.getText().toString());
             twitterUserNames.add(etTwitterUserName2.getText().toString());
 
             for (String username : twitterUserNames) {
-                ValidTwitterUsernameCallback callback = new ValidTwitterUsernameCallback(impersonator, username);
+                ValidTwitterUsernameCallback callback = new ValidTwitterUsernameCallback();
                 TwitterCore.getInstance().getApiClient(session).getStatusesService()
                         .userTimeline(null,
                                 username,
@@ -118,6 +123,7 @@ public class ImpersonatorCreationActivity extends Activity {
                                 null,
                                 callback
                         );
+                impersonator.getMarkovChain().addPhrases(callback.tweets);
                 impersonator.addTwitterUser(new TwitterUser(username));
             }
 

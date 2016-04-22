@@ -5,12 +5,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <android.support.v7.widget.CardView
         android:id="@+id/cvImpersonator"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         card_view:cardCornerRadius="2dp"
         card_view:cardElevation="8dp"
         card_view:contentPadding="16dp"
@@ -33,6 +37,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:text="Impersonator Name"
+                    android:textColor="@color/primary_text"
                     tools:ignore="RtlHardcoded" />
 
                 <TextView
@@ -42,6 +47,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:text="mmDDyyyy"
+                    android:textColor="@color/secondary_text"
                     tools:ignore="RtlHardcoded" />
 
             </RelativeLayout>
@@ -62,6 +68,7 @@
                         android:id="@+id/tvPostLabel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:paddingRight="4dp"
                         android:textSize="14sp"
                         android:text="Posts:"/>
 
@@ -84,6 +91,7 @@
                         android:id="@+id/tvFavoriteLabel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:paddingRight="4dp"
                         android:textSize="14sp"
                         android:text="Favorites:"/>
 
@@ -106,6 +114,7 @@
                         android:id="@+id/tvTweetLabel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:paddingRight="4dp"
                         android:textSize="14sp"
                         android:text="Tweets:"/>
 
@@ -124,7 +133,7 @@
                 android:layout_height="wrap_content"
                 style="?android:borderlessButtonStyle"
                 android:text="Delete"
-                android:textColor="@color/primary_dark"/>
+                android:textColor="@color/accent"/>
         </LinearLayout>
     </android.support.v7.widget.CardView>
 </LinearLayout>

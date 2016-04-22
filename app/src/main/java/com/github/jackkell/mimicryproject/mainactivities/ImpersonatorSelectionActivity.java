@@ -6,14 +6,16 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.github.jackkell.mimicryproject.entity.Impersonator;
 import com.github.jackkell.mimicryproject.R;
 import com.github.jackkell.mimicryproject.dao.ImpersonatorDao;
+import com.github.jackkell.mimicryproject.dao.ImpersonatorPostDao;
+import com.github.jackkell.mimicryproject.entity.Impersonator;
 import com.github.jackkell.mimicryproject.listadpaters.ImpersonatorSelectableAdapter;
 
 import java.util.List;
@@ -28,12 +30,17 @@ public class ImpersonatorSelectionActivity extends Activity {
     private ImpersonatorSelectableAdapter impersonatorSelectableAdapter;
     private String TAG = "ImpersonatorSelectionActivity";
     private ImpersonatorDao dao;
+    private Toolbar toolbar;
 
     @Override
     // This runs when the activity is opened
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_impersonator_selection);
+
+        toolbar = (Toolbar) findViewById(R.id.tbImpersonatorSelection);
+        toolbar.setTitle("Impersonators");
+
         dao = new ImpersonatorDao(getApplicationContext());
         impersonators = dao.list();
 
@@ -41,7 +48,7 @@ public class ImpersonatorSelectionActivity extends Activity {
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         rvImpersonatorSelection.setLayoutManager(linearLayoutManager);
-        impersonatorSelectableAdapter = new ImpersonatorSelectableAdapter(impersonators);
+        impersonatorSelectableAdapter = new ImpersonatorSelectableAdapter(impersonators, new ImpersonatorPostDao(getApplicationContext()));
         rvImpersonatorSelection.setAdapter(impersonatorSelectableAdapter);
 
         FloatingActionButton addImpersonatorButton = (FloatingActionButton) findViewById(R.id.fabCreateImpersonator);

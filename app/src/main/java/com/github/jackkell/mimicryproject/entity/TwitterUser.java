@@ -16,7 +16,7 @@ public class TwitterUser extends Entity {
                     ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     IMPERSONATOR_ID + " INTEGER NOT NULL, " +
                     USERNAME + " VARCHAR(255) NOT NULL, " +
-                    LAST_TWEET_ID + " LONG NOT NULL, " +
+                    LAST_TWEET_ID + " LONG, " +
                     "FOREIGN KEY(" + IMPERSONATOR_ID + ") REFERENCES " + Impersonator.TABLE_NAME + "(" + Impersonator.ID + "));";
 
     // The id of the impersonator that this twitter user belongs to
@@ -28,11 +28,12 @@ public class TwitterUser extends Entity {
     private Long lastTweetId;
 
     public TwitterUser(String username){
-        this(null, username, null);
+        this(null, null, username, null);
     }
 
     //Creates a Twitter user based on passed attributes
-    public TwitterUser(Long impersonatorId, String username, Long lastTweetId) {
+    public TwitterUser(Long id, Long impersonatorId, String username, Long lastTweetId) {
+        this.id = id;
         this.username = username;
         this.impersonatorId = impersonatorId;
         this.lastTweetId = lastTweetId;

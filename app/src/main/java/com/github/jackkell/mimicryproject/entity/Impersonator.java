@@ -55,10 +55,11 @@ public class Impersonator extends Entity {
     }
 
     public Impersonator(String name, Date dateCreated, MarkovChain chain) {
-        this(name, dateCreated, chain, new ArrayList<TwitterUser>(), new ArrayList<ImpersonatorPost>());
+        this(null, name, dateCreated, chain, new ArrayList<TwitterUser>(), new ArrayList<ImpersonatorPost>());
     }
 
-    public Impersonator(String name, Date dateCreated, MarkovChain chain, List<TwitterUser> twitterUsers, List<ImpersonatorPost> posts) {
+    public Impersonator(Long id, String name, Date dateCreated, MarkovChain chain, List<TwitterUser> twitterUsers, List<ImpersonatorPost> posts) {
+        this.id = id;
         this.name = name;
         this.dateCreated = dateCreated;
         this.markovChain = chain;
@@ -102,5 +103,25 @@ public class Impersonator extends Entity {
         String body = markovChain.generatePhrase();
         ImpersonatorPost impersonatorPost = new ImpersonatorPost(id, body);
         posts.add(impersonatorPost);
+    }
+
+    public int getPostCount() {
+        return posts.size();
+    }
+
+    public int getIsFavoritedCount() {
+        int isFavoritedCount = 0;
+        for (ImpersonatorPost post: posts) {
+            isFavoritedCount += post.isFavorited() ? 1 : 0;
+        }
+        return  isFavoritedCount;
+    }
+
+    public int getIsTweetedCount() {
+        int isTweetedCount = 0;
+        for (ImpersonatorPost post: posts) {
+            isTweetedCount += post.isFavorited() ? 1 : 0;
+        }
+        return  isTweetedCount;
     }
 }

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MimicryProject</string>
+    <string name="app_name">Mimicry Project</string>
 
     <!--General Application-->
     <string name="impersonator">Impersonator</string>

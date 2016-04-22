@@ -37,6 +37,7 @@ public class TwitterUserDao implements Dao<TwitterUser> {
 
         Cursor twitterUserCursor = db.rawQuery("SELECT * FROM " + TwitterUser.TABLE_NAME + " where id = ? ", new String[]{String.valueOf(id)});
 
+        twitterUserCursor.moveToFirst();
         Long impersonatorId = twitterUserCursor.getLong(
                 twitterUserCursor.getColumnIndexOrThrow(TwitterUser.IMPERSONATOR_ID)
         );
@@ -49,7 +50,7 @@ public class TwitterUserDao implements Dao<TwitterUser> {
 
         twitterUserCursor.close();
 
-        return new TwitterUser(impersonatorId, username, lastTweetId);
+        return new TwitterUser(id, impersonatorId, username, lastTweetId);
     }
 
     @Override
@@ -70,9 +71,9 @@ public class TwitterUserDao implements Dao<TwitterUser> {
     public void delete(Long id) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-        String where = TwitterUser.ID + " = ?";
-        String[] whereArgs = { String.valueOf(id) };
+        String twitterUserQuery = TwitterUser.ID + " = ?";
+        String[] twitterUserQueryArgs = { String.valueOf(id) };
 
-        db.delete(TwitterUser.TABLE_NAME, where, whereArgs);
+        db.delete(TwitterUser.TABLE_NAME, twitterUserQuery, twitterUserQueryArgs);
     }
 }

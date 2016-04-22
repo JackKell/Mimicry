@@ -20,12 +20,12 @@
     <application
         android:allowBackup="true"
         tools:replace="android:icon,android:theme"
-        android:icon="@mipmap/mimicry_app_icon"
+        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
             android:name=".mainactivities.LoginActivity"
-            android:label="@string/title_activity_login" >
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />

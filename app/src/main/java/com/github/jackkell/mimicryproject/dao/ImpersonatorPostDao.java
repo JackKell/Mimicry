@@ -62,7 +62,7 @@ public class ImpersonatorPostDao implements Dao<ImpersonatorPost> {
 
         postCursor.close();
 
-        return new ImpersonatorPost(impersonatorID, body, isFavorited, isTweeted, dateCreated);
+        return new ImpersonatorPost(id, impersonatorID, body, isFavorited, isTweeted, dateCreated);
     }
 
     @Override
@@ -84,9 +84,9 @@ public class ImpersonatorPostDao implements Dao<ImpersonatorPost> {
     public void delete(Long id) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-        String where = ImpersonatorPost.ID + " = ?";
-        String[] whereArgs = { String.valueOf(id) };
+        String postQuery = Impersonator.ID + " LIKE ?";
+        String[] postQueryArgs = { String.valueOf(id) };
 
-        db.delete(ImpersonatorPost.TABLE_NAME, where, whereArgs);
+        db.delete(ImpersonatorPost.TABLE_NAME, postQuery, postQueryArgs);
     }
 }

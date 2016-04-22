@@ -5,7 +5,17 @@
     android:layout_height="match_parent"
     tools:context="com.github.jackkell.mimicryproject.mainactivities.ImpersonatorSelectionActivity">
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/tbImpersonatorSelection"
+        android:layout_height="?android:actionBarSize"
+        android:layout_width="match_parent"
+        android:background="@color/primary"
+        android:elevation="4dp"
+        app:titleTextColor="@color/icons"/>
+
+
     <android.support.v7.widget.RecyclerView
+        android:layout_marginTop="?android:actionBarSize"
         android:id="@+id/rvImpersonatorSelection"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -13,8 +23,11 @@
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fabCreateImpersonator"
+        android:src="@drawable/ic_add_white_24dp"
+        android:background="@color/accent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_margin="16dp"
         android:layout_alignBottom="@+id/rvImpersonatorSelection"
         android:layout_alignRight="@+id/rvImpersonatorSelection"
         android:layout_alignEnd="@+id/rvImpersonatorSelection">

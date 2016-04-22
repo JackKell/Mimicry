@@ -1,6 +1,5 @@
 package com.github.jackkell.mimicryproject;
 
-import com.github.jackkell.mimicryproject.entity.Impersonator;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterException;
@@ -11,21 +10,17 @@ import java.util.List;
 
 public class ValidTwitterUsernameCallback extends Callback<List<Tweet>> {
 
-    private Impersonator impersonator;
-    private String username;
+    public List<String> tweets;
 
-    public ValidTwitterUsernameCallback(Impersonator impersonator, String username) {
-        this.impersonator = impersonator;
-        this.username = username;
+    public ValidTwitterUsernameCallback() {
+        this.tweets = new ArrayList<>();
     }
 
     @Override
     public void success(Result<List<Tweet>> result) {
         for (Tweet t : result.data){
-            impersonator.getMarkovChain().addPhrase(t.text);
+            tweets.add(t.text);
         }
-        // TODO: Fix this function
-        //impersonator.addTwitterUser(username, tweets);
     }
 
     @Override
